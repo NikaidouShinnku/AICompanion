@@ -1,0 +1,20 @@
+### 这是 {description}
+{distilled_tree}
+
+### 这是和专家的历史对话
+{chat_history}
+
+### 这是专家这一轮的回答
+{current_response}
+
+### 提出该问题的原因及思考过程
+{reasons}
+
+### 问题指向的目标是
+{objective}
+
+### 提出的问题是
+{question}
+
+
+

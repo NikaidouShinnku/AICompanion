@@ -1,0 +1,25 @@
+{
+    "id": "d7d7a1e4-654a-4e92-8d1a-2bfb8b62bb5a",
+    "domain": "Children Education",
+    "name": "Fundamentals of Early Childhood Education",
+    "task_description": "Master the basics of early childhood education",
+    "objectives": [
+        {
+            "id": "c3f7d39e-f8d4-4f4e-9934-bef8a3ff1cf1",
+            "obj_description": "Understand Child Development Stages",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "b8457f58-3d78-4b83-95b4-f1a44e8f07b4",
+            "obj_description": "Learn Effective Teaching Strategies for Young Children",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        }
+    ],
+    "task_complete": false,
+    "start_date": "2023-02-20",
+    "end_date": "2023-02-20"
+}

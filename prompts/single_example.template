@@ -1,0 +1,11 @@
+### 这是 {description}
+{distilled_tree}
+
+### 这是和专家的历史对话
+{chat_history}
+
+### 这是专家这一轮的回答
+{current_response}
+
+### 萃取action
+{actions}

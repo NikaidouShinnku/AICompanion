@@ -1,0 +1,4 @@
+requests
+openai
+rich
+beautifulsoup4

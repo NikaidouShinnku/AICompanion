@@ -1,0 +1,161 @@
+[
+  {
+    "description": "An example of real knowledge tree",
+    "knowledge_graph": {
+      "id": "5f8e1a5d-939f-4de0-bd42-0d2d60c7f5e8",
+      "domain": "Machine Learning",
+      "name": "ML Fundamentals",
+      "task_description": "Master the basics of Machine Learning",
+      "objectives": [
+        {
+          "id": "3b4d2b5e-94d6-43d5-9219-cf8389876fc5",
+          "obj_description": "Understand Supervised Learning",
+          "knowledge": [],
+          "progress": 0,
+          "obj_complete": false
+        },
+        {
+          "id": "c71c2d6d-6a6b-4e3f-a9a3-e7ff650ba0e1",
+          "obj_description": "Learn Unsupervised Learning",
+          "knowledge": [],
+          "progress": 0,
+          "obj_complete": false
+        },
+        {
+          "id": "c4dfbe49-08a5-4718-9d4a-4bc7d8ab1e74",
+          "obj_description": "Learn Reinforcement Learning",
+          "knowledge": [],
+          "progress": 0,
+          "obj_complete": false
+        }
+      ],
+      "task_complete": false,
+      "start_date": "2023-07-05",
+      "end_date": "2023-07-05"
+    },
+    "chat_history": [
+      {
+        "role": "assistant",
+        "content": "Hello, I'm a conversational AI. I'm here to learn from your expertise in Machine Learning field and create a knowledge tree. Please introduce yourself and share your background in the domain of Machine Learning."
+      },
+      {
+        "role": "user",
+        "content": "I'm a machine learning expert with 10 years of experience in the field. I've worked on various projects, including natural language processing, computer vision, and recommender systems."
+      },
+      {
+        "role": "assistant",
+        "content": "Thank you so much for providing your background information. Now let's begin our interview and distillation! Firstly, can you talk about how Supervised Learning works?"
+      }
+    ],
+    "current_response": "Supervised Learning is a type of machine learning where the model is trained on labeled data to learn a mapping between input data and output labels. Unlike Unsupervised Learning, where the model has to find patterns on its own. Supervised Learning is useful for tasks such as image classification and speech recognition.",
+    "actions": [
+      {
+        "action": "add_new_knowledge_node",
+        "arguments": {
+          "objective_id": "3b4d2b5e-94d6-43d5-9219-cf8389876fc5",
+          "knowledge_detail": {
+            "knowledge_description": "Supervised Learning model trains on labeled data to learn a mapping between input data and output labels.",
+            "concept": "A type of machine learning with labeled data",
+            "why_important": "Supervised Learning is useful for tasks such as image classification and speech recognition."
+          }
+        }
+      },
+      {
+        "action": "add_new_knowledge_node",
+        "arguments": {
+          "objective_id": "c71c2d6d-6a6b-4e3f-a9a3-e7ff650ba0e1",
+          "knowledge_detail": {
+            "knowledge_description": "Unsupervised Learning model has to find patterns on its own",
+            "concept": "A type of machine learning that find patterns on its own"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "description": "This is an example of a half-way done knowledge graph with some knowledge node created.",
+    "knowledge_graph": {
+      "id": "ed6d91a5-5a60-40c2-90e7-252e7b6a8d9f",
+      "domain": "Machine Learning",
+      "name": "ML Fundamentals",
+      "task_description": "Master the basics of Machine Learning",
+      "objectives": [
+        {
+          "id": "2f37d6b4-8c9b-46b5-84c6-4234b2c0d05a",
+          "obj_description": "Understand Supervised Learning",
+          "knowledge": [
+            {
+              "id": "a33b7b6d-10c0-43ad-8fd5-2c7e5ff2d256",
+              "concept": "A type of machine learning with labeled data",
+              "why_important": "Supervised Learning is useful for tasks such as image classification and speech recognition.",
+              "knowledge_description": "Supervised Learning model trains on labeled data to learn a mapping between input data and output labels.",
+              "example": null,
+              "other": null
+            }
+          ],
+          "progress": 0.15,
+          "obj_complete": false
+        },
+        {
+          "id": "08e8f75a-74b4-4371-91c2-b61efba11a3d",
+          "obj_description": "Learn Unsupervised Learning",
+          "knowledge": [
+            {
+              "id": "52d90a48-bf4f-4c37-b4c8-4c2e9a3f7f8d",
+              "concept": "A type of machine learning that find patterns on its own",
+              "why_important": null,
+              "knowledge_description": "Unsupervised Learning model has to find patterns on its own",
+              "example": null,
+              "other": null
+            }
+          ],
+          "progress": 0.05,
+          "obj_complete": false
+        },
+        {
+          "id": "4e4b0d6d-1d5b-4094-819b-e3a7e7a7a9e1",
+          "obj_description": "Learn Reinforcement Learning",
+          "knowledge": [],
+          "progress": 0,
+          "obj_complete": false
+        }
+      ],
+      "task_complete": false,
+      "start_date": "2023-07-05",
+      "end_date": "2023-07-05"
+    },
+    "chat_history": [
+      {
+        "role": "assistant",
+        "content": "Hello, I'm a conversational AI. I'm here to learn from your expertise in Machine Learning field and create a knowledge tree. Please introduce yourself and share your background in the domain of Machine Learning."
+      },
+      {
+        "role": "user",
+        "content": "I'm a machine learning expert with 10 years of experience in the field. I've worked on various projects, including natural language processing, computer vision, and recommender systems."
+      },
+      {
+        "role": "assistant",
+        "content": "Thank you so much for providing your background information. Now let's begin our interview and distillation! Firstly, can you talk about how Supervised Learning works?"
+      },
+      {
+        "role": "user",
+        "content": "Supervised Learning is a type of machine learning where the model is trained on labeled data to learn a mapping between input data and output labels. Unlike Unsupervised Learning, where the model has to find patterns on its own. Supervised Learning is useful for tasks such as image classification and speech recognition."
+      },
+      {
+        "role": "assistant",
+        "content": "Great, thank you for explaining Supervised Learning! Your relate to Unsupervised Learning makes me curious; can you tell me more about how Unsupervised Learning works and what kind of problems it's used for?"
+      }
+    ],
+    "current_response": "Ah, yes, Unsupervised Learning is a type of machine learning where the model has to find patterns or relationships in the data on its own, without any labeled data. It's useful for tasks such as clustering, dimensionality reduction, and anomaly detection.",
+    "actions": [
+      {
+        "action": "update_existing_knowledge_node",
+        "arguments": {
+          "knowledge_id": "52d90a48-bf4f-4c37-b4c8-4c2e9a3f7f8d",
+          "knowledge_type": "why_important",
+          "knowledge_detail": "Supervised Learning is useful for tasks such as clustering, dimensionality reduction, and anomaly detection."
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,58 @@
+{
+    "description": "An example of real knowledge tree",
+    "knowledge_graph": {
+      "id": "5f8e1a5d-939f-4de0-bd42-0d2d60c7f5e8",
+      "domain": "Machine Learning",
+      "name": "ML Fundamentals",
+      "task_description": "Master the basics of Machine Learning",
+      "objectives": [
+        {
+          "id": "3b4d2b5e-94d6-43d5-9219-cf8389876fc5",
+          "obj_description": "Understand Supervised Learning",
+          "knowledge": [],
+          "progress": 0,
+          "obj_complete": false
+        },
+        {
+          "id": "c71c2d6d-6a6b-4e3f-a9a3-e7ff650ba0e1",
+          "obj_description": "Learn Unsupervised Learning",
+          "knowledge": [],
+          "progress": 0,
+          "obj_complete": false
+        },
+        {
+          "id": "c4dfbe49-08a5-4718-9d4a-4bc7d8ab1e74",
+          "obj_description": "Learn Reinforcement Learning",
+          "knowledge": [],
+          "progress": 0,
+          "obj_complete": false
+        }
+      ],
+      "task_complete": false,
+      "start_date": "2023-07-05",
+      "end_date": "2023-07-05"
+    },
+    "chat_history": [
+      {
+        "role": "assistant",
+        "content": "Hello, I'm a conversational AI. I'm here to learn from your expertise in Machine Learning field and create a knowledge tree. Please introduce yourself and share your background in the domain of Machine Learning."
+      },
+      {
+        "role": "user",
+        "content": "I'm a machine learning expert with 10 years of experience in the field. I've worked on various projects, including natural language processing, computer vision, and recommender systems."
+      },
+      {
+        "role": "assistant",
+        "content": "Thank you so much for providing your background information. Now let's begin our interview and distillation! Firstly, can you talk about how Supervised Learning works?"
+      }
+    ],
+    "current_response": "Supervised Learning is a type of machine learning where the model is trained on labeled data to learn a mapping between input data and output labels. Unlike Unsupervised Learning, where the model has to find patterns on its own. Supervised Learning is useful for tasks such as image classification and speech recognition.",
+
+
+        "reason": "To gain a deeper understanding of Supervised Learning, it's important to explore specific application scenarios, as well as the advantages and limitations of using Supervised Learning in these scenarios.",
+        "target_objective": "Understand Supervised Learning",
+        "question": "Could you provide detailed examples of application scenarios where Supervised Learning is particularly effective, and discuss the advantages and limitations of using Supervised Learning in these contexts?"
+
+
+}
+
