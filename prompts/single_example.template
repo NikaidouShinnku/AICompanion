@@ -1,10 +1,10 @@
 ### 这是 {description}
 {distilled_tree}
 
-### 这是和专家的历史对话
+### 这是和访谈对象的历史对话
 {chat_history}
 
-### 这是专家这一轮的回答
+### 这是访谈对象这一轮的回答
 {current_response}
 
 ### 萃取action

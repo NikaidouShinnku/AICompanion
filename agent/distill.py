@@ -11,6 +11,7 @@ from knowledge_graph.model import KnowledgeGraph
 
 class DistillAgent:
     def __init__(self, name: str, distilled_tree: KnowledgeGraph, chat_history: ChatHistory, interviewee: str):
+        self.current_response = None
         self.chat_history = chat_history
         self.name = name
         self.distilled_tree = distilled_tree
@@ -38,6 +39,7 @@ class DistillAgent:
         background_prompt_template = read_prompt("single_background")
         with open(f"{interviewee_directory()}/{interviewee}.json", "r", encoding="utf-8") as f:
             background_dataset = json.loads(f.read())
+            self.interviewee_name = background_dataset["name"]
 
             self.background_info = background_prompt_template.format(
                 user_name=background_dataset["name"],
@@ -50,21 +52,32 @@ class DistillAgent:
 
     def get_prompt(self):
         messages = self.chat_history.get_message()
-        current_response = messages[-1]['content']
+        self.current_response = messages[-1]['content']
         chat_history = messages[:-1]
         return self.final_prompt_template.format(
+            interviewee=self.interviewee_name,
             user_background=self.background_info,
             domain=self.distilled_tree.domain,
             examples=self.examples,
             distilled_tree=self.distilled_tree.get_tree(),
             chat_history=chat_history,
-            current_response=current_response
+            current_response=self.current_response
         )
 
-    def update_tree(self, model: str, turn:int):
+    def update_tree(self, model: str, turn: int):
+        for i in range(3):
+            try:
+                return self.do_update_tree(model=model,turn=turn)
+            except:
+                if i == 2:
+                    raise ValueError("Fail to update tree")
+
+
+    def do_update_tree(self, model: str, turn:int):
         prompt = self.get_prompt()
         # import pyperclip
         # pyperclip.copy(prompt)
+        show_response(prompt, title="distill prompt")
         res = chat(prompt=prompt, model=model)
         # show_response(res, title="Distill")
 
@@ -86,8 +99,8 @@ class DistillAgent:
                 knowledge_id = action["arguments"]["knowledge_id"]
                 knowledge_type = action["arguments"]["knowledge_type"]
                 knowledge_detail = action["arguments"]["knowledge_detail"]
-                self.distilled_tree.renew_knowledge(res, knowledge_detail, knowledge_id, knowledge_type, turn)
+                self.distilled_tree.renew_knowledge(self.current_response, knowledge_detail, knowledge_id, knowledge_type, turn)
             elif action["action"] == "add_new_knowledge_node":
                 objective_id = action["arguments"]["objective_id"]
                 knowledge_detail = action["arguments"]["knowledge_detail"]
-                self.distilled_tree.add_knowledge(res, objective_id, knowledge_detail, turn)
+                self.distilled_tree.add_knowledge(self.current_response, objective_id, knowledge_detail, turn)

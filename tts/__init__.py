@@ -37,23 +37,20 @@ import tempfile
 
 
 def play_sound(file: str):
-    import pygame
+    """
+    Play a media file using ffplay.
 
-    # 初始化pygame
-    pygame.mixer.init()
+    Parameters:
+    file_path (str): The path to the media file to be played.
+    """
+    try:
+        # Construct the ffplay command
+        command = ['C:\\Users\\25899\\scoop\\shims\\ffplay.exe', '-vn', '-nodisp', '-autoexit', file]
 
-    # 加载音频文件
-    pygame.mixer.music.load(file)
-
-    # 播放音频文件
-    pygame.mixer.music.play()
-
-    # 保持程序运行直到音频播放完毕
-    while pygame.mixer.music.get_busy():
-        pygame.time.Clock().tick(10)
-
-    pygame.mixer.music.stop()
-    print("stop")
+        # Call the command using subprocess
+        subprocess.run(command)
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 def tts(text: str, *, vendor="edge", output: str = None, play: bool = False, **kwargs):
     if output:

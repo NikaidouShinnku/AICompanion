@@ -4,6 +4,7 @@ from typing import List, Union, Dict
 import uuid
 import json
 
+
 class Knowledge(BaseModel):
     id: str = str(uuid.uuid4())
     concept: Union[str, None] = None
@@ -13,12 +14,14 @@ class Knowledge(BaseModel):
     other: Union[List[str], None] = None
     raw_user_response: Dict[int, str] = None
 
+
 class Objective(BaseModel):
     id: str = str(uuid.uuid4())
     obj_description: Union[str, None] = None
     knowledge: List[Knowledge] = []
     progress: float = 0
     obj_complete: bool = False
+
 
 class KnowledgeGraph(BaseModel):
     id: str = str(uuid.uuid4())
@@ -76,7 +79,7 @@ class KnowledgeGraph(BaseModel):
         new_objective = Objective()
         self.objectives.append(new_objective)
 
-    def add_knowledge(self, raw_res:str, objective_id: str, knowledge_details: Dict[str, str], turn: int):
+    def add_knowledge(self, raw_res: str, objective_id: str, knowledge_details: Dict[str, str], turn: int):
         """
         Add a new Knowledge node to a specified Objective node with a unique UUID and initial details.
         Args:
@@ -105,7 +108,8 @@ class KnowledgeGraph(BaseModel):
             raise ValueError(f"Objective with id {objective_id} not found.")
         self.manage_progress(objective_id)
 
-    def renew_knowledge(self, raw_res:str, knowledge_detail: str, knowledge_id: str, knowledge_type: str, turn: int, objective_id: str = None):
+    def renew_knowledge(self, raw_res: str, knowledge_detail: str, knowledge_id: str, knowledge_type: str, turn: int,
+                        objective_id: str = None):
         """
         Renew the knowledge in the knowledge tree. If the knowledge doesn't exist, create it.
         Args:
@@ -133,8 +137,11 @@ class KnowledgeGraph(BaseModel):
                         break
 
         if not found and objective_id:
-            self.add_knowledge(raw_res, objective_id, {knowledge_type: knowledge_detail, 'knowledge_description': 'Automatically created knowledge node'}, turn)
+            self.add_knowledge(raw_res, objective_id, {knowledge_type: knowledge_detail,
+                                                       'knowledge_description': 'Automatically created knowledge node'},
+                               turn)
             self.manage_progress(objective_id)
+
     def manage_progress(self, objective_id: str):
         """
         Updates the progress of a specific objective in the knowledge graph.

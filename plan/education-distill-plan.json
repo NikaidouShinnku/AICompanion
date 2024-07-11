@@ -17,6 +17,48 @@
             "knowledge": [],
             "progress": 0,
             "obj_complete": false
+        },
+        {
+            "id": "e3a7b2d3-f957-4e82-8345-d97bb7a6ec32",
+            "obj_description": "Develop Classroom Management Skills",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "d2a2d3c8-945d-4f1e-9355-c57d93e47321",
+            "obj_description": "Create Inclusive Learning Environments",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "b9f5a3d2-4d5b-41fa-921b-05f7a1e9c4d7",
+            "obj_description": "Implement Health and Safety Practices",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "c4a7e5f1-458d-4a8e-857e-3f9a4b2f0f32",
+            "obj_description": "Engage Families and Communities",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "e5b3c2d4-4f6a-471e-8a3f-0a8f4b5c6d7f",
+            "obj_description": "Assess and Evaluate Child Development",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "f6a7b4c5-5d8e-4f9e-912d-0b8a5c7d8e9f",
+            "obj_description": "Foster Emotional and Social Development",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
         }
     ],
     "task_complete": false,

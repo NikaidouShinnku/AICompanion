@@ -3,6 +3,7 @@ import time
 
 from asr import record_and_asr
 from chat_history import ChatHistory
+from common.multiline_input_util import multi_input
 from common.show_utils import show_response
 from knowledge_graph.model import KnowledgeGraph
 import argparse
@@ -10,6 +11,7 @@ from consoles import print_markdown, print_code
 from plan import plan_directory
 from agent.distill import DistillAgent
 from agent.generate import GenerationAgent
+from tts import tts
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -17,6 +19,7 @@ if __name__ == '__main__':
     parser.add_argument('--stream', action='store_true', help='Run in stream mode')
     parser.add_argument('--task',  type=str, help='Choose the task', default="education-distill-plan")
     parser.add_argument('--interviewee', type=str, help='Name of the interviewee', default="maria")
+    parser.add_argument('--tts', type=bool, help='enable tts', default=False)
     args = parser.parse_args()
 
     chat_history = ChatHistory()
@@ -27,14 +30,25 @@ if __name__ == '__main__':
     # other agents
 
     begin = time.time()
-
     turn = 1
+
     while True:
-        question = generate_agent.generate_question(model=args.model)
+        generation_res = generate_agent.generate_question(model=args.model)
+
+        import re
+        pattern = r"<question>(.*?)</question>"
+        match = re.search(pattern, generation_res, re.DOTALL)
+        if match:
+            question = match.group(1).strip()
+        else:
+            question = generation_res
+
         chat_history.append(role="assistant", content=question)  # Replace with generated question
         print_code(distilled_tree.format_to_tree(), language="json", title="DistilledTree")
         show_response(res=question, title="Question")
-        user_input = input('user:')
+        if args.tts:
+            tts(question, output="question.mp3", play=True)
+        user_input = multi_input('user:')
         if user_input == '/asr':
             user_input = record_and_asr()
             show_response(res=user_input, title="ASR Result")
