@@ -120,7 +120,7 @@ class GenerationAgent:
             chat_history=chat_history,
             current_response=current_response
         )
-        return chat(prompt=prompt, model="deepseek-chat")
+        return chat(prompt=prompt, model="qwen-max")
 
     def generate_question(self, model: str):
         prompt = self.get_prompt()
