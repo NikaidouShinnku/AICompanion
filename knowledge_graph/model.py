@@ -163,7 +163,7 @@ class KnowledgeGraph(BaseModel):
                 knowledge.dict().get(field) is not None)
 
         # Calculate progress based on sub-knowledge fields
-        objective.progress = (sub_knowledge_count * 0.2)
+        objective.progress = (sub_knowledge_count * 0.05)
 
         # Mark complete if progress is 90% or more
         if objective.progress >= 0.9:

@@ -1,0 +1,67 @@
+{
+    "id": "a1b2c3d4-e5f6-7a8b-9c0d-e1f2g3h4i5j6",
+    "domain": "Wilderness Survival",
+    "name": "Fundamentals of Wilderness Survival",
+    "task_description": "Master the basics of surviving in the wilderness",
+    "objectives": [
+        {
+            "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3g4h5i6j",
+            "obj_description": "Understand Basic Survival Skills",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "2b3c4d5e-6f7a-8b9c-0d1e-2f3g4h5i6j7k",
+            "obj_description": "Learn Navigation and Orientation",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "3c4d5e6f-7a8b-9c0d-1e2f-3g4h5i6j7k8l",
+            "obj_description": "Develop Wilderness First Aid Skills",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "4d5e6f7a-8b9c-0d1e-2f3g-4h5i6j7k8l9m",
+            "obj_description": "Create Effective Emergency Plans",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "5e6f7a8b-9c0d-1e2f-3g4h-5i6j7k8l9m0n",
+            "obj_description": "Implement Food Procurement Techniques",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "6f7a8b9c-0d1e-2f3g-4h5i-6j7k8l9m0n1o",
+            "obj_description": "Engage in Wilderness Conservation Practices",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "7a8b9c0d-1e2f-3g4h-5i6j-7k8l9m0n1o2p",
+            "obj_description": "Assess and Evaluate Survival Scenarios",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "8b9c0d1e-2f3g-4h5i-6j7k-8l9m0n1o2p3q",
+            "obj_description": "Foster Mental Resilience and Adaptability",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        }
+    ],
+    "task_complete": false,
+    "start_date": "2023-02-20",
+    "end_date": "2023-02-20"
+}

@@ -38,9 +38,9 @@
 
     "指向的目标是:" "<这里是你的目标Objective是什么（请写出obj_description，不要使用id），请告诉对方你为什么提出这个问题，希望对方的回答能完成哪些Objective及部分>"
 
-    "我的问题是:" "<这里是你提出的问题，请尽量表达的清晰简介，让对方明白你的意图，用<question></question>括起来>"
+    "我的问题是:" <这里是你提出的问题，请尽量表达的清晰简介，让对方明白你的意图，用<question></question>括起来>
 
-以上是你提出问题的格式
+以上是你提出问题的格式，问题用必须要用<question></question>括起来
 
 ### Examples:
 [start of examples]
@@ -72,7 +72,7 @@
 ### 这是{interviewee}这一轮的回答
 {current_response}
 
-现在请你开始根据知识树的目标，历史对话和{interviewee}的回复进行问题生成。生成的问题要做到：以未完成的Objective进行提问，提问目标明确能够完成某个Objective，质量要高。
+现在请你开始根据知识树的目标，历史对话和{interviewee}的回复进行问题生成。生成的问题要做到：以未完成的Objective进行提问，提问目标明确能够完成某个Objective，质量要高。如果{interviewee}在讨论某个Objective时很有兴致或回答不完整，可以优先在该问题上追问，直到该Objective完成。
 
 注意：
 - 每次只能提出一个问题，不要让专家为难
@@ -81,3 +81,4 @@
 - 不要生成历史对话中已有的问题
 - 展示问题的时候使用中文
 - 如果{interviewee}没有给出回复，请重复问题
+- 问题用必须要用<question></question>括起来，严格按照这个格式来

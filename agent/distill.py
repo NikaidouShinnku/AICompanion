@@ -77,9 +77,7 @@ class DistillAgent:
         prompt = self.get_prompt()
         # import pyperclip
         # pyperclip.copy(prompt)
-        show_response(prompt, title="distill prompt")
         res = chat(prompt=prompt, model=model)
-        # show_response(res, title="Distill")
 
         start_pos = res.find("[")
         if start_pos != -1:
@@ -88,7 +86,7 @@ class DistillAgent:
         if end_pos != -1:
             res = res[:end_pos + 1]
 
-        show_response(res, title="Distill")
+        # show_response(res, title="Distill")
         try:
             res = json.loads(res)
         except:
@@ -104,3 +102,5 @@ class DistillAgent:
                 objective_id = action["arguments"]["objective_id"]
                 knowledge_detail = action["arguments"]["knowledge_detail"]
                 self.distilled_tree.add_knowledge(self.current_response, objective_id, knowledge_detail, turn)
+
+        self.distilled_tree.dump("task_result/current_distilled_tree")

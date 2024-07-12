@@ -11,6 +11,7 @@ def multi_input(hint: str = '> '):
             user_input = user_input.encode('utf-8', 'replace').decode('utf-8')
             lines.append(user_input)
         except EOFError:
+            print("\n")
             break
 
     combined_input = "\n".join(lines)

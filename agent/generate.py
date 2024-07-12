@@ -126,7 +126,6 @@ class GenerationAgent:
         prompt = self.get_prompt()
         # import pyperclip
         # pyperclip.copy(prompt)
-        show_response(prompt, title="prompt")
         return chat(prompt=prompt, model=model)
 
 
