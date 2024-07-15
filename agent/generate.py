@@ -12,7 +12,7 @@ from knowledge_graph.model import KnowledgeGraph
 
 class GenerationAgent:
 
-    def __init__(self, name: str, distilled_tree: KnowledgeGraph, chat_history: ChatHistory, interviewee:str):
+    def __init__(self, name: str, distilled_tree: KnowledgeGraph, chat_history: ChatHistory, interviewee:str, model:str):
         self.chat_history = chat_history
         self.name = name
         self.distilled_tree = distilled_tree
@@ -20,6 +20,7 @@ class GenerationAgent:
         self.begin = datetime.now()
         self.final_prompt_template = read_prompt("generate")
         self.suggestion = None
+        self.model = model
 
         background_prompt_template = read_prompt("single_background")
         with open(f"{interviewee_directory()}/{interviewee}.json", "r", encoding="utf-8") as f:
@@ -37,15 +38,24 @@ class GenerationAgent:
         example_prompt_template = read_prompt("single_question")
         with open(f"{dataset_directory()}/generation_examples.json", "r", encoding="utf-8") as f:
             example_dataset = json.loads(f.read())
-            self.example = example_prompt_template.format(
-                description=example_dataset["description"],
-                distilled_tree=example_dataset["knowledge_graph"],
-                chat_history=example_dataset["chat_history"],
-                current_response=example_dataset["current_response"],
-                question=example_dataset["question"],
-                objective=example_dataset["target_objective"],
-                reasons=example_dataset["reason"],
+
+        examples = []
+        num = 1
+        for example in example_dataset:
+            examples.append(
+                example_prompt_template.format(
+                    description=example["description"],
+                    distilled_tree=example["knowledge_graph"],
+                    chat_history=example["chat_history"],
+                    current_response=example["current_response"],
+                    question=example["question"],
+                    objective=example["target_objective"],
+                    reasons=example["reason"],
+                    num=num
+                )
             )
+            num += 1
+        self.examples = "\n\n".join(examples)
 
     def get_prompt(self):
         messages = self.chat_history.get_message()
@@ -63,16 +73,19 @@ class GenerationAgent:
             supervise_generation_style=self.supervise_generation_style()
         )
 
+        stripped_tree = self.distilled_tree.clone().strip(drop_attrs=["raw_user_response", "id"]).get_tree()
+
         return self.final_prompt_template.format(
             interviewee=self.interviewee_name,
             user_background=self.background_info,
             domain=self.distilled_tree.domain,
-            examples=self.example,
-            distilled_tree=self.distilled_tree.get_tree(),
+            examples=self.examples,
+            distilled_tree=stripped_tree,
             chat_history=chat_history,
             current_response=current_response,
             suggestions=self.suggestion
         )
+
 
     def supervise_efficiency(self):
         current_time = datetime.now()
@@ -120,13 +133,14 @@ class GenerationAgent:
             chat_history=chat_history,
             current_response=current_response
         )
-        return chat(prompt=prompt, model="qwen-max")
+        return chat(prompt=prompt, model=self.model)
 
-    def generate_question(self, model: str):
+    def generate_question(self):
         prompt = self.get_prompt()
         # import pyperclip
         # pyperclip.copy(prompt)
-        return chat(prompt=prompt, model=model)
+        # show_response(prompt, title="PROMPT")
+        return chat(prompt=prompt, model=self.model)
 
 
 

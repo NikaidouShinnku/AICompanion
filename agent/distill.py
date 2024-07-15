@@ -10,12 +10,13 @@ from knowledge_graph.model import KnowledgeGraph
 
 
 class DistillAgent:
-    def __init__(self, name: str, distilled_tree: KnowledgeGraph, chat_history: ChatHistory, interviewee: str):
+    def __init__(self, name: str, distilled_tree: KnowledgeGraph, chat_history: ChatHistory, interviewee: str, model: str):
         self.current_response = None
         self.chat_history = chat_history
         self.name = name
         self.distilled_tree = distilled_tree
         self.interviewee = interviewee
+        self.model = model
 
         self.final_prompt_template = read_prompt("distill")
 
@@ -24,6 +25,7 @@ class DistillAgent:
             example_dataset = json.loads(f.read())
 
         examples = []
+        num = 1
         for example in example_dataset:
             examples.append(
                 example_prompt_template.format(
@@ -31,9 +33,11 @@ class DistillAgent:
                     distilled_tree=example["knowledge_graph"],
                     chat_history=example["chat_history"],
                     current_response=example["current_response"],
-                    actions=example["actions"]
+                    actions=example["actions"],
+                    num=num
                 )
             )
+            num += 1
         self.examples = "\n\n".join(examples)
 
         background_prompt_template = read_prompt("single_background")
@@ -64,20 +68,20 @@ class DistillAgent:
             current_response=self.current_response
         )
 
-    def update_tree(self, model: str, turn: int):
+    def update_tree(self, turn: int):
         for i in range(3):
             try:
-                return self.do_update_tree(model=model,turn=turn)
+                return self.do_update_tree(turn=turn)
             except:
                 if i == 2:
                     raise ValueError("Fail to update tree")
 
 
-    def do_update_tree(self, model: str, turn:int):
+    def do_update_tree(self, turn:int):
         prompt = self.get_prompt()
         # import pyperclip
         # pyperclip.copy(prompt)
-        res = chat(prompt=prompt, model=model)
+        res = chat(prompt=prompt, model=self.model)
 
         start_pos = res.find("[")
         if start_pos != -1:

@@ -1,4 +1,5 @@
-{
+[
+  {
     "description": "An example of real knowledge tree",
     "knowledge_graph": {
       "id": "5f8e1a5d-939f-4de0-bd42-0d2d60c7f5e8",
@@ -47,12 +48,36 @@
       }
     ],
     "current_response": "Supervised Learning is a type of machine learning where the model is trained on labeled data to learn a mapping between input data and output labels. Unlike Unsupervised Learning, where the model has to find patterns on its own. Supervised Learning is useful for tasks such as image classification and speech recognition.",
-
-
-        "reason": "To gain a deeper understanding of Supervised Learning, it's important to explore specific application scenarios, as well as the advantages and limitations of using Supervised Learning in these scenarios.",
-        "target_objective": "Understand Supervised Learning",
-        "question": "Could you provide detailed examples of application scenarios where Supervised Learning is particularly effective, and discuss the advantages and limitations of using Supervised Learning in these contexts?"
-
-
+    "reason": "To gain a deeper understanding of Supervised Learning, it's important to explore specific application scenarios, as well as the advantages and limitations of using Supervised Learning in these scenarios.",
+    "target_objective": "Understand Supervised Learning",
+    "question": "Could you provide detailed examples of application scenarios where Supervised Learning is particularly effective, and discuss the advantages and limitations of using Supervised Learning in these contexts?"
+  },
+  {
+    "description": "Interviewee Making Things Up",
+    "knowledge_graph": "{\"id\":\"a1b2c3d4-e5f6-7a8b-9c0d-e1f2g3h4i5j6\",\"domain\":\"Wilderness Survival\",\"name\":\"Fundamentals of Wilderness Survival\",\"task_description\":\"Master the basics of surviving in the wilderness\",\"objectives\":[{\"id\":\"1a2b3c4d-5e6f-7a8b-9c0d-1e2f3g4h5i6j\",\"obj_description\":\"Understand Basic Survival Skills\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"2b3c4d5e-6f7a-8b9c-0d1e-2f3g4h5i6j7k\",\"obj_description\":\"Learn Navigation and Orientation\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"3c4d5e6f-7a8b-9c0d-1e2f-3g4h5i6j7k8l\",\"obj_description\":\"Develop Wilderness First Aid Skills\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"4d5e6f7a-8b9c-0d1e-2f3g-4h5i6j7k8l9m\",\"obj_description\":\"Create Effective Emergency Plans\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"5e6f7a8b-9c0d-1e2f-3g4h-5i6j7k8l9m0n\",\"obj_description\":\"Implement Food Procurement Techniques\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"6f7a8b9c-0d1e-2f3g-4h5i-6j7k8l9m0n1o\",\"obj_description\":\"Engage in Wilderness Conservation Practices\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"7a8b9c0d-1e2f-3g4h-5i6j-7k8l9m0n1o2p\",\"obj_description\":\"Assess and Evaluate Survival Scenarios\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"8b9c0d1e-2f3g-4h5i-6j7k-8l9m0n1o2p3q\",\"obj_description\":\"Foster Mental Resilience and Adaptability\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false}],\"task_complete\":false,\"start_date\":\"2023-02-20\",\"end_date\":\"2024-07-15\"}",
+    "chat_history": [
+        {
+            "role": "assistant",
+            "content": "在野外生存中，你认为哪一项技能是最基本且不可或缺的？这项技能为何对生存如此重要？"
+        }
+    ],
+    "current_response": "当然，上次我被龙火灼烧的时候就需要紧急救助，还好随行的大圣职者会快速治疗，用圣光治好了我的灼烧。我觉得治疗技能是非常关键的。",
+    "reason": "Maria在回答过程中提到了与龙火相关的不现实内容，可能需要进一步确认具体情况以确保访谈信息的准确性",
+    "target_objective": "确认并澄清Maria的实际野外急救经验，以确保所获取的知识真实有效，从而更好地理解和传播基本急救技能在野外生存中的重要性。",
+    "question": "<question>Maria，你刚刚提到了龙火灼烧，这听起来像是一个幻想场景。能否请你分享一个真实的例子，说明你在野外遇到的实际急救情况？具体是什么样的伤害，你是如何处理的，以及这次经历对你后续的急救技能提升有什么帮助？</question>"
+},
+  {
+    "description": "Interviewee Talking Nonsense",
+    "knowledge_graph": "{\"id\":\"a1b2c3d4-e5f6-7a8b-9c0d-e1f2g3h4i5j6\",\"domain\":\"Wilderness Survival\",\"name\":\"Fundamentals of Wilderness Survival\",\"task_description\":\"Master the basics of surviving in the wilderness\",\"objectives\":[{\"id\":\"1a2b3c4d-5e6f-7a8b-9c0d-1e2f3g4h5i6j\",\"obj_description\":\"Understand Basic Survival Skills\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"2b3c4d5e-6f7a-8b9c-0d1e-2f3g4h5i6j7k\",\"obj_description\":\"Learn Navigation and Orientation\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"3c4d5e6f-7a8b-9c0d-1e2f-3g4h5i6j7k8l\",\"obj_description\":\"Develop Wilderness First Aid Skills\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"4d5e6f7a-8b9c-0d1e-2f3g-4h5i6j7k8l9m\",\"obj_description\":\"Create Effective Emergency Plans\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"5e6f7a8b-9c0d-1e2f-3g4h-5i6j7k8l9m0n\",\"obj_description\":\"Implement Food Procurement Techniques\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"6f7a8b9c-0d1e-2f3g-4h5i-6j7k8l9m0n1o\",\"obj_description\":\"Engage in Wilderness Conservation Practices\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"7a8b9c0d-1e2f-3g4h-5i6j-7k8l9m0n1o2p\",\"obj_description\":\"Assess and Evaluate Survival Scenarios\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"8b9c0d1e-2f3g-4h5i-6j7k-8l9m0n1o2p3q\",\"obj_description\":\"Foster Mental Resilience and Adaptability\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false}],\"task_complete\":false,\"start_date\":\"2023-02-20\",\"end_date\":\"2024-07-15\"}",
+    "chat_history": [
+        {
+            "role": "assistant",
+            "content": "在野外生存中，你认为哪一项技能是最基本且不可或缺的？这项技能为何对生存如此重要？"
+        }
+    ],
+    "current_response": "q3x5y啊的cw46v5ue7irb我8otn9pym0[u,-90nb8o6e哇的啊啊v7i 啊5wc6u4",
+    "reason": "Maria的回答完全是无意义的字符串，显然她没有认真对待问题或可能存在某些理解或表达上的困难。我们需要礼貌但明确地指出这一点，并鼓励她重新考虑问题并给出一个有意义的回答。",
+    "target_objective": "确认Maria的真实观点，以确保所获取的知识真实有效，从而更好地了解在荒野求生中需要的基础技能。",
+    "question": "<question>Maria，我注意到你的回答似乎是一串随机的字符。这可能是因为你不小心发送了错误的信息，或者可能有其他原因导致你无法清晰地表达你的想法。请你重新回答问题，好吗？</question>"
 }
-
+]

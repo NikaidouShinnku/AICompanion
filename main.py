@@ -55,16 +55,16 @@ if __name__ == '__main__':
     chat_history = ChatHistory()
     distilled_tree = KnowledgeGraph.restore(f"{plan_directory()}/{args.task}")
 
-    distill_agent = DistillAgent(name=args.task+"-distill-agent", distilled_tree=distilled_tree, chat_history=chat_history, interviewee=args.interviewee)
-    generate_agent = GenerationAgent(name=args.task+"-generate-agent", distilled_tree=distilled_tree, chat_history=chat_history, interviewee=args.interviewee)
-    simulate_agent = SimulationAgent(name=args.task+"-simulate-agent", distilled_tree=distilled_tree, chat_history=chat_history, interviewee=args.interviewee)
+    distill_agent = DistillAgent(name=args.task+"-distill-agent", distilled_tree=distilled_tree, chat_history=chat_history, interviewee=args.interviewee, model="qwen-max-longcontext")
+    generate_agent = GenerationAgent(name=args.task+"-generate-agent", distilled_tree=distilled_tree, chat_history=chat_history, interviewee=args.interviewee, model=args.model)
+    simulate_agent = SimulationAgent(name=args.task+"-simulate-agent", distilled_tree=distilled_tree, chat_history=chat_history, interviewee=args.interviewee, model=args.model)
     # other agents
 
     begin = time.time()
     turn = 1
 
     while True:
-        generation_res = generate_agent.generate_question(model=args.model)
+        generation_res = generate_agent.generate_question()
 
         import re
         pattern = r"<question>(.*?)</question>"
@@ -79,14 +79,14 @@ if __name__ == '__main__':
         if args.tts:
             tts(question, output="question.mp3", play=True)
         if args.auto:
-            user_input = simulate_agent.simulate_response(model="qwen-max")
+            user_input = simulate_agent.simulate_response()
             show_response(user_input, title="auto-reply")
         else:
             user_input = multi_input(args.interviewee + ": ")
         if user_input == '/asr':
             user_input = record_and_asr()
         chat_history.append(role=args.interviewee, content=user_input)
-        distill_agent.update_tree(model=args.model, turn=turn)
+        distill_agent.update_tree(turn=turn)
         turn += 1
 
         if time.time() - begin > 30 * 60:
@@ -99,7 +99,7 @@ if __name__ == '__main__':
                 current_response = chat_history.get_message()[-1]['content']
                 dump_chat_history = chat_history.get_message()[:-1]
                 dump(description=description, current_response=current_response, chat_history=dump_chat_history,
-                     knowledge_graph=distilled_tree.get_tree(), file="dataset/unused_examples")
+                     knowledge_graph=distilled_tree.get_tree(), file="dataset/collected_examples")
             elif command == "/auto":
                 args.auto = not args.auto
             elif command == "/tree":

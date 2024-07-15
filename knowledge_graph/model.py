@@ -1,9 +1,18 @@
 from datetime import datetime
 from pydantic import BaseModel
 from typing import List, Union, Dict
+from pydantic.json import pydantic_encoder
 import uuid
 import json
+import copy
+import decimal
 
+def custom_encoder(obj):
+    if isinstance(obj, float):
+        return format(obj, '.2f')  # 将浮点数格式化为小数点后两位
+    elif isinstance(obj, decimal.Decimal):
+        return float(round(obj, 2))  # 处理Decimal类型的数据
+    return pydantic_encoder(obj)
 
 class Knowledge(BaseModel):
     id: str = str(uuid.uuid4())
@@ -33,13 +42,32 @@ class KnowledgeGraph(BaseModel):
     start_date: str = datetime.now().strftime("%Y-%m-%d")
     end_date: str = datetime.now().strftime("%Y-%m-%d")
 
+    class Config:
+        json_encoders = {
+            float: custom_encoder,
+            decimal.Decimal: custom_encoder
+        }
+        json_dumps = lambda v, *, default: json.dumps(v, default=custom_encoder)
+
+    def clone(self):
+        return copy.deepcopy(self)
+
+    def strip(self, drop_attrs: List[str]):
+        for obj in self.objectives:
+            for knowledge in obj.knowledge:
+                for attr in drop_attrs:
+                    assert hasattr(knowledge, attr)
+                    setattr(knowledge, attr, None)
+
+        return self
+
     def get_tree(self):
         """
         Get the JSON representation of the knowledge tree.
         Returns:
             str: JSON string representing the knowledge tree.
         """
-        return self.json()
+        return self.json(exclude_none=True)
 
     def format_to_tree(self):
         """

@@ -11,12 +11,13 @@ from prompts import read_prompt
 
 class SimulationAgent:
 
-    def __init__(self, name: str, distilled_tree: KnowledgeGraph, chat_history: ChatHistory, interviewee:str):
+    def __init__(self, name: str, distilled_tree: KnowledgeGraph, chat_history: ChatHistory, interviewee:str, model: str):
         self.chat_history = chat_history
         self.name = name
         self.distilled_tree = distilled_tree
         self.interviewee = interviewee
         self.final_prompt_template = read_prompt("auto_simulation")
+        self.model = model
 
     def get_prompt(self):
 
@@ -40,7 +41,7 @@ class SimulationAgent:
             question=new_question
         )
 
-    def simulate_response(self, model:str):
+    def simulate_response(self):
         prompt = self.get_prompt()
         # show_response(prompt,title="AUTO PROMPT")
-        return chat(prompt=prompt, model=model)
+        return chat(prompt=prompt, model=self.model)
