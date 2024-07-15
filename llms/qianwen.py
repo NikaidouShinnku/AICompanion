@@ -18,7 +18,6 @@ def chat(
         messages = [
             {"role": "user", "content": prompt}
         ]
-    print(kwargs)
     res = client.chat.completions.create(
         messages=messages,
         stream=stream,

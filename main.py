@@ -64,15 +64,7 @@ if __name__ == '__main__':
     turn = 1
 
     while True:
-        generation_res = generate_agent.generate_question()
-
-        import re
-        pattern = r"<question>(.*?)</question>"
-        match = re.search(pattern, generation_res, re.DOTALL)
-        if match:
-            question = match.group(1).strip()
-        else:
-            question = generation_res
+        question = generate_agent.generate_question()
 
         chat_history.append(role="assistant", content=question)
         show_response(res=question, title="Question")

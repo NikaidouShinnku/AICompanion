@@ -9,6 +9,7 @@ from llms import chat
 from prompts import read_prompt
 from knowledge_graph.model import KnowledgeGraph
 
+import re
 
 class GenerationAgent:
 
@@ -139,8 +140,18 @@ class GenerationAgent:
         prompt = self.get_prompt()
         # import pyperclip
         # pyperclip.copy(prompt)
-        # show_response(prompt, title="PROMPT")
-        return chat(prompt=prompt, model=self.model)
+        show_response(prompt, title="PROMPT")
+
+        res = chat(prompt=prompt, model=self.model)
+        show_response(res, title="FULL QUESTION")
+
+        pattern = r"<question>(.*?)</question>"
+        match = re.search(pattern, res, re.DOTALL)
+        if match:
+            question = match.group(1).strip()
+        else:
+            question = res
+        return question
 
 
 

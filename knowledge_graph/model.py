@@ -42,13 +42,6 @@ class KnowledgeGraph(BaseModel):
     start_date: str = datetime.now().strftime("%Y-%m-%d")
     end_date: str = datetime.now().strftime("%Y-%m-%d")
 
-    class Config:
-        json_encoders = {
-            float: custom_encoder,
-            decimal.Decimal: custom_encoder
-        }
-        json_dumps = lambda v, *, default: json.dumps(v, default=custom_encoder)
-
     def clone(self):
         return copy.deepcopy(self)
 
