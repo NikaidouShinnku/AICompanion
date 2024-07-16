@@ -1,11 +1,13 @@
 import re
+from itertools import cycle
 
 import rich
 from colorama import Fore, Style
 from colorama import init as colorama_init
-from rich.box import DOUBLE
+from rich.box import DOUBLE, ROUNDED
 from rich.console import Console, Group
 from rich.markdown import Markdown
+from rich.padding import Padding
 from rich.panel import Panel
 from rich.style import Style
 from rich.syntax import Syntax
@@ -221,33 +223,15 @@ def print_code(
 
     console.print(panel)
 
+def place_to_center(layout, *, total_width):
+    if layout.width > total_width:
+        return layout
 
-def print_markdown(
-    markdown_text: str,
-    *,
-    style: str = "bold green",
-    console: Console = None,
-    title: str = None,
-):
-    """
-    Prints the given markdown text in a formatted box.
+    left_padding = (total_width - layout.width) // 2
+    left_padding = max(left_padding, 0)  # Ensure left_padding is not negative
 
-    Args:
-        markdown_text (str): The markdown text to be printed.
-        style (str, optional): The style of the formatted box. Defaults to "bold green".
-        console (Console, optional): The console object to be used for printing. Defaults to None.
-    """
-    if console is None:
-        console = Console()
-
-    # Create a Markdown object from the markdown_text
-    markdown = Markdown(markdown_text)
-    # Wrap the Markdown object in a Panel for displaying in a box
-    title = Text(title, style="bold yellow") if title else None
-    panel = Panel(markdown, style=style, title=title, border_style="bold blue")
-    # Print the Panel object, which includes the markdown content in a box
-    console.print(panel, style=style, width=120)
-
+    # Apply padding to center the panel
+    return Padding(layout, (0, 0, 0, left_padding))
 
 def print_markdown(
     markdown_text: str,
@@ -255,25 +239,38 @@ def print_markdown(
     style: str = "bold white",
     console: Console = None,
     title: str = None,
+    bgcolor: str = "black"
+
 ):
     if console is None:
         console = Console()
 
     markdown = Markdown(markdown_text)
 
-    title = Text(title, style="bold bright_cyan") if title else None
+    # title = Text(title, style="bold bright_cyan") if title else None
+    if title:
+        segments = title.split('/')
+        colors = cycle(["red", "cyan",  "magenta", "blue", "yellow", "white"])
+        styled_title = Text()
+        for index, (seg, color) in enumerate(zip(segments, colors)):
+            styled_title.append(seg, style=color)
+            if index < len(segments) - 1:
+                styled_title.append('/', style="white")
+    else:
+        styled_title = None
 
     panel = Panel(
         markdown,
-        title=title,
-        box=DOUBLE,
-        padding=(1, 1),
+        title=styled_title,
+        box=ROUNDED,
+        padding=(2, 2),
         style=style,
-        border_style="bright_yellow",
+        width=120,
+        border_style="dark_cyan",
     )
-    panel.style = Style(color="white", bgcolor="black")
+    panel.style = Style(color="white", bgcolor=bgcolor)
 
-    console.print(panel, width=min(console.size.width, 120))
+    console.print(place_to_center(panel, total_width=console.size.width))
 
 
 def print_pair(*, src: str, dst: str, src_title: str, dst_title: str) -> None:

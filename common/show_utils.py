@@ -1,5 +1,6 @@
 from consoles import print_markdown
-
+from rich.text import Text
+from itertools import cycle
 
 def show_response(res, *, no_pretty:bool = False, title:str):
     acc = []

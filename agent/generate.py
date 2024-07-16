@@ -12,6 +12,15 @@ from knowledge_graph.model import KnowledgeGraph
 
 import re
 
+
+def extract_reply(res: str) -> str:
+    pattern = r"<reply>(.*?)</reply>"
+    match = re.search(pattern, res, re.DOTALL)
+    if match:
+        return match.group(1).strip()
+    return res
+
+
 class GenerationAgent:
 
     def __init__(
@@ -30,6 +39,7 @@ class GenerationAgent:
         self.interviewee = interviewee
         self.begin = datetime.now()
         self.final_prompt_template = read_prompt("professional_generate")
+        self.candidate_prompt_template = read_prompt("roleplay_generate")
         self.suggestion = None
         self.model = model
         self.progress = progress
@@ -69,7 +79,7 @@ class GenerationAgent:
             num += 1
         self.examples = "\n\n".join(examples)
 
-    def get_prompt(self):
+    def get_prompt(self, prompt_template):
         messages = self.chat_history.get_message()
         if len(messages) > 0:
             current_response = messages[-1]['content']
@@ -86,7 +96,7 @@ class GenerationAgent:
 
         stripped_tree = self.distilled_tree.clone().strip(drop_attrs=["raw_user_response", "id"]).get_tree()
 
-        return self.final_prompt_template.format(
+        return prompt_template.format(
             interviewee=self.interviewee_name,
             user_background=self.background_info,
             domain=self.distilled_tree.domain,
@@ -98,21 +108,23 @@ class GenerationAgent:
         )
 
     def generate_question(self):
-        prompt = self.get_prompt()
+        prompt = self.get_prompt(prompt_template=self.final_prompt_template)
         # import pyperclip
         # pyperclip.copy(prompt)
-        show_response(prompt, title="PROMPT")
-
+        show_response(prompt, title="Professional Generation Prompt")
         res = chat(prompt=prompt, model=self.model)
-        print(res)
 
-        pattern = r"<reply>(.*?)</reply>"
-        match = re.search(pattern, res, re.DOTALL)
-        if match:
-            question = match.group(1).strip()
-        else:
-            question = res
-        return question
+        # 做对比用的prompt
+        candidate_prompt = self.get_prompt(prompt_template=self.candidate_prompt_template)
+        # 做对比用的prompt的结果输出
+        show_response(
+            extract_reply(
+                chat(prompt=candidate_prompt, model=self.model)
+            ),
+            title=f"萃取专家 / {self.model} / roleplay"
+        )
+
+        return extract_reply(res=res)
 
     def format_chat_history(self, messages):
         formatted = ""

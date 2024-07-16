@@ -90,6 +90,7 @@ if __name__ == '__main__':
         model=args.model,
         progress=progress
     )
+
     simulate_agent = SimulationAgent(
         name=args.task+"-simulate-agent",
         distilled_tree=distilled_tree,
@@ -105,7 +106,7 @@ if __name__ == '__main__':
         question = generate_agent.generate_question()
 
         chat_history.append(role="萃取专家", content=question)
-        show_response(res=question, title=args.model)
+        show_response(res=question, title=f'萃取专家 / {args.model} / Pro')
         if args.tts:
             tts(question, output="question.mp3", play=True)
         if args.auto:
@@ -116,7 +117,22 @@ if __name__ == '__main__':
             try:
                 while True:
                     user_input = input(args.interviewee + ": ")
-                    if user_input:
+                    if user_input == "/dump":
+                        description = input("What should the description be:")
+                        current_response = chat_history.get_message()[-1]['content']
+                        dump_chat_history = chat_history.get_message()[:-1]
+                        dump(
+                            description=description,
+                            current_response=current_response,
+                            chat_history=dump_chat_history,
+                            knowledge_graph=distilled_tree.get_tree(),
+                            file="dataset/collected_examples"
+                        )
+                    elif user_input == "/auto":
+                        args.auto = not args.auto
+                    elif user_input == "/tree":
+                        print_code(distilled_tree.format_to_tree(), language="json", title="DistilledTree")
+                    elif user_input:
                         break
             finally:
                 # Save history to the history file
@@ -139,24 +155,4 @@ if __name__ == '__main__':
         if time.time() - begin > 30 * 60:
             break
 
-        while True:
-            command = input("Command:")
-            if command == "/dump":
-                description = input("What should the description be:")
-                current_response = chat_history.get_message()[-1]['content']
-                dump_chat_history = chat_history.get_message()[:-1]
-                dump(
-                    description=description,
-                    current_response=current_response,
-                    chat_history=dump_chat_history,
-                    knowledge_graph=distilled_tree.get_tree(),
-                    file="dataset/collected_examples"
-                )
-            elif command == "/auto":
-                args.auto = not args.auto
-            elif command == "/tree":
-                print_code(distilled_tree.format_to_tree(), language="json", title="DistilledTree")
-            elif command == "/continue" or command == "/pass":
-                break
-            else:
-                print("Unknown Command, Please Try Again")
+

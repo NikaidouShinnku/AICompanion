@@ -31,11 +31,14 @@ class Progress:
             "time_remaining": int(self.get_time_remaining() / 60)
         }
         if self.rounds == 0:
-            stats["average_time_per_round"]="Unknown"
-            stats["rounds_remaining"]="Unknown"
+            stats["average_time_per_round"] = "Unknown"
+            stats["rounds_remaining"] = "Unknown"
         else:
             average_time = self.get_time_elapsed() / self.rounds
-            stats["average_time_per_round"]=f"{int(average_time/60)}"
-            stats["rounds_remaining"]=f"{int(self.get_time_remaining()/average_time)}"
+            if average_time < 60:
+                stats["average_time_per_round"] = "小于1"
+            else:
+                stats["average_time_per_round"]=f"{int(average_time/60)}"
+            stats["rounds_remaining"] = f"{int(self.get_time_remaining()/average_time)}"
 
         return stats
