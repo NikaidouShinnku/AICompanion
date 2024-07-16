@@ -35,15 +35,15 @@
     },
     "chat_history": [
       {
-        "role": "assistant",
+        "role": "萃取专家",
         "content": "Hello, I'm a conversational AI. I'm here to learn from your expertise in Machine Learning field and create a knowledge tree. Please introduce yourself and share your background in the domain of Machine Learning."
       },
       {
-        "role": "user",
+        "role": "访谈对象",
         "content": "I'm a machine learning expert with 10 years of experience in the field. I've worked on various projects, including natural language processing, computer vision, and recommender systems."
       },
       {
-        "role": "assistant",
+        "role": "萃取专家",
         "content": "Thank you so much for providing your background information. Now let's begin our interview and distillation! Firstly, can you talk about how Supervised Learning works?"
       }
     ],
@@ -126,23 +126,23 @@
     },
     "chat_history": [
       {
-        "role": "assistant",
+        "role": "萃取专家",
         "content": "Hello, I'm a conversational AI. I'm here to learn from your expertise in Machine Learning field and create a knowledge tree. Please introduce yourself and share your background in the domain of Machine Learning."
       },
       {
-        "role": "user",
+        "role": "访谈对象",
         "content": "I'm a machine learning expert with 10 years of experience in the field. I've worked on various projects, including natural language processing, computer vision, and recommender systems."
       },
       {
-        "role": "assistant",
+        "role": "萃取专家",
         "content": "Thank you so much for providing your background information. Now let's begin our interview and distillation! Firstly, can you talk about how Supervised Learning works?"
       },
       {
-        "role": "user",
+        "role": "访谈对象",
         "content": "Supervised Learning is a type of machine learning where the model is trained on labeled data to learn a mapping between input data and output labels. Unlike Unsupervised Learning, where the model has to find patterns on its own. Supervised Learning is useful for tasks such as image classification and speech recognition."
       },
       {
-        "role": "assistant",
+        "role": "萃取专家",
         "content": "Great, thank you for explaining Supervised Learning! Your relate to Unsupervised Learning makes me curious; can you tell me more about how Unsupervised Learning works and what kind of problems it's used for?"
       }
     ],

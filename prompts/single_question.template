@@ -1,22 +1,24 @@
-### 这是第{num}个Example
+### Example{num}
 ### 是关于{description}的
-### 这是当前的知识树
+### 当前的知识树
 {distilled_tree}
 
-### 这是和访谈对象的历史对话
+### 和访谈对象的历史对话
 {chat_history}
 
-### 这是访谈对象这一轮的回答
+### 访谈对象这一轮的回答
 {current_response}
 
-### 提出该问题的原因及思考过程
+[OUTPUT]:
+<thought>
 {reasons}
-
-### 问题指向的目标是
+</thought>
+<objective>
 {objective}
-
-### 提出的问题是
-<question>{question}</question>
+<objective>
+<reply>
+{question}
+</reply>
 
 
 

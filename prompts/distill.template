@@ -18,6 +18,7 @@
       "progress": "<这里是该Objective完成的进度，根据萃取到知识的数量质量改变>",
       "complete": "<这里是该Objective是否完成，如果完成就可以不再对该Objective进行提问>"
     }}
+    ]
 }}
 ```
 
@@ -84,13 +85,13 @@
 
 以上是例子，仅用于参考，不可以作为你的数据。
 
-### 这是已经萃取到的知识树
+### 已经萃取到的知识树
 {distilled_tree}
 
-### 这是和{interviewee}的历史对话
+### 和{interviewee}的历史对话
 {chat_history}
 
-### 这是{interviewee}这一轮的回答
+### {interviewee}这一轮的回答
 {current_response}
 
 

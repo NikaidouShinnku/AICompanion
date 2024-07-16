@@ -6,6 +6,7 @@ from common.show_utils import show_response
 from dataset import dataset_directory
 from interviewee import interviewee_directory
 from llms import chat
+from progress import Progress
 from prompts import read_prompt
 from knowledge_graph.model import KnowledgeGraph
 
@@ -13,15 +14,25 @@ import re
 
 class GenerationAgent:
 
-    def __init__(self, name: str, distilled_tree: KnowledgeGraph, chat_history: ChatHistory, interviewee:str, model:str):
+    def __init__(
+            self, name: str,
+            distilled_tree:
+            KnowledgeGraph,
+            chat_history:
+            ChatHistory,
+            interviewee:str,
+            model:str,
+            progress: Progress
+    ):
         self.chat_history = chat_history
         self.name = name
         self.distilled_tree = distilled_tree
         self.interviewee = interviewee
         self.begin = datetime.now()
-        self.final_prompt_template = read_prompt("generate")
+        self.final_prompt_template = read_prompt("professional_generate")
         self.suggestion = None
         self.model = model
+        self.progress = progress
 
         background_prompt_template = read_prompt("single_background")
         with open(f"{interviewee_directory()}/{interviewee}.json", "r", encoding="utf-8") as f:
@@ -47,11 +58,11 @@ class GenerationAgent:
                 example_prompt_template.format(
                     description=example["description"],
                     distilled_tree=example["knowledge_graph"],
-                    chat_history=example["chat_history"],
+                    chat_history=self.format_chat_history(example['chat_history']),
                     current_response=example["current_response"],
                     question=example["question"],
                     objective=example["target_objective"],
-                    reasons=example["reason"],
+                    reasons=example["thought"],
                     num=num
                 )
             )
@@ -67,11 +78,10 @@ class GenerationAgent:
             current_response = ""
             chat_history = []
 
-        suggestion_prompt_template = read_prompt("single_suggestion")
-        self.suggestion = suggestion_prompt_template.format(
-            supervise_efficiency=self.supervise_efficiency(),
-            supervise_objective=self.supervise_objective(),
-            supervise_generation_style=self.supervise_generation_style()
+        progress_stats = self.progress.get_progress()
+        task_progress_template = read_prompt("task_progress")
+        task_progress = task_progress_template.format(
+            **progress_stats
         )
 
         stripped_tree = self.distilled_tree.clone().strip(drop_attrs=["raw_user_response", "id"]).get_tree()
@@ -82,59 +92,10 @@ class GenerationAgent:
             domain=self.distilled_tree.domain,
             examples=self.examples,
             distilled_tree=stripped_tree,
-            chat_history=chat_history,
+            chat_history=self.format_chat_history(chat_history),
             current_response=current_response,
-            suggestions=self.suggestion
+            task_progress=task_progress
         )
-
-
-    def supervise_efficiency(self):
-        current_time = datetime.now()
-        elapsed_time = current_time - self.begin
-        total_time = timedelta(seconds=1800)  # 30 minutes
-        elapsed_ratio = elapsed_time / total_time  # 已过时间比例
-        objective_completion = sum(1 for obj in self.distilled_tree.objectives if obj.obj_complete)
-        total_objectives = len(self.distilled_tree.objectives)
-        completion_ratio = objective_completion / total_objectives  # 目标完成比例
-
-        # 如果时间未过三分之一，不给出提示
-        if elapsed_ratio > 1 / 3:
-
-            # 计算时间比例与目标完成比例的比值
-            if elapsed_ratio > 0:
-                ratio = completion_ratio / elapsed_ratio
-            else:
-                ratio = 0
-
-            # 根据比值给出建议
-            if ratio >= 1.5:
-                return "进度较快，可以多深入询问问题，在有意思的知识点上进行追问。"
-
-            elif ratio <= 0.67:
-                return "进度较慢，优先完成Objectives，不要追问过深。"
-            else:
-                return "进度正常，继续保持。"
-        else:
-            return None
-
-    def supervise_objective(self):
-        incomplete_objectives = [obj.obj_description for obj in self.distilled_tree.objectives if not obj.obj_complete]
-        return incomplete_objectives
-
-    def supervise_generation_style(self):
-        prompt = read_prompt("style_identifier")
-        messages = self.chat_history.get_message()
-        if len(messages) > 0:
-            current_response = messages[-1]['content']
-            chat_history = messages[:-1]
-        else:
-            current_response = ""
-            chat_history = []
-        prompt = prompt.format(
-            chat_history=chat_history,
-            current_response=current_response
-        )
-        return chat(prompt=prompt, model=self.model)
 
     def generate_question(self):
         prompt = self.get_prompt()
@@ -143,9 +104,9 @@ class GenerationAgent:
         show_response(prompt, title="PROMPT")
 
         res = chat(prompt=prompt, model=self.model)
-        show_response(res, title="FULL QUESTION")
+        print(res)
 
-        pattern = r"<question>(.*?)</question>"
+        pattern = r"<reply>(.*?)</reply>"
         match = re.search(pattern, res, re.DOTALL)
         if match:
             question = match.group(1).strip()
@@ -153,5 +114,9 @@ class GenerationAgent:
             question = res
         return question
 
+    def format_chat_history(self, messages):
+        formatted = ""
+        for message in messages:
+            formatted += message['role'] + ": " + message['content'].replace("\n", "") + "\n\n"
 
-
+        return formatted

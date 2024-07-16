@@ -7,13 +7,6 @@ import json
 import copy
 import decimal
 
-def custom_encoder(obj):
-    if isinstance(obj, float):
-        return format(obj, '.2f')  # 将浮点数格式化为小数点后两位
-    elif isinstance(obj, decimal.Decimal):
-        return float(round(obj, 2))  # 处理Decimal类型的数据
-    return pydantic_encoder(obj)
-
 class Knowledge(BaseModel):
     id: str = str(uuid.uuid4())
     concept: Union[str, None] = None
@@ -41,6 +34,10 @@ class KnowledgeGraph(BaseModel):
     task_complete: bool = False
     start_date: str = datetime.now().strftime("%Y-%m-%d")
     end_date: str = datetime.now().strftime("%Y-%m-%d")
+    estimated_minute: Union[int, None] = None
+
+    def get_completed_objective_num(self):
+        return sum(obj.obj_complete for obj in self.objectives)
 
     def clone(self):
         return copy.deepcopy(self)
