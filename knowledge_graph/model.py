@@ -42,14 +42,44 @@ class KnowledgeGraph(BaseModel):
     def clone(self):
         return copy.deepcopy(self)
 
-    def strip(self, drop_attrs: List[str]):
-        for obj in self.objectives:
-            for knowledge in obj.knowledge:
-                for attr in drop_attrs:
-                    assert hasattr(knowledge, attr)
-                    setattr(knowledge, attr, None)
+    def to_readable_tree(self, drop_objective_attrs: List = [], drop_knowledge_attrs: List = []) -> Dict:
+        tree = self.model_dump()
+        # Attrs drop
+        if "id" in tree:
+            del tree["id"]
+        for obj in tree['objectives']:
+            for obj_attr in drop_objective_attrs:
+                if obj_attr in obj:
+                    del obj[obj_attr]
+            for knowledge in obj.get("knowledge",[]):
+                for knowledge_attr in drop_knowledge_attrs:
+                    if knowledge_attr in knowledge:
+                        del knowledge[knowledge_attr]
 
-        return self
+        # Name change
+        new_objectives = []
+        for obj in tree['objectives']:
+            readable_obj = {}
+            for obj_key, obj_value in obj.items():
+                if obj_key == "progress":
+                    readable_obj["目标进度"] = obj_value
+                elif obj_key == "obj_complete":
+                    if obj['progress'] == 0:
+                        readable_obj["完成度"] = "未开始"
+                    elif obj['progress'] < 0.5:
+                        readable_obj["完成度"] = "进度未过半"
+                    elif obj['progress'] < 1:
+                        readable_obj["完成度"] = "进度过半"
+                    else:
+                        readable_obj["完成度"] = "目标完成，可以不再和对方讨论该Objective"
+                else:
+                    readable_obj[obj_key] = obj_value
+            new_objectives.append(readable_obj)
+
+        tree['objectives'] = new_objectives
+
+        return tree
+
 
     def get_tree(self):
         """

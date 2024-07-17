@@ -96,14 +96,16 @@ class GenerationAgent:
             **progress_stats
         )
 
-        stripped_tree = self.distilled_tree.clone().strip(drop_attrs=["raw_user_response", "id"]).get_tree()
+        readable_tree = self.distilled_tree.to_readable_tree(drop_objective_attrs=["id"],
+                                                             drop_knowledge_attrs=["id", "raw_user_response"]
+                                                             )
 
         return prompt_template.format(
             interviewee=self.interviewee_name,
             user_background=self.background_info,
             domain=self.distilled_tree.domain,
             examples=self.examples,
-            distilled_tree=stripped_tree,
+            distilled_tree=readable_tree,
             chat_history=self.format_chat_history(chat_history),
             current_response=current_response,
             task_progress=task_progress,
