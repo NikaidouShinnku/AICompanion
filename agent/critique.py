@@ -10,7 +10,13 @@ from knowledge_graph.model import KnowledgeGraph
 
 
 class CritiqueAgent:
-    def __init__(self, name: str, distilled_tree: KnowledgeGraph, chat_history: ChatHistory, interviewee: str, model: str):
+    def __init__(self,
+                 name: str,
+                 distilled_tree: KnowledgeGraph,
+                 chat_history: ChatHistory,
+                 interviewee: str,
+                 model: str
+                 ):
         self.current_response = None
         self.chat_history = chat_history
         self.name = name
@@ -18,27 +24,19 @@ class CritiqueAgent:
         self.interviewee = interviewee
         self.model = model
 
-        self.final_prompt_template = read_prompt("distill")
+        self.final_prompt_template = read_prompt("critique")
 
-        example_prompt_template = read_prompt("single_example")
-        with open(f"{dataset_directory()}/distill_examples.json", "r", encoding="utf-8") as f:
+        example_prompt_template = read_prompt("single_critique")
+        with open(f"{dataset_directory()}/critiques_tier_example.json", "r", encoding="utf-8") as f:
             example_dataset = json.loads(f.read())
 
-        examples = []
         num = 1
-        for example in example_dataset:
-            examples.append(
-                example_prompt_template.format(
-                    description=example["description"],
-                    distilled_tree=example["knowledge_graph"],
-                    chat_history=example["chat_history"],
-                    current_response=example["current_response"],
-                    actions=example["actions"],
-                    num=num
-                )
-            )
-            num += 1
-        self.examples = "\n\n".join(examples)
+        self.example = example_prompt_template.format(
+            relevance_tier=example_dataset["relevance_tier"],
+            professional_tier=example_dataset["professional_tier"],
+            num=num
+        )
+        num += 1
 
         background_prompt_template = read_prompt("single_background")
         with open(f"{interviewee_directory()}/{interviewee}.json", "r", encoding="utf-8") as f:
@@ -62,49 +60,16 @@ class CritiqueAgent:
             interviewee=self.interviewee_name,
             user_background=self.background_info,
             domain=self.distilled_tree.domain,
-            examples=self.examples,
+            examples=self.example,
             distilled_tree=self.distilled_tree.get_tree(),
             chat_history=chat_history,
             current_response=self.current_response
         )
 
-    def update_tree(self, turn: int):
-        for i in range(3):
-            try:
-                return self.do_update_tree(turn=turn)
-            except:
-                if i == 2:
-                    raise ValueError("Fail to update tree")
-
-
-    def do_update_tree(self, turn:int):
+    def rate_response(self):
         prompt = self.get_prompt()
-        # import pyperclip
-        # pyperclip.copy(prompt)
+
         res = chat(prompt=prompt, model=self.model)
 
-        start_pos = res.find("[")
-        if start_pos != -1:
-            res = res[start_pos:]
-        end_pos = res.rfind("]")
-        if end_pos != -1:
-            res = res[:end_pos + 1]
-
-        # show_response(res, title="Distill")
-        try:
-            res = json.loads(res)
-        except:
-            res = json.loads(res.replace("'", '"').replace("None", "null"))
-
-        for action in res:
-            if action["action"] == "update_existing_knowledge_node":
-                knowledge_id = action["arguments"]["knowledge_id"]
-                knowledge_type = action["arguments"]["knowledge_type"]
-                knowledge_detail = action["arguments"]["knowledge_detail"]
-                self.distilled_tree.renew_knowledge(self.current_response, knowledge_detail, knowledge_id, knowledge_type, turn)
-            elif action["action"] == "add_new_knowledge_node":
-                objective_id = action["arguments"]["objective_id"]
-                knowledge_detail = action["arguments"]["knowledge_detail"]
-                self.distilled_tree.add_knowledge(self.current_response, objective_id, knowledge_detail, turn)
-
-        self.distilled_tree.dump("task_result/current_distilled_tree")
+        show_response(res, title="评分 / 评语")
+        return res

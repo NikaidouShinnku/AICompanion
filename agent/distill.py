@@ -18,7 +18,7 @@ class DistillAgent:
         self.interviewee = interviewee
         self.model = model
 
-        self.final_prompt_template = read_prompt("distill")
+        self.final_prompt_template = read_prompt("roleplay_distill")
 
         example_prompt_template = read_prompt("single_example")
         with open(f"{dataset_directory()}/distill_examples.json", "r", encoding="utf-8") as f:

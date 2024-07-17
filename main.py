@@ -4,6 +4,7 @@ import time
 
 import pyperclip
 
+from agent.critique import CritiqueAgent
 from agent.simulation import SimulationAgent
 from asr import record_and_asr
 from chat_history import ChatHistory
@@ -90,9 +91,15 @@ if __name__ == '__main__':
         model=args.model,
         progress=progress
     )
-
     simulate_agent = SimulationAgent(
         name=args.task+"-simulate-agent",
+        distilled_tree=distilled_tree,
+        chat_history=chat_history,
+        interviewee=args.interviewee,
+        model=args.model
+    )
+    critique_agent = CritiqueAgent(
+        name=args.task+"-critique-agent",
         distilled_tree=distilled_tree,
         chat_history=chat_history,
         interviewee=args.interviewee,
@@ -141,13 +148,9 @@ if __name__ == '__main__':
             user_input = record_and_asr()
         if user_input == '/clipboard':
             user_input = pyperclip.paste()
-        chat_history.append(
-            role=args.interviewee,
-            content=user_input
-        )
-        distill_agent.update_tree(
-            turn=progress.get_round()
-        )
+        chat_history.append(role=args.interviewee, content=user_input)
+        distill_agent.update_tree(turn=progress.get_round())
+        critique_agent.rate_response()
         progress.on_interviewee_replied(
             objectives_completed=distilled_tree.get_completed_objective_num()
         )

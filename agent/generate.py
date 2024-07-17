@@ -10,6 +10,7 @@ from progress import Progress
 from prompts import read_prompt
 from knowledge_graph.model import KnowledgeGraph
 
+
 import re
 
 
@@ -40,6 +41,7 @@ class GenerationAgent:
         self.begin = datetime.now()
         self.final_prompt_template = read_prompt("professional_generate")
         self.candidate_prompt_template = read_prompt("roleplay_generate")
+        self.candidate_prompt_template2 = read_prompt("roleplay2_generate")
         self.suggestion = None
         self.model = model
         self.progress = progress
@@ -104,7 +106,8 @@ class GenerationAgent:
             distilled_tree=stripped_tree,
             chat_history=self.format_chat_history(chat_history),
             current_response=current_response,
-            task_progress=task_progress
+            task_progress=task_progress,
+            date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         )
 
     def generate_question(self):
@@ -116,12 +119,19 @@ class GenerationAgent:
 
         # 做对比用的prompt
         candidate_prompt = self.get_prompt(prompt_template=self.candidate_prompt_template)
+        candidate_prompt2 = self.get_prompt(prompt_template=self.candidate_prompt_template2)
         # 做对比用的prompt的结果输出
         show_response(
             extract_reply(
                 chat(prompt=candidate_prompt, model=self.model)
             ),
             title=f"萃取专家 / {self.model} / roleplay"
+        )
+        show_response(
+            extract_reply(
+                chat(prompt=candidate_prompt2, model=self.model)
+            ),
+            title=f"萃取专家 / {self.model} / roleplay2"
         )
 
         return extract_reply(res=res)
