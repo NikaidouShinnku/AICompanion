@@ -17,6 +17,13 @@
             "knowledge": [],
             "progress": 0,
             "obj_complete": false
+        },
+        {
+            "id": "2b7c4d5e-6f7a-2e9c-0d1e-2f3g4h5i6j7k",
+            "obj_description": "Learn First Aid Skill",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
         }
     ],
     "task_complete": false,

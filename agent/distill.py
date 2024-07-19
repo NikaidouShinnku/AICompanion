@@ -114,17 +114,19 @@ class DistillAgent:
         review_res = chat(prompt=review_prompt, model=self.model)
         show_response(review_res, title="Review_Distill")
 
-
-
         for action in res:
             if action["action"] == "update_existing_knowledge_node":
                 knowledge_id = action["arguments"]["knowledge_id"]
                 knowledge_type = action["arguments"]["knowledge_type"]
                 knowledge_detail = action["arguments"]["knowledge_detail"]
-                self.distilled_tree.renew_knowledge(current_response, knowledge_detail, knowledge_id, knowledge_type, turn)
+                self.distilled_tree.renew_knowledge(
+                    current_response, knowledge_detail, knowledge_type, turn, knowledge_id
+                )
             elif action["action"] == "add_new_knowledge_node":
-                objective_id = action["arguments"]["objective_id"]
+                parent_id = action["arguments"]["parent_id"]
                 knowledge_detail = action["arguments"]["knowledge_detail"]
-                self.distilled_tree.add_knowledge(current_response, objective_id, knowledge_detail, turn)
+                self.distilled_tree.add_knowledge(
+                    current_response, knowledge_detail, turn, parent_id
+                )
 
         self.distilled_tree.dump("task_result/current_distilled_tree")

@@ -14,7 +14,7 @@ class Knowledge(BaseModel):
     why_important: Union[str, None] = None
     knowledge_description: Union[str, None] = None
     example: Union[str, None] = None
-    # sub_knowledge: List["Knowledge"] = []
+    sub_knowledge: List["Knowledge"] = []
     other: Union[List[str], None] = None
     raw_user_response: Dict[int, str] = None
 
@@ -129,68 +129,118 @@ class KnowledgeGraph(BaseModel):
         new_objective = Objective()
         self.objectives.append(new_objective)
 
-    def add_knowledge(self, raw_res: str, objective_id: str, knowledge_details: Dict[str, str], turn: int):
+    def find_knowledge_by_id(self, knowledge_id: str) -> Union[Knowledge, None]:
         """
-        Add a new Knowledge node to a specified Objective node with a unique UUID and initial details.
+        Find and return the knowledge node with the specified ID.
+        Args:
+            knowledge_id (str): The ID of the knowledge node to be found.
+        Returns:
+            Union[Knowledge, None]: The knowledge node if found, otherwise None.
+        """
+        for objective in self.objectives:
+            for knowledge in objective.knowledge:
+                if knowledge.id == knowledge_id:
+                    return knowledge
+                for sub_knowledge in knowledge.sub_knowledge:
+                    if sub_knowledge.id == knowledge_id:
+                        return sub_knowledge
+        return None
+
+    def add_knowledge(self, raw_res: str, knowledge_details: Dict[str, str], turn: int, parent_id: str):
+        """
+        Add a new Knowledge node as a sub-knowledge node to an existing Knowledge node or Objective node.
         Args:
             raw_res (str): The raw user response to be stored.
-            objective_id (str): The ID of the Objective node to which the new Knowledge node will be added.
             knowledge_details (Dict[str, str]): A dictionary where keys are knowledge types and values are the corresponding details.
             turn (int): The turn number of the current conversation.
+            parent_id (str): The ID of the parent node (Objective or Knowledge) to which the new sub-Knowledge node will be added.
         Raises:
-            ValueError: If the specified Objective node does not exist in the KnowledgeGraph.
-            ValueError: If 'knowledge_description' is not provided.
+            ValueError: If the specified parent node does not exist.
         """
-        if 'knowledge_description' not in knowledge_details:
-            raise ValueError("'knowledge_description' is required.")
+        new_knowledge = Knowledge()
+        for knowledge_type, knowledge_detail in knowledge_details.items():
+            if knowledge_type in ['concept', 'why_important', 'knowledge_description', 'example', 'other']:
+                setattr(new_knowledge, knowledge_type, knowledge_detail)
+            else:
+                raise ValueError(f"Invalid type {knowledge_type}.")
+        new_knowledge.raw_user_response = {turn: raw_res}
 
-        objective = next((o for o in self.objectives if o.id == objective_id), None)
-        if objective:
-            new_knowledge = Knowledge()
-            for knowledge_type, knowledge_detail in knowledge_details.items():
-                if knowledge_type in ['concept', 'why_important', 'knowledge_description', 'example', 'other']:
-                    setattr(new_knowledge, knowledge_type, knowledge_detail)
-                else:
-                    raise ValueError(f"Invalid type {knowledge_type}.")
-            new_knowledge.raw_user_response = {turn: raw_res}
-            objective.knowledge.append(new_knowledge)
-        else:
-            raise ValueError(f"Objective with id {objective_id} not found.")
-        self.manage_progress(objective_id)
+        parent_found = False
+        for objective in self.objectives:
+            if objective.id == parent_id:
+                objective.knowledge.append(new_knowledge)
+                parent_found = True
+                self.manage_progress(objective.id)
+                break
+            for knowledge in objective.knowledge:
+                if knowledge.id == parent_id:
+                    knowledge.sub_knowledge.append(new_knowledge)
+                    parent_found = True
+                    self.update_objective_progress_by_knowledge_id(parent_id)
+                    break
+                for sub_knowledge in knowledge.sub_knowledge:
+                    if sub_knowledge.id == parent_id:
+                        sub_knowledge.sub_knowledge.append(new_knowledge)
+                        parent_found = True
+                        self.update_objective_progress_by_knowledge_id(parent_id)
+                        break
+            if parent_found:
+                break
 
-    def renew_knowledge(self, raw_res: str, knowledge_detail: str, knowledge_id: str, knowledge_type: str, turn: int,
-                        objective_id: str = None):
+        if not parent_found:
+            raise ValueError(f"Parent node with id {parent_id} not found.")
+
+    def renew_knowledge(self, raw_res: str, knowledge_detail: str, knowledge_type: str, turn: int, knowledge_id: str):
         """
-        Renew the knowledge in the knowledge tree. If the knowledge doesn't exist, create it.
+        Renew the knowledge in the knowledge tree. If the knowledge doesn't exist, create it as a sub-knowledge node.
         Args:
             raw_res (str): The raw user response to be stored.
             knowledge_detail (str): The new data to be inserted into the knowledge node.
-            knowledge_id (str): The ID of the knowledge node to be updated.
             knowledge_type (str): The type of knowledge to be updated (concept, why_important, knowledge_description, example, or other).
             turn (int): The turn number of the current conversation.
-            objective_id (str): The ID of the objective node where the knowledge should be added if it doesn't exist.
+            knowledge_id (str): The ID of the knowledge node to be updated.
         Raises:
             ValueError: If the specified type is not valid.
         """
+        if knowledge_type not in ['concept', 'why_important', 'knowledge_description', 'example', 'other']:
+            raise ValueError(f"Invalid type {knowledge_type}.")
+
+        def update_knowledge_node(knowledge: Knowledge):
+            setattr(knowledge, knowledge_type, knowledge_detail)
+            if knowledge.raw_user_response is None:
+                knowledge.raw_user_response = {}
+            knowledge.raw_user_response[turn] = raw_res
+
         found = False
         for objective in self.objectives:
             for knowledge in objective.knowledge:
                 if knowledge.id == knowledge_id:
-                    if knowledge_type in ['concept', 'why_important', 'knowledge_description', 'example', 'other']:
-                        setattr(knowledge, knowledge_type, knowledge_detail)
-                        if knowledge.raw_user_response is None:
-                            knowledge.raw_user_response = {}
-                        knowledge.raw_user_response[turn] = raw_res
-                        objective_id = objective.id
-                        self.manage_progress(objective_id)
+                    update_knowledge_node(knowledge)
+                    self.update_objective_progress_by_knowledge_id(knowledge_id)
+                    found = True
+                    break
+                for sub_knowledge in knowledge.sub_knowledge:
+                    if sub_knowledge.id == knowledge_id:
+                        update_knowledge_node(sub_knowledge)
+                        self.update_objective_progress_by_knowledge_id(knowledge_id)
                         found = True
                         break
+            if found:
+                break
 
-        if not found and objective_id:
-            self.add_knowledge(raw_res, objective_id, {knowledge_type: knowledge_detail,
-                                                       'knowledge_description': 'Automatically created knowledge node'},
-                               turn)
-            self.manage_progress(objective_id)
+        if not found:
+            raise ValueError(f"Knowledge with id {knowledge_id} not found. Unable to renew knowledge.")
+
+    def update_objective_progress_by_knowledge_id(self, knowledge_id: str):
+        """
+        Update the progress of the objective containing the specified knowledge ID.
+        Args:
+            knowledge_id (str): The ID of the knowledge node.
+        """
+        for objective in self.objectives:
+            if any(knowledge.id == knowledge_id or any(sub_knowledge.id == knowledge_id for sub_knowledge in knowledge.sub_knowledge) for knowledge in objective.knowledge):
+                self.manage_progress(objective.id)
+                break
 
     def manage_progress(self, objective_id: str):
         """
@@ -211,6 +261,10 @@ class KnowledgeGraph(BaseModel):
             sub_knowledge_count += sum(
                 1 for field in ['concept', 'why_important', 'knowledge_description', 'example'] if
                 knowledge.dict().get(field) is not None)
+            for sub_knowledge in knowledge.sub_knowledge:
+                sub_knowledge_count += sum(
+                    1 for field in ['concept', 'why_important', 'knowledge_description', 'example'] if
+                    sub_knowledge.dict().get(field) is not None)
 
         # Calculate progress based on sub-knowledge fields
         objective.progress = (sub_knowledge_count * 0.05)

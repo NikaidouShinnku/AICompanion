@@ -84,7 +84,7 @@ if __name__ == '__main__':
             {"role": "user", "content": prompt}
         )
         for model in args.model[:1]:
-            res = chat(messages=chat_history, model=args.model, stream=args.stream)
+            res = chat(messages=chat_history, model=args.model[0], stream=args.stream)
             response = show_response(res, title=model)
             chat_history += [
                 {"role": "assistant", "content": response}
@@ -94,7 +94,7 @@ if __name__ == '__main__':
                 chat_history.append(
                     {"role": "user", "content": q}
                 )
-                res = chat(messages=chat_history, model=args.model, stream=args.stream)
+                res = chat(messages=chat_history, model=args.model[0], stream=args.stream)
                 response = show_response(res, title=model)
                 chat_history += [
                     {"role": "assistant", "content": response}

@@ -53,21 +53,21 @@
       {
         "action": "add_new_knowledge_node",
         "arguments": {
-          "objective_id": "3b4d2b5e-94d6-43d5-9219-cf8389876fc5",
+          "parent_id": "3b4d2b5e-94d6-43d5-9219-cf8389876fc5",
           "knowledge_detail": {
-            "knowledge_description": "Supervised Learning model trains on labeled data to learn a mapping between input data and output labels.",
             "concept": "A type of machine learning with labeled data",
-            "why_important": "Supervised Learning is useful for tasks such as image classification and speech recognition."
+            "why_important": "Supervised Learning is useful for tasks such as image classification and speech recognition.",
+            "knowledge_description": "Supervised Learning model trains on labeled data to learn a mapping between input data and output labels."
           }
         }
       },
       {
         "action": "add_new_knowledge_node",
         "arguments": {
-          "objective_id": "c71c2d6d-6a6b-4e3f-a9a3-e7ff650ba0e1",
+          "parent_id": "c71c2d6d-6a6b-4e3f-a9a3-e7ff650ba0e1",
           "knowledge_detail": {
-            "knowledge_description": "Unsupervised Learning model has to find patterns on its own",
-            "concept": "A type of machine learning that find patterns on its own"
+            "concept": "A type of machine learning that find patterns on its own",
+            "knowledge_description": "Unsupervised Learning model has to find patterns on its own"
           }
         }
       }
@@ -155,7 +155,7 @@
         "arguments": {
           "knowledge_id": "52d90a48-bf4f-4c37-b4c8-4c2e9a3f7f8d",
           "knowledge_type": "why_important",
-          "knowledge_detail": "Supervised Learning is useful for tasks such as clustering, dimensionality reduction, and anomaly detection."
+          "knowledge_detail": "Unsupervised Learning is useful for tasks such as clustering, dimensionality reduction, and anomaly detection."
         }
       }
     ]

@@ -63,13 +63,22 @@ def dump(file: str, description: str, knowledge_graph, chat_history, current_res
         json.dump(data, f, ensure_ascii=False, indent=4)
         f.write("\n")
 
-def dump_snapshot(file: str, knowledge_graph, chat_history, interviewee, model, task):
+def dump_snapshot(
+        file: str,
+        knowledge_graph,
+        chat_history,
+        interviewee,
+        model,
+        task,
+        tone
+):
     data = {
         'knowledge_graph': knowledge_graph,
         'chat_history': chat_history,
         'interviewee': interviewee,
         'model': model,
-        'task': task
+        'task': task,
+        'tone': tone
     }
     with open(file + ".json", 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
@@ -82,7 +91,8 @@ def load_restore_data(file: str):
         model = data["model"]
         distilled_tree = KnowledgeGraph(**data["knowledge_graph"])
         chat_history = ChatHistory(**data["chat_history"])
-    return distilled_tree, chat_history, task, interviewee, model
+        tone = data["tone"]
+    return distilled_tree, chat_history, task, interviewee, model, tone
 
 
 if __name__ == '__main__':
@@ -96,20 +106,29 @@ if __name__ == '__main__':
     parser.add_argument('--restore', type=str, help='restore the task', default="")
     args = parser.parse_args()
 
+    valid_tones = ['严肃的', '幽默的', '海盗式的', '随意的', '无建议']
+    tone = None
     chat_history = ChatHistory()
     distilled_tree = KnowledgeGraph.restore(f"{plan_directory()}/{args.task}")
     progress = Progress(total_minutes=distilled_tree.estimated_minute, objectives_count=len(distilled_tree.objectives))
 
     if args.restore:
-        distilled_tree, chat_history, args.task, args.interviewee, args.model = load_restore_data(args.restore)
+        distilled_tree, chat_history, args.task, args.interviewee, args.model, tone = load_restore_data(args.restore)
 
+    while not tone:
+        tone_input = input("你希望萃取专家的语气风格是（严肃的/幽默的/海盗式的/随意的/无建议）：")
+
+        if tone_input in valid_tones:
+            tone = tone_input
+        else:
+            print("无效的选项，请重新输入。")
 
     distill_agent = DistillAgent(
         name=args.task+"-distill-agent",
         distilled_tree=distilled_tree,
         chat_history=chat_history,
         interviewee=args.interviewee,
-        model="qwen-max-longcontext"
+        model="qwen-max"
     )
     generate_agent = GenerationAgent(
         name=args.task+"-generate-agent",
@@ -117,7 +136,8 @@ if __name__ == '__main__':
         chat_history=chat_history,
         interviewee=args.interviewee,
         model=args.model,
-        progress=progress
+        progress=progress,
+        tone=tone
     )
     simulate_agent = SimulationAgent(
         name=args.task+"-simulate-agent",
@@ -158,7 +178,8 @@ if __name__ == '__main__':
                             chat_history=chat_history.model_dump(),
                             interviewee=args.interviewee,
                             model=args.model,
-                            task=args.task
+                            task=args.task,
+                            tone=tone
                         )
                     elif user_input == "/auto":
                         args.auto = not args.auto

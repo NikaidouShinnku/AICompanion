@@ -30,46 +30,59 @@
       "why_important": "<这里描述该知识为何重要，它能在哪些应用场景使用，能带来什么价值等>",
       "knowledge_description": "<这里是知识的主体内容和框架，对知识本身的描述性内容>",
       "example": "<这里是与该知识相关的案例，可以支撑其价值或演示其如何使用等>",
-      "other": "[<这里是其他和该知识相关的内容List，比如和其他知识点的关联等等>]"
+      "other": "[<这里是其他和该知识相关的内容List，比如和其他知识点的关联等等>]",
+      "sub_knowledge": "[<这里是子知识节点的List，可以嵌套其他知识节点>]"
     }}
 ```
 
 ### 你可以执行的Actions如下
 ```json
 {{
-    "action" : "add_new_knowledge_node",
-    "description" : "<表示在某个Objective下新发现了一个知识点，需要添加到对应的Objective节点下面。你必须添加knowledge_description这一type。>",
-    "arguments" : {{
-        "objective_id": {{
-             "type" : "<str, objective_id must exists>",
-             "description": "<这里是要更新的目标Objective节点ID，会在该Objective节点下添加Knowledge节点>"
-        }},
-        "knowledge_detail" : {{
-            "type" : "<Dict. Key is enum of string, one of "example" | "knowledge_description" | "why import" | "concept" | "other", knowledge_description must be provided. Value is str, the content of the type of knowledge>",
-            "key description" : "<用来表示提取到的知识的类型，concept是知识的定义和概念，一般是对知识的抽象描述, why_important是描述该知识为何重要，它能在哪些应用场景使用，能带来什么价值等, knowledge_description是知识的主体内容和框架，对知识本身的描述性内容, example是与该知识相关的案例，可以支撑其价值或演示其如何使用等, other是其他和该知识相关的内容List，比如和其他知识点的关联等等。knowledge_description是必须提供的，否则创建后不知道该知识节点是关于什么的>",
-            "value description" : "<这里放知识的具体内容>"
-        }}
+  "action": "add_new_knowledge_node",
+  "description": "<表示在某个Objective或Knowledge下新发现了一个知识点，需要添加到对应的节点下面。你必须添加knowledge_description这一type。>",
+  "arguments": {{
+    "parent_id": {{
+      "type": "<str, parent_id must exists>",
+      "description": "<这里是要更新的目标Objective或Knowledge节点ID，会在该节点下添加Knowledge节点>"
+    }},
+    "knowledge_detail": {{
+      "type": "<Dict. Key is enum of string, one of \"example\" | \"knowledge_description\" | \"why important\" | \"concept\" | \"other\", knowledge_description must be provided. Value is str, the content of the type of knowledge>",
+      "key description": "<用来表示提取到的知识的类型，concept是知识的定义和概念，一般是对知识的抽象描述, why_important是描述该知识为何重要，它能在哪些应用场景使用，能带来什么价值等, knowledge_description是知识的主体内容和框架，对知识本身的描述性内容, example是与该知识相关的案例，可以支撑其价值或演示其如何使用等, other是其他和该知识相关的内容List，比如和其他知识点的关联等等。knowledge_description是必须提供的，否则创建后不知道该知识节点是关于什么的>",
+      "value description": "<这里放知识的具体内容>"
     }}
+  }}
 }}
 ```
 
 ```json
 {{
-    "action" : "update_existing_knowledge_node",
-    "description" : "<确保某个Objective下面有Knowledge Node后再使用这个action，否则用add_new_knowledge_node。当某个知识节点的内容被补充的时候，利用这个Action去更新。每次Call可以更新知识节点下的一个子内容，多次Call来完整更新知识点。>",
+  "action": "update_existing_knowledge_node",
+  "description": "<确保某个Objective或Knowledge下面有Knowledge Node后再使用这个action，否则用add_new_knowledge_node。当某个知识节点的内容被补充的时候，利用这个Action去更新。每次Call可以更新知识节点下的一个子内容，多次Call来完整更新知识点。>",
+  "arguments": {{
+    "knowledge_id": {{
+      "type": "<str, knowledge_id must exists>",
+      "description": "<这里是要更新的目标知识节点ID，会对该知识节点的子内容进行更新>"
+    }},
+    "knowledge_type": {{
+      "type": "<enum of string, one of \"example\" | \"knowledge_description\" | \"why important\" | \"concept\" | \"other\">",
+      "description": "<用来表示需要更新的知识的类型，concept是知识的定义和概念，一般是对知识的抽象描述, why_important是描述该知识为何重要，它能在哪些应用场景使用，能带来什么价值等, knowledge_description是知识的主体内容和框架，对知识本身的描述性内容, example是与该知识相关的案例，可以支撑其价值或演示其如何使用等, other是其他和该知识相关的内容List，比如和其他知识点的关联等等。>"
+    }},
+    "knowledge_detail": {{
+      "type": "<str>",
+      "description": "<这里放知识的具体内容>"
+    }}
+  }}
+}}
+```
+
+```json
+{{
+    "action" : "delete_existing_knowledge_node",
+    "description" : "<确保某个Objective下面有Knowledge Node后再使用这个action。当对方回复中要求删除某个知识节点时，利用这个Action去删除。
     "arguments" : {{
         "knowledge_id": {{
              "type" : "<str, knowledge_id must exists>",
-             "description": "<这里是要更新的目标知识节点ID，会对该知识节点的子内容进行更新>"
-        }},
-        "knowledge_type" : {{
-            "type" : "<enum of string, one of  "example" | "knowledge_description" | "why import" | "concept" | "other">",
-            "description" : "<用来表示需要更新的知识的类型，concept是知识的定义和概念，一般是对知识的抽象描述, why_important是描述该知识为何重要，它能在哪些应用场景使用，能带来什么价值等, knowledge_description是知识的主体内容和框架，对知识本身的描述性内容, example是与该知识相关的案例，可以支撑其价值或演示其如何使用等, other是其他和该知识相关的内容List，比如和其他知识点的关联等等。>"
-        }},
-        "knowledge_detail" :
-        {{
-            "type" : "<str>",
-            "description" : "<这里放知识的具体内容>"
+             "description": "<这里是要删除的目标知识节点ID，会直接删除该子节点和其下的其他节点>"
         }}
     }}
 }}

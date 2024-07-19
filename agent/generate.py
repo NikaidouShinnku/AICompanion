@@ -30,11 +30,13 @@ class GenerationAgent:
             KnowledgeGraph,
             chat_history:
             ChatHistory,
-            interviewee:str,
-            model:str,
-            progress: Progress
+            interviewee: str,
+            model: str,
+            progress: Progress,
+            tone: str
     ):
         self.chat_history = chat_history
+        self.tone = tone
         self.name = name
         self.distilled_tree = distilled_tree
         self.interviewee = interviewee
@@ -103,6 +105,7 @@ class GenerationAgent:
         return prompt_template.format(
             interviewee=self.interviewee_name,
             user_background=self.background_info,
+            tone=self.tone,
             domain=self.distilled_tree.domain,
             examples=self.examples,
             distilled_tree=readable_tree,

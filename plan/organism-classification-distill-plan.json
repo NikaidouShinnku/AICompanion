@@ -1,0 +1,47 @@
+{
+    "id": "a1b2c3d4-e5f6-7a8b-9c0d-e1f2g3h4i5j6",
+    "domain": "Animal Classification",
+    "name": "Fundamentals of Animal Classification",
+    "task_description": "Master the basics of animal classification and understand the hierarchical structure from Phylum to Species",
+    "objectives": [
+        {
+            "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3g4h5i6j",
+            "obj_description": "Understand the Characteristics of Mammalia (Mammals)",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "2b3c4d5e-6f7a-8b9c-0d1e-2f3g4h5i6j7k",
+            "obj_description": "Understand the Characteristics of Aves (Birds)",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "3b4c5d6e-7f8a-9b0c-1d2e-3f4g5h6i7j8k",
+            "obj_description": "Understand the Characteristics of Reptilia (Reptiles)",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "4b5c6d7e-8f9a-0b1c-2d3e-4f5g6h7i8j9k",
+            "obj_description": "Understand the Characteristics of Amphibia (Amphibians)",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        },
+        {
+            "id": "5b6c7d8e-9f0a-1b2c-3d4e-5f6g7h8i9j0k",
+            "obj_description": "Understand the Characteristics of Pisces (Fish)",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
+        }
+    ],
+    "task_complete": false,
+    "estimated_minute": 10,
+    "start_date": "2023-02-20",
+    "end_date": "2023-02-20"
+}
