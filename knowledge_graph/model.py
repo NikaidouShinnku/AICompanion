@@ -7,12 +7,14 @@ import json
 import copy
 import decimal
 
+
 class Knowledge(BaseModel):
     id: str = str(uuid.uuid4())
     concept: Union[str, None] = None
     why_important: Union[str, None] = None
     knowledge_description: Union[str, None] = None
     example: Union[str, None] = None
+    # sub_knowledge: List["Knowledge"] = []
     other: Union[List[str], None] = None
     raw_user_response: Dict[int, str] = None
 
@@ -51,7 +53,7 @@ class KnowledgeGraph(BaseModel):
             for obj_attr in drop_objective_attrs:
                 if obj_attr in obj:
                     del obj[obj_attr]
-            for knowledge in obj.get("knowledge",[]):
+            for knowledge in obj.get("knowledge", []):
                 for knowledge_attr in drop_knowledge_attrs:
                     if knowledge_attr in knowledge:
                         del knowledge[knowledge_attr]
@@ -67,9 +69,9 @@ class KnowledgeGraph(BaseModel):
                     if obj['progress'] == 0:
                         readable_obj["完成度"] = "未开始"
                     elif obj['progress'] < 0.5:
-                        readable_obj["完成度"] = "进度未过半"
+                        readable_obj["完成度"] = "未完成，进度未过半"
                     elif obj['progress'] < 1:
-                        readable_obj["完成度"] = "进度过半"
+                        readable_obj["完成度"] = "未完成，进度过半"
                     else:
                         readable_obj["完成度"] = "目标完成，可以不再和对方讨论该Objective"
                 else:
@@ -79,7 +81,6 @@ class KnowledgeGraph(BaseModel):
         tree['objectives'] = new_objectives
 
         return tree
-
 
     def get_tree(self):
         """
@@ -109,6 +110,7 @@ class KnowledgeGraph(BaseModel):
         with open(file + ".json", 'r') as f:
             data = json.load(f)
         return KnowledgeGraph(**data)  # Initialize the instance with the data from the file
+
 
     def dump(self, file: str):
         """

@@ -19,6 +19,7 @@ from agent.distill import DistillAgent
 from agent.generate import GenerationAgent
 from progress import Progress
 from tts import tts
+from snapshot import snapshot_directory
 import readline
 
 history_file = 'history.txt'
@@ -62,6 +63,28 @@ def dump(file: str, description: str, knowledge_graph, chat_history, current_res
         json.dump(data, f, ensure_ascii=False, indent=4)
         f.write("\n")
 
+def dump_snapshot(file: str, knowledge_graph, chat_history, interviewee, model, task):
+    data = {
+        'knowledge_graph': knowledge_graph,
+        'chat_history': chat_history,
+        'interviewee': interviewee,
+        'model': model,
+        'task': task
+    }
+    with open(file + ".json", 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+def load_restore_data(file: str):
+    with open("snapshot/" + file + ".json", 'r', encoding='utf-8') as f:
+        data = json.load(f)
+        task = data["task"]
+        interviewee = data["interviewee"]
+        model = data["model"]
+        distilled_tree = KnowledgeGraph(**data["knowledge_graph"])
+        chat_history = ChatHistory(**data["chat_history"])
+    return distilled_tree, chat_history, task, interviewee, model
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default="llama3-70b-8192", type=str, help='Model name')
@@ -70,12 +93,17 @@ if __name__ == '__main__':
     parser.add_argument('--interviewee', type=str, help='Name of the interviewee', default="maria")
     parser.add_argument('--auto', action='store_true', help='Do a simulation')
     parser.add_argument('--tts', action='store_true', help='Enable tts')
+    parser.add_argument('--restore', type=str, help='restore the task', default="")
     args = parser.parse_args()
 
     chat_history = ChatHistory()
     distilled_tree = KnowledgeGraph.restore(f"{plan_directory()}/{args.task}")
-
     progress = Progress(total_minutes=distilled_tree.estimated_minute, objectives_count=len(distilled_tree.objectives))
+
+    if args.restore:
+        distilled_tree, chat_history, args.task, args.interviewee, args.model = load_restore_data(args.restore)
+
+
     distill_agent = DistillAgent(
         name=args.task+"-distill-agent",
         distilled_tree=distilled_tree,
@@ -113,27 +141,24 @@ if __name__ == '__main__':
         question = generate_agent.generate_question()
 
         chat_history.append(role="萃取专家", content=question)
-        show_response(res=question, title=f'萃取专家 / {args.model} / Pro')
+        show_response(res=question, title=f'萃取专家 / {args.model} / Roleplay')
         if args.tts:
             tts(question, output="question.mp3", play=True)
         if args.auto:
             user_input = simulate_agent.simulate_response()
             show_response(user_input, title="auto-reply")
         else:
-                # multi_input(args.interviewee + ": ")
             try:
                 while True:
                     user_input = input(args.interviewee + ": ")
                     if user_input == "/dump":
-                        description = input("What should the description be:")
-                        current_response = chat_history.get_message()[-1]['content']
-                        dump_chat_history = chat_history.get_message()[:-1]
-                        dump(
-                            description=description,
-                            current_response=current_response,
-                            chat_history=dump_chat_history,
-                            knowledge_graph=distilled_tree.get_tree(),
-                            file="dataset/collected_examples"
+                        dump_snapshot(
+                            file="snapshot/test-snapshot",
+                            knowledge_graph=distilled_tree.model_dump(),
+                            chat_history=chat_history.model_dump(),
+                            interviewee=args.interviewee,
+                            model=args.model,
+                            task=args.task
                         )
                     elif user_input == "/auto":
                         args.auto = not args.auto
@@ -148,6 +173,9 @@ if __name__ == '__main__':
             user_input = record_and_asr()
         if user_input == '/clipboard':
             user_input = pyperclip.paste()
+
+        if user_input is None:
+            user_input = ""
         chat_history.append(role=args.interviewee, content=user_input)
         distill_agent.update_tree(turn=progress.get_round())
         critique_agent.rate_response()

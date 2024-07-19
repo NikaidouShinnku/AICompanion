@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+import sys
+
 import agent.distill
+from common.show_utils import show_response
 from llms import chat
 import argparse
 import requests
@@ -7,22 +10,6 @@ from bs4 import BeautifulSoup
 from consoles import print_markdown
 
 chat_history = []
-
-def show_response(res, no_pretty:bool = False):
-    acc = []
-    if isinstance(res, str):
-        if no_pretty:
-            print(res)
-        else:
-            print_markdown(res, title="From AI")
-        return res
-
-    print("[AI]:", end="")
-    for chunk in res:
-        print(chunk, end='')
-        acc.append(chunk)
-    print()
-    return "".join(acc)
 
 def fetch_url_content(url):
     try:
@@ -38,8 +25,9 @@ def fetch_url_content(url):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--file', nargs='+', action="extend", default=[], type=str, help='add file')
-    parser.add_argument('--model', default="llama3-70b-8192", type=str, help='model name')
-    parser.add_argument('--prompt', required=True, type=str, help='user prompt')
+    parser.add_argument('--prompt-file', type=str, help='user prompt', default=None)
+    parser.add_argument('--model', nargs='+', action="extend", default=[], help='model name')
+    parser.add_argument('--prompt', type=str, help='user prompt',default="")
     parser.add_argument('--history', action='store_true', help='Enter conversation mode')
     parser.add_argument('--stream', action='store_true', help='Run in stream mode')
     parser.add_argument('--no-pretty', action='store_true', help='print in plaintext mode')
@@ -59,7 +47,22 @@ if __name__ == '__main__':
         if url_content:
             combined_content += "web-info: " + url_content + "\n"
 
-    prompt = args.prompt
+    if not args.model:
+        args.model = ["llama3-70b-8192"]
+
+    if not args.prompt_file and not args.prompt:
+        print("error")
+        sys.exit(1)
+
+    prompt = ""
+
+    if args.prompt_file:
+        with (open(args.prompt_file, 'r', encoding='utf-8') as f):
+            prompt += f.read()
+
+    if args.prompt:
+        prompt += "\n"
+        prompt += args.prompt
 
     if combined_content:
         prompt = f"""
@@ -69,27 +72,32 @@ if __name__ == '__main__':
         """
 
     if not args.history:
-        res = chat(prompt=prompt, model=args.model, stream=args.stream)
-        response = show_response(res,args.no_pretty)
+        for model in args.model:
+            res = chat(prompt=prompt, model=model, stream=args.stream)
+            if args.no_pretty:
+                print(res)
+            else:
+                response = show_response(res, title=model)
 
     else:
         chat_history.append(
             {"role": "user", "content": prompt}
         )
-        res = chat(messages=chat_history, model=args.model, stream=args.stream)
-        response = show_response(res)
-        chat_history += [
-            {"role": "assistant", "content": response}
-        ]
-        while True:
-            q = input("[User]: ")
-            chat_history.append(
-                {"role": "user", "content": q}
-            )
+        for model in args.model[:1]:
             res = chat(messages=chat_history, model=args.model, stream=args.stream)
-            response = show_response(res)
+            response = show_response(res, title=model)
             chat_history += [
                 {"role": "assistant", "content": response}
             ]
-            if len(chat_history) > 100:
-                chat_history = chat_history[-100:]
+            while True:
+                q = input("[User]: ")
+                chat_history.append(
+                    {"role": "user", "content": q}
+                )
+                res = chat(messages=chat_history, model=args.model, stream=args.stream)
+                response = show_response(res, title=model)
+                chat_history += [
+                    {"role": "assistant", "content": response}
+                ]
+                if len(chat_history) > 100:
+                    chat_history = chat_history[-100:]

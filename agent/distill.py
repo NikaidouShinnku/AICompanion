@@ -1,5 +1,7 @@
 import json
 
+import pyperclip
+
 from common.show_utils import show_response
 from chat_history import ChatHistory
 from dataset import dataset_directory
@@ -11,7 +13,6 @@ from knowledge_graph.model import KnowledgeGraph
 
 class DistillAgent:
     def __init__(self, name: str, distilled_tree: KnowledgeGraph, chat_history: ChatHistory, interviewee: str, model: str):
-        self.current_response = None
         self.chat_history = chat_history
         self.name = name
         self.distilled_tree = distilled_tree
@@ -56,7 +57,7 @@ class DistillAgent:
 
     def get_prompt(self):
         messages = self.chat_history.get_message()
-        self.current_response = messages[-1]['content']
+        current_response = messages[-1]['content']
         chat_history = messages[:-1]
         return self.final_prompt_template.format(
             interviewee=self.interviewee_name,
@@ -65,7 +66,7 @@ class DistillAgent:
             examples=self.examples,
             distilled_tree=self.distilled_tree.get_tree(),
             chat_history=chat_history,
-            current_response=self.current_response
+            current_response=current_response
         )
 
     def update_tree(self, turn: int):
@@ -96,15 +97,34 @@ class DistillAgent:
         except:
             res = json.loads(res.replace("'", '"').replace("None", "null"))
 
+
+        # 对distill结果进行review
+        review_prompt_template = read_prompt("review_distill")
+        messages = self.chat_history.get_message()
+        current_response = messages[-1]['content']
+        chat_history = messages[:-1]
+        review_prompt = review_prompt_template.format(
+            distilled_tree=self.distilled_tree.get_tree(),
+            chat_history=chat_history,
+            current_response=current_response,
+            actions=res,
+        )
+        show_response(review_prompt, title="Review_Distill_Prompt")
+        pyperclip.copy(review_prompt)
+        review_res = chat(prompt=review_prompt, model=self.model)
+        show_response(review_res, title="Review_Distill")
+
+
+
         for action in res:
             if action["action"] == "update_existing_knowledge_node":
                 knowledge_id = action["arguments"]["knowledge_id"]
                 knowledge_type = action["arguments"]["knowledge_type"]
                 knowledge_detail = action["arguments"]["knowledge_detail"]
-                self.distilled_tree.renew_knowledge(self.current_response, knowledge_detail, knowledge_id, knowledge_type, turn)
+                self.distilled_tree.renew_knowledge(current_response, knowledge_detail, knowledge_id, knowledge_type, turn)
             elif action["action"] == "add_new_knowledge_node":
                 objective_id = action["arguments"]["objective_id"]
                 knowledge_detail = action["arguments"]["knowledge_detail"]
-                self.distilled_tree.add_knowledge(self.current_response, objective_id, knowledge_detail, turn)
+                self.distilled_tree.add_knowledge(current_response, objective_id, knowledge_detail, turn)
 
         self.distilled_tree.dump("task_result/current_distilled_tree")

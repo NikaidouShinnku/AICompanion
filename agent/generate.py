@@ -39,9 +39,9 @@ class GenerationAgent:
         self.distilled_tree = distilled_tree
         self.interviewee = interviewee
         self.begin = datetime.now()
-        self.final_prompt_template = read_prompt("professional_generate")
-        self.candidate_prompt_template = read_prompt("roleplay_generate")
-        self.candidate_prompt_template2 = read_prompt("roleplay2_generate")
+        self.final_prompt_template = read_prompt("roleplay_generate")
+        # self.candidate_prompt_template = read_prompt("professional_generate")
+        # self.candidate_prompt_template2 = read_prompt("roleplay2_generate")
         self.suggestion = None
         self.model = model
         self.progress = progress
@@ -117,24 +117,24 @@ class GenerationAgent:
         # import pyperclip
         # pyperclip.copy(prompt)
         show_response(prompt, title="Professional Generation Prompt")
-        res = chat(prompt=prompt, model=self.model)
+        res = chat(prompt=prompt, model=self.model, temperature=0.7)
 
         # 做对比用的prompt
-        candidate_prompt = self.get_prompt(prompt_template=self.candidate_prompt_template)
-        candidate_prompt2 = self.get_prompt(prompt_template=self.candidate_prompt_template2)
+        # candidate_prompt = self.get_prompt(prompt_template=self.candidate_prompt_template)
+        # candidate_prompt2 = self.get_prompt(prompt_template=self.candidate_prompt_template2)
         # 做对比用的prompt的结果输出
-        show_response(
-            extract_reply(
-                chat(prompt=candidate_prompt, model=self.model)
-            ),
-            title=f"萃取专家 / {self.model} / roleplay"
-        )
-        show_response(
-            extract_reply(
-                chat(prompt=candidate_prompt2, model=self.model)
-            ),
-            title=f"萃取专家 / {self.model} / roleplay2"
-        )
+        # show_response(
+        #     extract_reply(
+        #         chat(prompt=candidate_prompt, model=self.model, temperature=0.7)
+        #     ),
+        #     title=f"萃取专家 / {self.model} / roleplay"
+        # )
+        # show_response(
+        #     extract_reply(
+        #         chat(prompt=candidate_prompt2, model=self.model)
+        #     ),
+        #     title=f"萃取专家 / {self.model} / roleplay2"
+        # )
 
         return extract_reply(res=res)
 
