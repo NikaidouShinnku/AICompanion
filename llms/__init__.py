@@ -1,5 +1,7 @@
 def chat(model:str, **kwargs):
-    if model in ("llama3-8b-8192", "llama3-70b-8192"):
+    if model in ("llama3-8b-8192", "llama3-70b-8192", "llama3-tooluse"):
+        if model == "llama3-tooluse":
+            model = "llama3-groq-70b-8192-tool-use-preview"
         from llms.groqs import chat as groq_chat
         return groq_chat(model=model, **kwargs)
     elif model in ("deepseek-chat", "deepseek-coder"):

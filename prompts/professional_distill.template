@@ -55,7 +55,7 @@
 
 ```json
 {{
-    "action" : "update_existing_knowledge_node",
+    "action" : "update_knowledge_node",
     "description" : "<确保某个Objective下面有Knowledge Node后再使用这个action，否则用add_new_knowledge_node。当某个知识节点的内容被补充的时候，利用这个Action去更新。每次Call可以更新知识节点下的一个子内容，多次Call来完整更新知识点。>",
     "arguments" : {{
         "knowledge_id": {{

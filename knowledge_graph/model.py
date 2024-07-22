@@ -45,6 +45,14 @@ class KnowledgeGraph(BaseModel):
         return copy.deepcopy(self)
 
     def to_readable_tree(self, drop_objective_attrs: List = [], drop_knowledge_attrs: List = []) -> Dict:
+        def clean_knowledge(knowledge_item: Dict, drop_attrs: List) -> Dict:
+            for attr in drop_attrs:
+                if attr in knowledge_item:
+                    del knowledge_item[attr]
+            for sub in knowledge_item.get('sub_knowledge', []):
+                clean_knowledge(sub, drop_attrs)
+            return knowledge_item
+
         tree = self.model_dump()
         # Attrs drop
         if "id" in tree:
@@ -54,9 +62,7 @@ class KnowledgeGraph(BaseModel):
                 if obj_attr in obj:
                     del obj[obj_attr]
             for knowledge in obj.get("knowledge", []):
-                for knowledge_attr in drop_knowledge_attrs:
-                    if knowledge_attr in knowledge:
-                        del knowledge[knowledge_attr]
+                clean_knowledge(knowledge, drop_knowledge_attrs)
 
         # Name change
         new_objectives = []
@@ -157,13 +163,22 @@ class KnowledgeGraph(BaseModel):
         Raises:
             ValueError: If the specified parent node does not exist.
         """
-        new_knowledge = Knowledge()
+        new_knowledge = Knowledge(id=str(uuid.uuid4()))  # Ensure a new unique UUID is generated
         for knowledge_type, knowledge_detail in knowledge_details.items():
             if knowledge_type in ['concept', 'why_important', 'knowledge_description', 'example', 'other']:
                 setattr(new_knowledge, knowledge_type, knowledge_detail)
             else:
                 raise ValueError(f"Invalid type {knowledge_type}.")
         new_knowledge.raw_user_response = {turn: raw_res}
+
+        def find_and_add(parent):
+            if parent.id == parent_id:
+                parent.sub_knowledge.append(new_knowledge)
+                return True
+            for sub in parent.sub_knowledge:
+                if find_and_add(sub):
+                    return True
+            return False
 
         parent_found = False
         for objective in self.objectives:
@@ -173,19 +188,10 @@ class KnowledgeGraph(BaseModel):
                 self.manage_progress(objective.id)
                 break
             for knowledge in objective.knowledge:
-                if knowledge.id == parent_id:
-                    knowledge.sub_knowledge.append(new_knowledge)
+                if find_and_add(knowledge):
                     parent_found = True
                     self.update_objective_progress_by_knowledge_id(parent_id)
                     break
-                for sub_knowledge in knowledge.sub_knowledge:
-                    if sub_knowledge.id == parent_id:
-                        sub_knowledge.sub_knowledge.append(new_knowledge)
-                        parent_found = True
-                        self.update_objective_progress_by_knowledge_id(parent_id)
-                        break
-            if parent_found:
-                break
 
         if not parent_found:
             raise ValueError(f"Parent node with id {parent_id} not found.")
@@ -211,21 +217,20 @@ class KnowledgeGraph(BaseModel):
                 knowledge.raw_user_response = {}
             knowledge.raw_user_response[turn] = raw_res
 
-        found = False
-        for objective in self.objectives:
-            for knowledge in objective.knowledge:
+        def find_and_update_knowledge(knowledge_list: List[Knowledge], knowledge_id: str) -> bool:
+            for knowledge in knowledge_list:
                 if knowledge.id == knowledge_id:
                     update_knowledge_node(knowledge)
-                    self.update_objective_progress_by_knowledge_id(knowledge_id)
-                    found = True
-                    break
-                for sub_knowledge in knowledge.sub_knowledge:
-                    if sub_knowledge.id == knowledge_id:
-                        update_knowledge_node(sub_knowledge)
-                        self.update_objective_progress_by_knowledge_id(knowledge_id)
-                        found = True
-                        break
-            if found:
+                    return True
+                if find_and_update_knowledge(knowledge.sub_knowledge, knowledge_id):
+                    return True
+            return False
+
+        found = False
+        for objective in self.objectives:
+            if find_and_update_knowledge(objective.knowledge, knowledge_id):
+                self.update_objective_progress_by_knowledge_id(knowledge_id)
+                found = True
                 break
 
         if not found:
@@ -258,6 +263,62 @@ class KnowledgeGraph(BaseModel):
 
         if not found:
             raise ValueError(f"Knowledge with id {knowledge_id} not found. Unable to delete knowledge.")
+
+    def move_knowledge(self, src_id: str, des_id: str):
+        """
+        Move a Knowledge node to a new parent Knowledge node or Objective node.
+        Args:
+            src_id (str): The ID of the Knowledge node to be moved.
+            des_id (str): The ID of the destination Knowledge node or Objective node.
+        Raises:
+            ValueError: If the source or destination node does not exist.
+        """
+
+        def find_and_remove_knowledge(knowledge_list: List[Knowledge], knowledge_id: str) -> Union[Knowledge, None]:
+            for i, knowledge in enumerate(knowledge_list):
+                if knowledge.id == knowledge_id:
+                    return knowledge_list.pop(i)
+                found = find_and_remove_knowledge(knowledge.sub_knowledge, knowledge_id)
+                if found:
+                    return found
+            return None
+
+        # Step 1: Find and remove the source knowledge node
+        src_knowledge = None
+        for objective in self.objectives:
+            src_knowledge = find_and_remove_knowledge(objective.knowledge, src_id)
+            if src_knowledge:
+                self.update_objective_progress_by_knowledge_id(objective.id)
+                break
+
+        if not src_knowledge:
+            raise ValueError(f"Source node with id {src_id} not found.")
+
+        # Step 2: Find the destination node and add the source knowledge node as its sub-knowledge
+        def find_and_add_knowledge(knowledge_list: List[Knowledge], knowledge_id: str,
+                                   knowledge_to_add: Knowledge) -> bool:
+            for knowledge in knowledge_list:
+                if knowledge.id == knowledge_id:
+                    knowledge.sub_knowledge.append(knowledge_to_add)
+                    return True
+                if find_and_add_knowledge(knowledge.sub_knowledge, knowledge_id, knowledge_to_add):
+                    return True
+            return False
+
+        dest_found = False
+        for objective in self.objectives:
+            if objective.id == des_id:
+                objective.knowledge.append(src_knowledge)
+                dest_found = True
+                self.update_objective_progress_by_knowledge_id(objective.id)
+                break
+            if find_and_add_knowledge(objective.knowledge, des_id, src_knowledge):
+                dest_found = True
+                self.update_objective_progress_by_knowledge_id(objective.id)
+                break
+
+        if not dest_found:
+            raise ValueError(f"Destination node with id {des_id} not found.")
 
     def update_objective_progress_by_knowledge_id(self, knowledge_id: str):
         """

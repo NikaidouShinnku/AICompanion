@@ -119,7 +119,7 @@ class GenerationAgent:
         prompt = self.get_prompt(prompt_template=self.final_prompt_template)
         # import pyperclip
         # pyperclip.copy(prompt)
-        show_response(prompt, title="Professional Generation Prompt")
+        show_response(prompt, title="Generation Prompt")
         res = chat(prompt=prompt, model=self.model, temperature=0.7)
 
         # 做对比用的prompt

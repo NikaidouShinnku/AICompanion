@@ -172,10 +172,12 @@ if __name__ == '__main__':
                 while True:
                     user_input = input(args.interviewee + ": ")
                     if user_input == "/dump":
+                        chat_history_chopped_last = ChatHistory()
+                        chat_history_chopped_last.chat_history = chat_history.chat_history[:-1]
                         dump_snapshot(
                             file="snapshot/test-snapshot",
                             knowledge_graph=distilled_tree.model_dump(),
-                            chat_history=chat_history.model_dump(),
+                            chat_history=chat_history_chopped_last.model_dump(),
                             interviewee=args.interviewee,
                             model=args.model,
                             task=args.task,
@@ -199,7 +201,7 @@ if __name__ == '__main__':
             user_input = ""
         chat_history.append(role=args.interviewee, content=user_input)
         distill_agent.update_tree(turn=progress.get_round())
-        critique_agent.rate_response()
+        # critique_agent.rate_response()
         progress.on_interviewee_replied(
             objectives_completed=distilled_tree.get_completed_objective_num()
         )

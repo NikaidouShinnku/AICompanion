@@ -77,12 +77,29 @@
 
 ```json
 {{
-    "action" : "delete_existing_knowledge_node",
+    "action" : "delete_knowledge_node",
     "description" : "<确保某个Objective下面有Knowledge Node后再使用这个action。当需要删除某个知识节点时，利用这个Action去删除目标知识节点及其下的所有子节点。>",
     "arguments" : {{
         "knowledge_id": {{
              "type" : "<str, knowledge_id must exists>",
              "description": "<这里是要删除的目标知识节点ID，会直接删除该子节点和其下的所有子节点>"
+        }}
+    }}
+}}
+```
+
+```json
+{{
+    "action" : "move_knowledge_node",
+    "description" : "<确保某个Objective下面有Knowledge Node后再使用这个action。当需要移动某个知识节点时，利用这个Action去移动该节点到目标位置>",
+    "arguments" : {{
+        "source_knowledge_id": {{
+             "type" : "<str, knowledge_id must exists>",
+             "description": "<这里是要移动的目标知识节点ID，移动后会直接删除该子节点和其下的所有子节点>"
+        }},
+        "destination_knowledge_id": {{
+             "type" : "<str, knowledge_id must exists>",
+             "description": "<这里是要把知识移动到的目标知识节点ID，会直接在该节点下添加一个有对应知识信息的子知识节点>"
         }}
     }}
 }}

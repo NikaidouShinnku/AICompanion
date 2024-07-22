@@ -11,22 +11,22 @@
           "id": "3b4d2b5e-94d6-43d5-9219-cf8389876fc5",
           "obj_description": "Understand Supervised Learning",
           "knowledge": [],
-          "progress": 0,
-          "obj_complete": false
+          "目标进度": 0,
+          "完成度": "未开始"
         },
         {
           "id": "c71c2d6d-6a6b-4e3f-a9a3-e7ff650ba0e1",
           "obj_description": "Learn Unsupervised Learning",
           "knowledge": [],
-          "progress": 0,
-          "obj_complete": false
+          "目标进度": 0,
+          "完成度": "未开始"
         },
         {
           "id": "c4dfbe49-08a5-4718-9d4a-4bc7d8ab1e74",
           "obj_description": "Learn Reinforcement Learning",
           "knowledge": [],
-          "progress": 0,
-          "obj_complete": false
+          "目标进度": 0,
+          "完成度": "未开始"
         }
       ],
       "task_complete": false,
@@ -53,9 +53,36 @@
     "target_objective": "Understand Supervised Learning",
     "question": "Could you provide detailed examples of application scenarios where Supervised Learning is particularly effective, and discuss the advantages and limitations of using Supervised Learning in these contexts?"
   },
+
+
   {
     "description": "Interviewee Making Things Up",
-    "knowledge_graph": "{\"id\":\"a1b2c3d4-e5f6-7a8b-9c0d-e1f2g3h4i5j6\",\"domain\":\"Wilderness Survival\",\"name\":\"Fundamentals of Wilderness Survival\",\"task_description\":\"Master the basics of surviving in the wilderness\",\"objectives\":[{\"id\":\"1a2b3c4d-5e6f-7a8b-9c0d-1e2f3g4h5i6j\",\"obj_description\":\"Understand Basic Survival Skills\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"2b3c4d5e-6f7a-8b9c-0d1e-2f3g4h5i6j7k\",\"obj_description\":\"Learn Navigation and Orientation\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"3c4d5e6f-7a8b-9c0d-1e2f-3g4h5i6j7k8l\",\"obj_description\":\"Develop Wilderness First Aid Skills\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"4d5e6f7a-8b9c-0d1e-2f3g-4h5i6j7k8l9m\",\"obj_description\":\"Create Effective Emergency Plans\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"5e6f7a8b-9c0d-1e2f-3g4h-5i6j7k8l9m0n\",\"obj_description\":\"Implement Food Procurement Techniques\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"6f7a8b9c-0d1e-2f3g-4h5i-6j7k8l9m0n1o\",\"obj_description\":\"Engage in Wilderness Conservation Practices\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"7a8b9c0d-1e2f-3g4h-5i6j-7k8l9m0n1o2p\",\"obj_description\":\"Assess and Evaluate Survival Scenarios\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"8b9c0d1e-2f3g-4h5i-6j7k-8l9m0n1o2p3q\",\"obj_description\":\"Foster Mental Resilience and Adaptability\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false}],\"task_complete\":false,\"estimated_minute\": 60,\"start_date\":\"2023-02-20\",\"end_date\":\"2024-07-15\"}",
+    "knowledge_graph": {
+      "id": "a1b2c3d4-e5f6-7a8b-9c0d-e1f2g3h4i5j6",
+      "domain": "Wilderness Survival",
+      "name": "Fundamentals of Wilderness Survival",
+      "task_description": "Master the basics of surviving in the wilderness",
+      "objectives": [
+        {
+          "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3g4h5i6j",
+          "obj_description": "Understand Basic Survival Skills",
+          "knowledge": [],
+          "目标进度": 0.0,
+          "完成度": "未开始"
+        },
+        {
+          "id": "2b3c4d5e-6f7a-8b9c-0d1e-2f3g4h5i6j7k",
+          "obj_description": "Learn Navigation and Orientation",
+          "knowledge": [],
+          "目标进度": 0.0,
+          "完成度": "未开始"
+        }
+      ],
+      "task_complete": false,
+      "estimated_minute": 60,
+      "start_date": "2023-02-20",
+      "end_date": "2024-07-15"
+    },
     "chat_history": [
         {
             "role": "萃取专家",
@@ -67,9 +94,36 @@
     "target_objective": "确认并澄清访谈对象的实际野外急救经验，以确保所获取的知识真实有效，从而更好地理解和传播基本急救技能在野外生存中的重要性。",
     "question": "你刚刚提到了龙火灼烧，这听起来像是一个幻想场景。能否请你分享一个真实的例子，说明你在野外遇到的实际急救情况？具体是什么样的伤害，你是如何处理的，以及这次经历对你后续的急救技能提升有什么帮助？"
 },
+
+
   {
     "description": "Interviewee Talking Nonsense",
-    "knowledge_graph": "{\"id\":\"a1b2c3d4-e5f6-7a8b-9c0d-e1f2g3h4i5j6\",\"domain\":\"Wilderness Survival\",\"name\":\"Fundamentals of Wilderness Survival\",\"task_description\":\"Master the basics of surviving in the wilderness\",\"objectives\":[{\"id\":\"1a2b3c4d-5e6f-7a8b-9c0d-1e2f3g4h5i6j\",\"obj_description\":\"Understand Basic Survival Skills\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"2b3c4d5e-6f7a-8b9c-0d1e-2f3g4h5i6j7k\",\"obj_description\":\"Learn Navigation and Orientation\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"3c4d5e6f-7a8b-9c0d-1e2f-3g4h5i6j7k8l\",\"obj_description\":\"Develop Wilderness First Aid Skills\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"4d5e6f7a-8b9c-0d1e-2f3g-4h5i6j7k8l9m\",\"obj_description\":\"Create Effective Emergency Plans\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"5e6f7a8b-9c0d-1e2f-3g4h-5i6j7k8l9m0n\",\"obj_description\":\"Implement Food Procurement Techniques\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"6f7a8b9c-0d1e-2f3g-4h5i-6j7k8l9m0n1o\",\"obj_description\":\"Engage in Wilderness Conservation Practices\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"7a8b9c0d-1e2f-3g4h-5i6j-7k8l9m0n1o2p\",\"obj_description\":\"Assess and Evaluate Survival Scenarios\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false},{\"id\":\"8b9c0d1e-2f3g-4h5i-6j7k-8l9m0n1o2p3q\",\"obj_description\":\"Foster Mental Resilience and Adaptability\",\"knowledge\":[],\"progress\":0.0,\"obj_complete\":false}],\"task_complete\":false,\"estimated_minute\": 60,\"start_date\":\"2023-02-20\",\"end_date\":\"2024-07-15\"}",
+    "knowledge_graph": {
+      "id": "a1b2c3d4-e5f6-7a8b-9c0d-e1f2g3h4i5j6",
+      "domain": "Wilderness Survival",
+      "name": "Fundamentals of Wilderness Survival",
+      "task_description": "Master the basics of surviving in the wilderness",
+      "objectives": [
+        {
+          "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3g4h5i6j",
+          "obj_description": "Understand Basic Survival Skills",
+          "knowledge": [],
+          "目标进度": 0.0,
+          "完成度": "未开始"
+        },
+        {
+          "id": "2b3c4d5e-6f7a-8b9c-0d1e-2f3g4h5i6j7k",
+          "obj_description": "Learn Navigation and Orientation",
+          "knowledge": [],
+          "目标进度": 0.0,
+          "完成度": "未开始"
+        }
+      ],
+      "task_complete": false,
+      "estimated_minute": 60,
+      "start_date": "2023-02-20",
+      "end_date": "2024-07-15"
+  },
     "chat_history": [
         {
             "role": "萃取专家",
