@@ -99,7 +99,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default="llama3-70b-8192", type=str, help='Model name')
     parser.add_argument('--stream', action='store_true', help='Run in stream mode')
-    parser.add_argument('--task',  type=str, help='Choose the task', default="marooned-distill-plan")
+    parser.add_argument('--task',  type=str, help='Choose the task', default="organism-classification-distill-plan")
     parser.add_argument('--interviewee', type=str, help='Name of the interviewee', default="maria")
     parser.add_argument('--auto', action='store_true', help='Do a simulation')
     parser.add_argument('--tts', action='store_true', help='Enable tts')
@@ -128,7 +128,7 @@ if __name__ == '__main__':
         distilled_tree=distilled_tree,
         chat_history=chat_history,
         interviewee=args.interviewee,
-        model="qwen-max"
+        model="qwen-max-longcontext"
     )
     generate_agent = GenerationAgent(
         name=args.task+"-generate-agent",

@@ -231,6 +231,34 @@ class KnowledgeGraph(BaseModel):
         if not found:
             raise ValueError(f"Knowledge with id {knowledge_id} not found. Unable to renew knowledge.")
 
+    def delete_knowledge(self, knowledge_id: str):
+        """
+        Delete the knowledge node with the specified ID.
+        Args:
+            knowledge_id (str): The ID of the knowledge node to be deleted.
+        Raises:
+            ValueError: If the specified knowledge node does not exist.
+        """
+
+        def delete_node(knowledge_list: List[Knowledge], knowledge_id: str) -> bool:
+            for i, knowledge in enumerate(knowledge_list):
+                if knowledge.id == knowledge_id:
+                    del knowledge_list[i]
+                    return True
+                if delete_node(knowledge.sub_knowledge, knowledge_id):
+                    return True
+            return False
+
+        found = False
+        for objective in self.objectives:
+            if delete_node(objective.knowledge, knowledge_id):
+                self.manage_progress(objective.id)
+                found = True
+                break
+
+        if not found:
+            raise ValueError(f"Knowledge with id {knowledge_id} not found. Unable to delete knowledge.")
+
     def update_objective_progress_by_knowledge_id(self, knowledge_id: str):
         """
         Update the progress of the objective containing the specified knowledge ID.

@@ -91,7 +91,7 @@ class DistillAgent:
         if end_pos != -1:
             res = res[:end_pos + 1]
 
-        # show_response(res, title="Distill")
+        show_response(res, title="Distill")
         try:
             res = json.loads(res)
         except:
@@ -99,20 +99,20 @@ class DistillAgent:
 
 
         # 对distill结果进行review
-        review_prompt_template = read_prompt("review_distill")
         messages = self.chat_history.get_message()
         current_response = messages[-1]['content']
         chat_history = messages[:-1]
-        review_prompt = review_prompt_template.format(
-            distilled_tree=self.distilled_tree.get_tree(),
-            chat_history=chat_history,
-            current_response=current_response,
-            actions=res,
-        )
-        show_response(review_prompt, title="Review_Distill_Prompt")
-        pyperclip.copy(review_prompt)
-        review_res = chat(prompt=review_prompt, model=self.model)
-        show_response(review_res, title="Review_Distill")
+        # review_prompt_template = read_prompt("review_distill")
+        # review_prompt = review_prompt_template.format(
+        #     distilled_tree=self.distilled_tree.get_tree(),
+        #     chat_history=chat_history,
+        #     current_response=current_response,
+        #     actions=res,
+        # )
+        # show_response(review_prompt, title="Review_Distill_Prompt")
+        # pyperclip.copy(review_prompt)
+        # review_res = chat(prompt=review_prompt, model=self.model)
+        # show_response(review_res, title="Review_Distill")
 
         for action in res:
             if action["action"] == "update_existing_knowledge_node":
@@ -128,5 +128,8 @@ class DistillAgent:
                 self.distilled_tree.add_knowledge(
                     current_response, knowledge_detail, turn, parent_id
                 )
+            elif action["action"] == "delete_knowledge_node":
+                knowledge_id = action["arguments"]["knowledge_id"]
+                self.distilled_tree.delete_knowledge(knowledge_id)
 
         self.distilled_tree.dump("task_result/current_distilled_tree")

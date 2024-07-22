@@ -11,5 +11,8 @@ def chat(model:str, **kwargs):
     elif model in ("ernie-bot-pro", "ernie-4.0-turbo-8k"):
         from llms.baidu import chat as baidu_chat
         return baidu_chat(model=model, **kwargs)
+    elif model in ("moonshot-v1-128k", "moonshot-v1-32k"):
+        from llms.moonshot import chat as moonshot_chat
+        return moonshot_chat(model=model, **kwargs)
     else:
         raise ValueError(f"Unknown model: {model}")
