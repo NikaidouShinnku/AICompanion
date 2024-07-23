@@ -6,6 +6,7 @@ import pyperclip
 
 from agent.critique import CritiqueAgent
 from agent.simulation import SimulationAgent
+from agent.summary import SummaryAgent
 from asr import record_and_asr
 from chat_history import ChatHistory
 from common.multiline_input_util import multi_input
@@ -16,7 +17,7 @@ from consoles import print_markdown, print_code
 from llms import chat
 from plan import plan_directory
 from agent.distill import DistillAgent
-from agent.generate import GenerationAgent
+from agent.generation import GenerationAgent
 from progress import Progress
 from tts import tts
 from snapshot import snapshot_directory
@@ -106,7 +107,7 @@ if __name__ == '__main__':
     parser.add_argument('--restore', type=str, help='restore the task', default="")
     args = parser.parse_args()
 
-    valid_tones = ['严肃的', '幽默的', '海盗式的', '随意的', '无建议']
+    valid_tones = ['严肃的', '幽默的', '海盗式的', '随意的', '莎士比亚式的', '无建议']
     tone = None
     chat_history = ChatHistory()
     distilled_tree = KnowledgeGraph.restore(f"{plan_directory()}/{args.task}")
@@ -116,7 +117,7 @@ if __name__ == '__main__':
         distilled_tree, chat_history, args.task, args.interviewee, args.model, tone = load_restore_data(args.restore)
 
     while not tone:
-        tone_input = input("你希望萃取专家的语气风格是（严肃的/幽默的/海盗式的/随意的/无建议）：")
+        tone_input = input("你希望萃取专家的语气风格是（严肃的/幽默的/海盗式的/随意的/莎士比亚式的/无建议）：")
 
         if tone_input in valid_tones:
             tone = tone_input
@@ -128,7 +129,7 @@ if __name__ == '__main__':
         distilled_tree=distilled_tree,
         chat_history=chat_history,
         interviewee=args.interviewee,
-        model="qwen-max-longcontext"
+        model=args.model
     )
     generate_agent = GenerationAgent(
         name=args.task+"-generate-agent",
@@ -153,6 +154,12 @@ if __name__ == '__main__':
         interviewee=args.interviewee,
         model=args.model
     )
+    summary_agent = SummaryAgent(
+        name=args.task + "-summary-agent",
+        distilled_tree=distilled_tree,
+        chat_history=chat_history,
+        model=args.model
+    )
     # other agents
 
     begin = time.time()
@@ -175,7 +182,7 @@ if __name__ == '__main__':
                         chat_history_chopped_last = ChatHistory()
                         chat_history_chopped_last.chat_history = chat_history.chat_history[:-1]
                         dump_snapshot(
-                            file="snapshot/test-snapshot",
+                            file="snapshot/test-snapshot2",
                             knowledge_graph=distilled_tree.model_dump(),
                             chat_history=chat_history_chopped_last.model_dump(),
                             interviewee=args.interviewee,
@@ -187,6 +194,12 @@ if __name__ == '__main__':
                         args.auto = not args.auto
                     elif user_input == "/tree":
                         print_code(distilled_tree.format_to_tree(), language="json", title="DistilledTree")
+                    elif user_input == "/generation-prompt":
+                        show_response(generate_agent.get_prompt(), title="Generation / Prompt")
+                    elif user_input == "/distill-prompt":
+                        show_response(distill_agent.get_prompt(), title="Distill / Prompt")
+                    elif user_input == "/summary-prompt":
+                        show_response(summary_agent.get_prompt(), title="Summary / Prompt")
                     elif user_input:
                         break
             finally:
@@ -201,6 +214,7 @@ if __name__ == '__main__':
             user_input = ""
         chat_history.append(role=args.interviewee, content=user_input)
         distill_agent.update_tree(turn=progress.get_round())
+        summary_agent.restructure(turn=progress.get_round())
         # critique_agent.rate_response()
         progress.on_interviewee_replied(
             objectives_completed=distilled_tree.get_completed_objective_num()

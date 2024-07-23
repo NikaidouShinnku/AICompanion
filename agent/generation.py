@@ -83,7 +83,7 @@ class GenerationAgent:
             num += 1
         self.examples = "\n\n".join(examples)
 
-    def get_prompt(self, prompt_template):
+    def get_prompt(self):
         messages = self.chat_history.get_message()
         if len(messages) > 0:
             current_response = messages[-1]['content']
@@ -102,7 +102,7 @@ class GenerationAgent:
                                                              drop_knowledge_attrs=["id", "raw_user_response"]
                                                              )
 
-        return prompt_template.format(
+        return self.final_prompt_template.format(
             interviewee=self.interviewee_name,
             user_background=self.background_info,
             tone=self.tone,
@@ -116,10 +116,10 @@ class GenerationAgent:
         )
 
     def generate_question(self):
-        prompt = self.get_prompt(prompt_template=self.final_prompt_template)
+        prompt = self.get_prompt()
         # import pyperclip
         # pyperclip.copy(prompt)
-        show_response(prompt, title="Generation Prompt")
+        # show_response(prompt, title="Generation Prompt")
         res = chat(prompt=prompt, model=self.model, temperature=0.7)
 
         # 做对比用的prompt

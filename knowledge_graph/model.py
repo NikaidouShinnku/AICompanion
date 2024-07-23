@@ -344,16 +344,16 @@ class KnowledgeGraph(BaseModel):
         if objective is None:
             raise ValueError(f"Objective with ID {objective_id} not found.")
 
-        sub_knowledge_count = 0
-        for knowledge in objective.knowledge:
-            # Count each sub-knowledge field that is not None
-            sub_knowledge_count += sum(
-                1 for field in ['concept', 'why_important', 'knowledge_description', 'example'] if
-                knowledge.dict().get(field) is not None)
+        def count_sub_knowledge_fields(knowledge):
+            count = sum(
+                1 for field in ['concept', 'why_important', 'knowledge_description', 'example']
+                if knowledge.dict().get(field) is not None
+            )
             for sub_knowledge in knowledge.sub_knowledge:
-                sub_knowledge_count += sum(
-                    1 for field in ['concept', 'why_important', 'knowledge_description', 'example'] if
-                    sub_knowledge.dict().get(field) is not None)
+                count += count_sub_knowledge_fields(sub_knowledge)
+            return count
+
+        sub_knowledge_count = sum(count_sub_knowledge_fields(knowledge) for knowledge in objective.knowledge)
 
         # Calculate progress based on sub-knowledge fields
         objective.progress = (sub_knowledge_count * 0.05)
