@@ -86,7 +86,7 @@ class SummaryAgent:
             elif action["action"] == "add_new_knowledge_node":
                 parent_id = action["arguments"]["parent_id"]
                 knowledge_detail = action["arguments"]["knowledge_detail"]
-                self.distilled_tree.add_knowledge(
+                self.distilled_tree.add_knowledge_node(
                     current_response, knowledge_detail, turn, parent_id
                 )
             elif action["action"] == "delete_knowledge_node":
@@ -96,3 +96,10 @@ class SummaryAgent:
                 src_knowledge_id = action["arguments"]["source_knowledge_id"]
                 des_knowledge_id = action["arguments"]["destination_knowledge_id"]
                 self.distilled_tree.move_knowledge(src_knowledge_id, des_knowledge_id)
+            elif action["action"] == "generalize_and_combine_knowledge":
+                parent_id = action["arguments"]["parent_id"]
+                knowledge_detail = action["arguments"]["knowledge_detail"]
+                sub_knowledge = action["arguments"]["sub_knowledge_ids"]
+                self.distilled_tree.generalize_knowledge(
+                    current_response, knowledge_detail, sub_knowledge, turn, parent_id
+                )

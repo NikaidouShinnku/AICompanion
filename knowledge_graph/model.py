@@ -128,13 +128,6 @@ class KnowledgeGraph(BaseModel):
         with open(file + ".json", 'w') as f:
             f.write(self.json())
 
-    def add_objective(self):
-        """
-        Add a new Objective node to the KnowledgeGraph with a unique UUID.
-        """
-        new_objective = Objective()
-        self.objectives.append(new_objective)
-
     def find_knowledge_by_id(self, knowledge_id: str) -> Union[Knowledge, None]:
         """
         Find and return the knowledge node with the specified ID.
@@ -152,7 +145,13 @@ class KnowledgeGraph(BaseModel):
                         return sub_knowledge
         return None
 
-    def add_knowledge(self, raw_res: str, knowledge_details: Dict[str, str], turn: int, parent_id: str):
+    def add_knowledge_node(
+            self,
+            raw_res: str,
+            knowledge_details: Dict[str, str],
+            turn: int,
+            parent_id: str
+    ):
         """
         Add a new Knowledge node as a sub-knowledge node to an existing Knowledge node or Objective node.
         Args:
@@ -163,6 +162,9 @@ class KnowledgeGraph(BaseModel):
         Raises:
             ValueError: If the specified parent node does not exist.
         """
+        if 'concept' not in knowledge_details:
+            raise ValueError("Knowledge details must include 'concept'.")
+
         new_knowledge = Knowledge(id=str(uuid.uuid4()))  # Ensure a new unique UUID is generated
         for knowledge_type, knowledge_detail in knowledge_details.items():
             if knowledge_type in ['concept', 'why_important', 'knowledge_description', 'example', 'other']:
@@ -170,6 +172,82 @@ class KnowledgeGraph(BaseModel):
             else:
                 raise ValueError(f"Invalid type {knowledge_type}.")
         new_knowledge.raw_user_response = {turn: raw_res}
+
+        def find_and_add(parent):
+            if parent.id == parent_id:
+                parent.sub_knowledge.append(new_knowledge)
+                return True
+            for sub in parent.sub_knowledge:
+                if find_and_add(sub):
+                    return True
+            return False
+
+        parent_found = False
+        for objective in self.objectives:
+            if objective.id == parent_id:
+                objective.knowledge.append(new_knowledge)
+                parent_found = True
+                self.manage_progress(objective.id)
+                break
+            for knowledge in objective.knowledge:
+                if find_and_add(knowledge):
+                    parent_found = True
+                    self.update_objective_progress_by_knowledge_id(parent_id)
+                    break
+
+        if not parent_found:
+            raise ValueError(f"Parent node with id {parent_id} not found.")
+
+    def generalize_knowledge(
+            self,
+            raw_res: str,
+            knowledge_details: Dict[str, str],
+            sub_knowledge_ids: List[str],
+            turn: int,
+            parent_id: str
+    ):
+        """
+        Add a new Knowledge node with a list of sub-knowledge nodes by their IDs.
+        Args:
+            raw_res (str): The raw user response to be stored.
+            knowledge_details (Dict[str, str]): A dictionary where keys are knowledge types and values are the corresponding details.
+            sub_knowledge_ids (List[str]): A list of IDs of sub-knowledge nodes to be added.
+            turn (int): The turn number of the current conversation.
+            parent_id (str): The ID of the parent node (Objective or Knowledge) to which the new Knowledge node will be added.
+        Raises:
+            ValueError: If the specified parent node or sub-knowledge nodes do not exist.
+        """
+        if 'concept' not in knowledge_details:
+            raise ValueError("Knowledge details must include 'concept'.")
+
+        new_knowledge = Knowledge(id=str(uuid.uuid4()))  # Ensure a new unique UUID is generated
+        for knowledge_type, knowledge_detail in knowledge_details.items():
+            if knowledge_type in ['concept', 'why_important', 'knowledge_description', 'example', 'other']:
+                setattr(new_knowledge, knowledge_type, knowledge_detail)
+            else:
+                raise ValueError(f"Invalid type {knowledge_type}.")
+        new_knowledge.raw_user_response = {turn: raw_res}
+
+        # Function to find and remove sub-knowledge by IDs
+        def find_and_remove_knowledge(knowledge_list: List[Knowledge], ids: List[str]) -> List[Knowledge]:
+            found_knowledge = []
+            for knowledge in knowledge_list[:]:
+                if knowledge.id in ids:
+                    found_knowledge.append(knowledge)
+                    knowledge_list.remove(knowledge)
+                else:
+                    found_knowledge.extend(find_and_remove_knowledge(knowledge.sub_knowledge, ids))
+            return found_knowledge
+
+        sub_knowledge_list = []
+        for objective in self.objectives:
+            sub_knowledge_list.extend(find_and_remove_knowledge(objective.knowledge, sub_knowledge_ids))
+            self.update_objective_progress_by_knowledge_id(objective.id)
+
+        if not sub_knowledge_list:
+            raise ValueError(f"No sub-knowledge nodes with the given IDs {sub_knowledge_ids} found.")
+
+        new_knowledge.sub_knowledge.extend(sub_knowledge_list)  # Add the found sub-knowledge nodes
 
         def find_and_add(parent):
             if parent.id == parent_id:

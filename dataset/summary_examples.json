@@ -1,5 +1,5 @@
 [
-  {
+    {
     "description": "An example of restructure the knowledge graph",
     "knowledge_graph": {
         "id": "a1b2c3d4-e5f6-7a8b-9c0d-e1f2g3h4i5j6",
@@ -171,5 +171,144 @@
       ],
       "thought": "我的目标是保证知识树内的知识节点之间的关系准确，知识节点的结构符合逻辑，合理准确。我遍历了这棵知识树，发现该objective下只有一个知识节点，该知识节点的位置正确，灵长目确实属于哺乳类。",
       "actions": []
-  }
+},
+    {
+    "description": "An example of generalize and combine knowledge nodes",
+    "knowledge_graph": {
+        "id": "a1b2c3d4-e5f6-7a8b-9c0d-e1f2g3h4i5j6",
+        "domain": "Animal Classification",
+        "name": "Fundamentals of Animal Classification",
+        "task_description": "Master the basics of animal classification and understand the hierarchical structure from Phylum to Species",
+        "objectives": [
+            {
+                "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3g4h5i6j",
+                "obj_description": "Understand the Characteristics of Mammalia (Mammals)",
+                "knowledge": [
+                    {
+                        "id": "4d3855b5-6a6a-4560-8944-3070cdcef8e8",
+                        "concept": "Carnivora (食肉目)",
+                        "why_important": "食肉目动物在生态系统中起着重要的捕食者角色，有助于维持生态平衡。",
+                        "knowledge_description": "食肉目动物通常具有锋利的牙齿和爪子，适应捕猎和撕裂肉类。",
+                        "example": "老虎以其强大的猎食能力和领地行为著称。",
+                        "sub_knowledge": [
+                            {
+                                "id": "a4331c26-e755-49e6-8737-7500dd17865b",
+                                "concept": "狮子",
+                                "why_important": null,
+                                "knowledge_description": "狮子是食肉目中的一种大型猫科动物，以群体生活和合作捕猎著称。",
+                                "example": "狮子的群体生活方式使其能够有效地捕猎大型猎物。",
+                                "sub_knowledge": [],
+                                "other": [],
+                                "raw_user_response": {
+                                    "2": "先让我完整介绍这一个例子！我们接下来讨论狮子。狮子是食肉目中的一种大型猫科动物，以群体生活和合作捕猎著称。"
+                                }
+                            },
+                            {
+                                "id": "02c2a87a-ea92-49f4-b97c-f9dee2e1fd55",
+                                "concept": "老虎",
+                                "why_important": null,
+                                "knowledge_description": "老虎是食肉目中的一种大型猫科动物，以其强大的猎食能力和领地行为著称。",
+                                "example": "老虎的强大猎食能力使其成为顶级捕食者。",
+                                "sub_knowledge": [],
+                                "other": null,
+                                "raw_user_response": {
+                                    "1": "我稍等回答你的问题，我们继续深入。食肉目下面有老虎。老虎是食肉目中的一种大型猫科动物，以其强大的猎食能力和领地行为著称。"
+                                }
+                            },
+                            {
+                                "id": "b254c6b8-4e5d-4c8f-a49b-3d2560f03e88",
+                                "concept": "犬科",
+                                "why_important": null,
+                                "knowledge_description": "犬科动物包括狼、狐、犬等，通常具有强大的社会结构和合作捕猎策略。",
+                                "example": "狼的合作捕猎策略使其能够捕捉体型较大的猎物。",
+                                "sub_knowledge": [],
+                                "other": [],
+                                "raw_user_response": {
+                                    "3": "犬科是食肉目中的一个重要科。犬科动物包括狼、狐、犬等，通常具有强大的社会结构和合作捕猎策略。"
+                                }
+                            }
+                        ],
+                        "other": null,
+                        "raw_user_response": {
+                            "0": "我们要有逻辑，分类讨论。先来讨论哺乳动物下的食肉目吧，从概念开始。食肉目动物通常具有锋利的牙齿和爪子，适应捕猎和撕裂肉类。例如，老虎以其强大的猎食能力和领地行为著称。"
+                        }
+                    }
+                ],
+                "目标进度": 0.7,
+                "完成度": "未完成，进度过半"
+            },
+            {
+                "id": "2b3c4d5e-6f7a-8b9c-0d1e-2f3g4h5i6j7k",
+                "obj_description": "Understand the Characteristics of Aves (Birds)",
+                "knowledge": [],
+                "目标进度": 0.0,
+                "完成度": "未开始"
+            },
+            {
+                "id": "3b4c5d6e-7f8a-9b0c-1d2e-3f4g5h6i7j8k",
+                "obj_description": "Understand the Characteristics of Reptilia (Reptiles)",
+                "knowledge": [],
+                "目标进度": 0.0,
+                "完成度": "未开始"
+            }
+        ],
+        "task_complete": false,
+        "start_date": "2023-02-20",
+        "end_date": "2024-07-22",
+        "estimated_minute": 10
+    },
+
+    "chat_history": [
+        {
+            "role": "萃取专家",
+            "content": "Maria, 非常感谢你今天能参与我们的访谈。作为一位经验丰富的猎人，你对动物的了解一定非常深入。首先，我们想了解一下哺乳动物的基本特征。你能告诉我们哺乳动物有哪些显著的特征吗？这些特征如何帮助它们在自然界中生存和繁衍？"
+        },
+        {
+            "role": "maria",
+            "content": "我们要有逻辑，分类讨论。先来讨论哺乳动物下的食肉目吧，从概念开始。食肉目动物通常具有锋利的牙齿和爪子，适应捕猎和撕裂肉类。例如，老虎以其强大的猎食能力和领地行为著称。"
+        },
+        {
+            "role": "萃取专家",
+            "content": "Maria, 你刚才提到的食肉目动物的特征非常有趣，特别是它们的捕猎能力。除了食肉目，哺乳动物中还有许多其他类别，比如有蹄类等。你能分享一下这些类别中的一些代表性动物及其独特的生存策略吗？这将帮助我们更全面地理解哺乳动物的多样性和适应性。"
+        },
+        {
+            "role": "maria",
+            "content": "我稍等回答你的问题，我们继续深入。食肉目下面有老虎。老虎是食肉目中的一种大型猫科动物，以其强大的猎食能力和领地行为著称。"
+        },
+        {
+            "role": "萃取专家",
+            "content": "Maria, 你提到的老虎的适应性和智能确实令人印象深刻。除了食肉目，哺乳动物中还有食肉目和有蹄类等其他重要类别。你能分享一些这些类别中的代表性动物，以及它们是如何适应环境和利用其独特特征生存的吗？这将帮助我们更全面地理解哺乳动物的多样性和适应性。"
+        },
+        {
+            "role": "maria",
+            "content": "先让我完整介绍这一个例子！我们接下来讨论狮子。狮子是食肉目中的一种大型猫科动物，以群体生活和合作捕猎著称。"
+        },
+        {
+            "role": "萃取专家",
+            "content": "Maria, 你刚才提到的狮子的群体生活和合作捕猎非常有趣。食肉目中的其他动物也有独特的生存策略，比如犬科动物。你能告诉我们一些关于犬科动物的信息吗？"
+        },
+        {
+            "role": "maria",
+            "content": "犬科是食肉目中的一个重要科。犬科动物包括狼、狐、犬等，通常具有强大的社会结构和合作捕猎策略。"
+        }
+    ],
+    "thought": "我的目标是保证知识树内的知识节点之间的关系准确，知识节点的结构符合逻辑，合理准确。我遍历了这棵知识树，通过分析knowledge节点之间的联系和上下文，发现狮子和老虎拥有'猫科'这一共同特性，尽管他们都是食肉目，但既然存在犬科的概念，那把猫科的概念抽象出来更符合上下级关系。",
+    "actions": [
+        {
+            "action" : "generalize_and_combine_knowledge",
+            "arguments": {
+                "parent_id": "4d3855b5-6a6a-4560-8944-3070cdcef8e8",
+                "knowledge_detail": {
+                    "concept": "猫科",
+                    "knowledge_description": "猫科动物它们以灵活的身体、锐利的爪子和尖锐的牙齿著称。猫科动物通常位于食物链顶端，是优秀的猎手，主要捕食大型哺乳动物。",
+                    "example": "猫科包括狮子、老虎等。狮子群居，雄狮有鬃毛；老虎独居，体型更大，有黑色条纹。"
+                },
+                "sub_knowledge_ids": [
+                    "a4331c26-e755-49e6-8737-7500dd17865b",
+                    "02c2a87a-ea92-49f4-b97c-f9dee2e1fd55"
+                ]
+            }
+        }
+    ]
+}
 ]

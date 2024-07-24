@@ -39,15 +39,15 @@
 ```json
 {{
   "action": "add_new_knowledge_node",
-  "description": "<表示在某个Objective或Knowledge下新发现了一个知识点，需要添加到对应的节点下面。你必须添加knowledge_description这一type。>",
+  "description": "<表示在某个Objective或Knowledge下新发现了一个知识点，需要添加到对应的节点下面。你必须添加concept这一type。>",
   "arguments": {{
     "parent_id": {{
       "type": "<str, parent_id must exists>",
       "description": "<这里是要更新的目标Objective或Knowledge节点ID，会在该节点下添加Knowledge节点>"
     }},
     "knowledge_detail": {{
-      "type": "<Dict. Key is enum of string, one of \"example\" | \"knowledge_description\" | \"why important\" | \"concept\" | \"other\", knowledge_description must be provided. Value is str, the content of the type of knowledge>",
-      "key description": "<用来表示提取到的知识的类型，concept是知识的定义和概念，一般是对知识的抽象描述, why_important是描述该知识为何重要，它能在哪些应用场景使用，能带来什么价值等, knowledge_description是知识的主体内容和框架，对知识本身的描述性内容, example是与该知识相关的案例，可以支撑其价值或演示其如何使用等, other是其他和该知识相关的内容List，比如和其他知识点的关联等等。knowledge_description是必须提供的，否则创建后不知道该知识节点是关于什么的>",
+      "type": "<Dict. Key is enum of string, one of \"example\" | \"knowledge_description\" | \"why important\" | \"concept\" | \"other\", concept must be provided. Value is str, the content of the type of knowledge>",
+      "key description": "<用来表示提取到的知识的类型，concept是知识的定义和概念，一般是对知识的抽象描述, why_important是描述该知识为何重要，它能在哪些应用场景使用，能带来什么价值等, knowledge_description是知识的主体内容和框架，对知识本身的描述性内容, example是与该知识相关的案例，可以支撑其价值或演示其如何使用等, other是其他和该知识相关的内容List，比如和其他知识点的关联等等。concept是必须提供的，否则创建后不知道该知识节点是关于什么的>",
       "value description": "<这里放知识的具体内容>"
     }}
   }}

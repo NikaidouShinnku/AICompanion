@@ -220,7 +220,8 @@ if __name__ == '__main__':
             objectives_completed=distilled_tree.get_completed_objective_num()
         )
 
-        if time.time() - begin > 30 * 60:
+        if time.time() - begin > distilled_tree.estimated_minute:
+            show_response(generate_agent.end_chat(), title="萃取专家")
             break
 
 

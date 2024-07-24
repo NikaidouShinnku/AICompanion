@@ -94,11 +94,11 @@ class GenerationAgent:
 
         progress_stats = self.progress.get_progress()
         task_progress_template = read_prompt("task_progress")
-        task_progress = task_progress_template.format(
+        self.task_progress = task_progress_template.format(
             **progress_stats
         )
 
-        readable_tree = self.distilled_tree.to_readable_tree(drop_objective_attrs=["id"],
+        self.readable_tree = self.distilled_tree.to_readable_tree(drop_objective_attrs=["id"],
                                                              drop_knowledge_attrs=["id", "raw_user_response"]
                                                              )
 
@@ -108,10 +108,10 @@ class GenerationAgent:
             tone=self.tone,
             domain=self.distilled_tree.domain,
             examples=self.examples,
-            distilled_tree=readable_tree,
+            distilled_tree=self.readable_tree,
             chat_history=self.format_chat_history(chat_history),
             current_response=current_response,
-            task_progress=task_progress,
+            task_progress=self.task_progress,
             date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         )
 
@@ -140,6 +140,23 @@ class GenerationAgent:
         # )
 
         return extract_reply(res=res)
+
+    def end_chat(self):
+        end_prompt_template = read_prompt("end_timeover")
+
+        chat_history = self.chat_history.get_message()
+
+        end_prompt = end_prompt_template.format(
+            interviewee=self.interviewee_name,
+            user_background=self.background_info,
+            tone=self.tone,
+            domain=self.distilled_tree.domain,
+            distilled_tree=self.readable_tree,
+            chat_history=chat_history,
+            task_progress=self.task_progress
+        )
+
+        return chat(prompt=end_prompt, model=self.model, temperature=0.7)
 
     def format_chat_history(self, messages):
         formatted = ""
