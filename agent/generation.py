@@ -98,9 +98,10 @@ class GenerationAgent:
             **progress_stats
         )
 
-        self.readable_tree = self.distilled_tree.to_readable_tree(drop_objective_attrs=["id"],
-                                                             drop_knowledge_attrs=["id", "raw_user_response"]
-                                                             )
+        self.readable_tree = (self.distilled_tree.to_readable_tree
+                              (drop_objective_attrs=["id"],
+                               drop_knowledge_attrs=["id", "raw_user_response"]
+                                ))
 
         return self.final_prompt_template.format(
             interviewee=self.interviewee_name,

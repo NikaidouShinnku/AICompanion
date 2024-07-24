@@ -12,6 +12,7 @@ from chat_history import ChatHistory
 from common.multiline_input_util import multi_input
 from common.show_utils import show_response
 from knowledge_graph.model import KnowledgeGraph
+from knowledge_graph.model_manager import KnowledgeTreeManager
 import argparse
 from consoles import print_markdown, print_code
 from llms import chat
@@ -22,6 +23,7 @@ from progress import Progress
 from tts import tts
 from snapshot import snapshot_directory
 import readline
+from common.convert import json_str_to_yaml_str
 
 history_file = 'history.txt'
                                                                                                                       
@@ -109,6 +111,7 @@ if __name__ == '__main__':
 
     valid_tones = ['严肃的', '幽默的', '海盗式的', '随意的', '莎士比亚式的', '无建议']
     tone = None
+    tree_manager = KnowledgeTreeManager()
     chat_history = ChatHistory()
     distilled_tree = KnowledgeGraph.restore(f"{plan_directory()}/{args.task}")
     progress = Progress(total_minutes=distilled_tree.estimated_minute, objectives_count=len(distilled_tree.objectives))
@@ -193,13 +196,24 @@ if __name__ == '__main__':
                     elif user_input == "/auto":
                         args.auto = not args.auto
                     elif user_input == "/tree":
-                        print_code(distilled_tree.format_to_tree(), language="json", title="DistilledTree")
+                        print_code(json_str_to_yaml_str(tree_manager.get_current_tree().format_to_tree()),
+                                   language="yaml",
+                                   title="DistilledTree"
+                                   )
                     elif user_input == "/generation-prompt":
                         show_response(generate_agent.get_prompt(), title="Generation / Prompt")
                     elif user_input == "/distill-prompt":
                         show_response(distill_agent.get_prompt(), title="Distill / Prompt")
                     elif user_input == "/summary-prompt":
                         show_response(summary_agent.get_prompt(), title="Summary / Prompt")
+                    elif user_input == "/refine":
+                        summary_agent.restructure(turn=progress.get_round())
+                        tree_manager.push_back(distilled_tree)
+                    elif user_input == "/undo":
+                        tree_manager.pop()
+                    elif user_input[0] == "/":
+                        print("Unknown Command")
+                        continue
                     elif user_input:
                         break
             finally:
@@ -213,14 +227,15 @@ if __name__ == '__main__':
         if user_input is None:
             user_input = ""
         chat_history.append(role=args.interviewee, content=user_input)
+
         distill_agent.update_tree(turn=progress.get_round())
-        summary_agent.restructure(turn=progress.get_round())
+        tree_manager.push_back(distilled_tree)
         # critique_agent.rate_response()
         progress.on_interviewee_replied(
             objectives_completed=distilled_tree.get_completed_objective_num()
         )
 
-        if time.time() - begin > distilled_tree.estimated_minute:
+        if time.time() - begin > distilled_tree.estimated_minute * 60:
             show_response(generate_agent.end_chat(), title="萃取专家")
             break
 
