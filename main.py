@@ -208,7 +208,7 @@ if __name__ == '__main__':
                         show_response(summary_agent.get_prompt(), title="Summary / Prompt")
                     elif user_input == "/refine":
                         summary_agent.restructure(turn=progress.get_round())
-                        tree_manager.push_back(distilled_tree)
+                        tree_manager.push_back(distilled_tree.clone())
                     elif user_input == "/undo":
                         tree_manager.pop()
                     elif user_input[0] == "/":

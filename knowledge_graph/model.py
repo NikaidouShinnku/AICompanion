@@ -17,6 +17,7 @@ class Knowledge(BaseModel):
     sub_knowledge: List["Knowledge"] = []
     other: Union[List[str], None] = None
     raw_user_response: Dict[int, str] = None
+    is_generalized_node: bool = False
 
 
 class Objective(BaseModel):
@@ -220,7 +221,7 @@ class KnowledgeGraph(BaseModel):
         if 'concept' not in knowledge_details:
             raise ValueError("Knowledge details must include 'concept'.")
 
-        new_knowledge = Knowledge(id=str(uuid.uuid4()))  # Ensure a new unique UUID is generated
+        new_knowledge = Knowledge(id=str(uuid.uuid4()), is_new_node=True)  # Ensure a new unique UUID is generated
         for knowledge_type, knowledge_detail in knowledge_details.items():
             if knowledge_type in ['concept', 'why_important', 'knowledge_description', 'example', 'other']:
                 setattr(new_knowledge, knowledge_type, knowledge_detail)
@@ -411,39 +412,33 @@ class KnowledgeGraph(BaseModel):
 
     def manage_progress(self, objective_id: str):
         """
-        Updates the progress of a specific objective in the knowledge graph.
-        Each sub-knowledge field ('example', 'why_important', 'knowledge_description', 'concept') contributes 5 points.
-        If the progress reaches or exceeds 90%, mark complete as True.
-        Additionally, if all objectives are complete, mark the KnowledgeGraph as complete.
-        Args:
-            objective_id (str): The ID of the objective to update.
-        """
+           Updates the progress of a specific objective in the knowledge graph.
+           Each sub-knowledge field ('example', 'why_important', 'knowledge_description', 'concept') contributes 5 points.
+           If the progress reaches or exceeds 90%, mark complete as True.
+           Additionally, if all objectives are complete, mark the KnowledgeGraph as complete.
+           Args:
+               objective_id (str): The ID of the objective to update.
+           """
         objective = next((o for o in self.objectives if o.id == objective_id), None)
         if objective is None:
             raise ValueError(f"Objective with ID {objective_id} not found.")
 
-        def count_sub_knowledge_fields(knowledge):
+        def count_sub_knowledge_fields(knowledge: Knowledge) -> int:
             count = sum(
-                1 for field in ['concept', 'why_important', 'knowledge_description', 'example']
-                if knowledge.dict().get(field) is not None
+                getattr(knowledge, field) is not None for field in ['concept', 'why_important', 'knowledge_description', 'example']
             )
             for sub_knowledge in knowledge.sub_knowledge:
                 count += count_sub_knowledge_fields(sub_knowledge)
             return count
 
-        sub_knowledge_count = sum(count_sub_knowledge_fields(knowledge) for knowledge in objective.knowledge)
+        sub_knowledge_count = sum(
+            count_sub_knowledge_fields(knowledge)
+            for knowledge in objective.knowledge
+            if not getattr(knowledge, 'is_generalized_node', False)
+        )
 
-        # Calculate progress based on sub-knowledge fields
-        objective.progress = (sub_knowledge_count * 0.05)
+        objective.progress = min(sub_knowledge_count * 0.05, 1.0)
 
-        # Mark complete if progress is 90% or more
-        if objective.progress >= 0.9:
-            objective.obj_complete = True
-        else:
-            objective.obj_complete = False
+        objective.obj_complete = objective.progress >= 0.95
 
-        # Check if all objectives are complete and update KnowledgeGraph's task_complete
-        if all(obj.obj_complete for obj in self.objectives):
-            self.task_complete = True
-        else:
-            self.task_complete = False
+        self.task_complete = all(obj.obj_complete for obj in self.objectives)
