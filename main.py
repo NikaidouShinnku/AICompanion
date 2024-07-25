@@ -7,6 +7,7 @@ import pyperclip
 from agent.critique import CritiqueAgent
 from agent.simulation import SimulationAgent
 from agent.summary import SummaryAgent
+from agent.entity_extraction_distill import EntityExtractionAgent
 from asr import record_and_asr
 from chat_history import ChatHistory
 from common.multiline_input_util import multi_input
@@ -22,22 +23,23 @@ from agent.generation import GenerationAgent
 from progress import Progress
 from tts import tts
 from snapshot import snapshot_directory
-import readline
+# import readline
 from common.convert import json_str_to_yaml_str
+from entity_extraction.mermaid_opts import create_mermaid_png_and_display
 
 history_file = 'history.txt'
                                                                                                                       
-def save_history(history_file):
-  readline.write_history_file(history_file)
-
-def load_history(history_file):
-  try:
-      readline.read_history_file(history_file)
-  except FileNotFoundError:
-      pass
+# def save_history(history_file):
+#   readline.write_history_file(history_file)
+#
+# def load_history(history_file):
+#   try:
+#       readline.read_history_file(history_file)
+#   except FileNotFoundError:
+#       pass
 
 # Load history from the history file
-load_history(history_file)
+# load_history(history_file)
 
 
 def dump(file: str, description: str, knowledge_graph, chat_history, current_response: str):
@@ -134,6 +136,12 @@ if __name__ == '__main__':
         interviewee=args.interviewee,
         model=args.model
     )
+    entity_extraction_agent = EntityExtractionAgent(
+        name=args.task+"-distill-agent",
+        distilled_tree=distilled_tree,
+        chat_history=chat_history,
+        model=args.model
+    )
     generate_agent = GenerationAgent(
         name=args.task+"-generate-agent",
         distilled_tree=distilled_tree,
@@ -211,22 +219,24 @@ if __name__ == '__main__':
                         tree_manager.push_back(distilled_tree.clone())
                     elif user_input == "/undo":
                         tree_manager.pop()
+                    elif user_input == '/asr':
+                        user_input = record_and_asr()
+                    elif user_input == '/clipboard':
+                        user_input = pyperclip.paste()
                     elif user_input[0] == "/":
                         print("Unknown Command")
                         continue
                     elif user_input:
                         break
             finally:
+                    pass
                 # Save history to the history file
-                save_history(history_file)
-        if user_input == '/asr':
-            user_input = record_and_asr()
-        if user_input == '/clipboard':
-            user_input = pyperclip.paste()
+                # save_history(history_file)
 
-        if user_input is None:
-            user_input = ""
+
         chat_history.append(role=args.interviewee, content=user_input)
+        mermaid_code = entity_extraction_agent.extract_triplet(turn=progress.get_round())
+        create_mermaid_png_and_display(mermaid_code=mermaid_code)
 
         distill_agent.update_tree(turn=progress.get_round())
         tree_manager.push_back(distilled_tree)
