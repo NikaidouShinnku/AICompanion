@@ -7,10 +7,12 @@ from common.show_utils import show_response
 from chat_history import ChatHistory
 from dataset import dataset_directory
 from interviewee import interviewee_directory
+from knowledge_graph.entity_relation_triple import EntityRelationTriple
 from llms import chat
 from prompts import read_prompt
 from knowledge_graph.model import KnowledgeGraph
 from icecream import ic
+from knowledge_graph import entity_relation_triple
 
 
 class EntityExtractionAgent:
@@ -20,6 +22,7 @@ class EntityExtractionAgent:
         self.distilled_tree = distilled_tree
         self.model = model
         self.entity_types = entity_types
+        self.entity_relation_triple = EntityRelationTriple()
 
         self.final_prompt_template = read_prompt("entity_extraction_distill")
 
@@ -68,7 +71,10 @@ class EntityExtractionAgent:
         from common.mermaid_code import parse_entity_relation, generate_mermaid
 
         entity, relation = parse_entity_relation(res)
-        mermaid_code = generate_mermaid(entity, relation)
+        self.entity_relation_triple.merge_entities_and_relationships(entity, relation)
+        mermaid_code = generate_mermaid(self.entity_relation_triple.get_entities(),
+                                        self.entity_relation_triple.get_relationships()
+                                        )
 
         self.write_mermaid_to_file(mermaid_code=mermaid_code, file_path="entity_extraction/mermaid-test")
 

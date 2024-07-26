@@ -124,46 +124,42 @@ def display_image_in_terminal(path):
 def create_mermaid_png_and_display(mermaid_code, display_in_term=True):
     # Create a temporary file for the Mermaid code
     with tempfile.NamedTemporaryFile(mode="w", suffix=".mmd", delete=False) as mmd_file:
-        # mmd_file.write(mermaid_code.encode('utf-8').decode('utf-8'))
         mmd_file_path = mmd_file.name
         Path(mmd_file_path).write_text(mermaid_code, encoding="utf-8")
 
-        # Create a temporary file for the PNG output
-        png_file_path = tempfile.mktemp(suffix=".png")
-        ic(png_file_path, mmd_file_path)
-        # Convert Mermaid to PNG using mmdc (Mermaid CLI)
-        # with suppress_output():
-        command = [
-            r"C:\Users\25899\Downloads\node-v20.15.1-win-x64\mmdc.cmd",
-            "-i",
-            mmd_file_path,
-            "--width",
-            "1200",
-            "--height",
-            "2000",
-            "-b",
-            "transparent",
-            "-o",
-            png_file_path,
-        ]
+    # Create a temporary file for the PNG output
+    png_file_path = tempfile.mktemp(suffix=".png")
 
+    # Convert Mermaid to PNG using mmdc (Mermaid CLI)
+    command = [
+        r"C:\Users\25899\Downloads\node-v20.15.1-win-x64\mmdc.cmd",
+        "-i", mmd_file_path,
+        "--width", "1200",
+        "--height", "2000",
+        "-b", "transparent",
+        "-o", png_file_path,
+    ]
+
+    try:
         if display_in_term:
-            subprocess.run(
-                command,
-                check=True,
-                capture_output=True,
-            )
+            result = subprocess.run(command, check=True, capture_output=True)
 
         # Display the PNG in iTerm2
-        # subprocess.run(["imgcat", png_file_path], check=True)
-        # display_image_iterm2(png_file_path)
         if os.path.exists(png_file_path):
             display_image_in_terminal(png_file_path)
         else:
-            raise FileNotFoundError(f"File {png_file_path}")
+            raise FileNotFoundError(f"File {png_file_path} does not exist")
 
+    finally:
         # Clean up temporary files
         if os.path.exists(mmd_file_path):
-            os.unlink(mmd_file_path)
+            try:
+                os.unlink(mmd_file_path)
+            except OSError as e:
+                print(f"Error deleting file {mmd_file_path}: {e}")
+
         if os.path.exists(png_file_path):
-            os.unlink(png_file_path)
+            try:
+                os.unlink(png_file_path)
+            except OSError as e:
+                print(f"Error deleting file {png_file_path}: {e}")

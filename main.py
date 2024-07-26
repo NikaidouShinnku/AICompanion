@@ -224,6 +224,7 @@ if __name__ == '__main__':
                         user_input = record_and_asr()
                     elif user_input == '/clipboard':
                         user_input = pyperclip.paste()
+
                     elif user_input[0] == "/":
                         print("Unknown Command")
                         continue
