@@ -1,4 +1,5 @@
 import json
+from typing import List
 
 import pyperclip
 
@@ -13,11 +14,12 @@ from icecream import ic
 
 
 class EntityExtractionAgent:
-    def __init__(self, name: str, distilled_tree: KnowledgeGraph, chat_history: ChatHistory, model: str):
+    def __init__(self, name: str, distilled_tree: KnowledgeGraph, chat_history: ChatHistory, model: str, entity_types: List):
         self.chat_history = chat_history
         self.name = name
         self.distilled_tree = distilled_tree
         self.model = model
+        self.entity_types = entity_types
 
         self.final_prompt_template = read_prompt("entity_extraction_distill")
 
@@ -34,7 +36,7 @@ class EntityExtractionAgent:
             record_delimiter='##',
             tuple_delimiter='<|>',
             completion_delimiter='<|COMPLETE|>',
-            entity_types=["Animal", "Substances", "Date", "Event", "Traits", "Action", "Other"],
+            entity_types=self.entity_types,
             input_text=current_response
 
         )

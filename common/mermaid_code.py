@@ -42,6 +42,6 @@ def generate_mermaid(entities, relationships):
 
     for index, relationship in enumerate(relationships):
         mermaid_code += f'{relationship["source"]} --> |"{relationship["description"]}"| {relationship["target"]}\n'
-        mermaid_code += f'    linkStyle {index} font-family:\'Terminess Nerd Font Propo\',stroke:#FF0000,stroke-width:{relationship["strength"]}px,font-size:20px,padding:2px;\n'
+        mermaid_code += f'    linkStyle {index} font-family:\'Terminess Nerd Font Propo\',stroke:#FF0000,stroke-width:{relationship["strength"]}px,font-size:40px,padding:2px;\n'
 
     return mermaid_code

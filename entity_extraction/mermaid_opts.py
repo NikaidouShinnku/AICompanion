@@ -147,13 +147,12 @@ def create_mermaid_png_and_display(mermaid_code, display_in_term=True):
             png_file_path,
         ]
 
-        cmd = " ".join(command)
-        ic(cmd)
-        subprocess.run(
-            command,
-            check=True,
-            capture_output=True,
-        )
+        if display_in_term:
+            subprocess.run(
+                command,
+                check=True,
+                capture_output=True,
+            )
 
         # Display the PNG in iTerm2
         # subprocess.run(["imgcat", png_file_path], check=True)

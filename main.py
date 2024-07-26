@@ -140,7 +140,8 @@ if __name__ == '__main__':
         name=args.task+"-distill-agent",
         distilled_tree=distilled_tree,
         chat_history=chat_history,
-        model=args.model
+        model=args.model,
+        entity_types=["ANIMAL", "SUBSTANCE", "DATE", "EVENT", "TRAITS", "ACTION", "OTHER"]
     )
     generate_agent = GenerationAgent(
         name=args.task+"-generate-agent",
