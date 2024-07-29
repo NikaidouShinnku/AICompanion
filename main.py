@@ -3,11 +3,14 @@ import json
 import time
 
 import pyperclip
+from prompt_toolkit import PromptSession, HTML
+from prompt_toolkit.history import FileHistory
 
 from agent.critique import CritiqueAgent
 from agent.simulation import SimulationAgent
 from agent.summary import SummaryAgent
 from agent.entity_extraction_distill import EntityExtractionAgent
+from knowledge_graph.entity_relation_triple import EntityRelationTriple
 from asr import record_and_asr
 from chat_history import ChatHistory
 from common.multiline_input_util import multi_input
@@ -26,6 +29,7 @@ from snapshot import snapshot_directory
 # import readline
 from common.convert import json_str_to_yaml_str
 from entity_extraction.mermaid_opts import create_mermaid_png_and_display
+from common.mermaid_code import generate_mermaid
 
 history_file = 'history.txt'
                                                                                                                       
@@ -111,8 +115,9 @@ if __name__ == '__main__':
     parser.add_argument('--restore', type=str, help='restore the task', default="")
     args = parser.parse_args()
 
-    valid_tones = ['严肃的', '幽默的', '海盗式的', '随意的', '莎士比亚式的', '无建议']
+    valid_tones = ['严肃的', '幽默的', '海盗式的', '随意的', '莎士比亚式的', '无建议', '']
     tone = None
+    entity_relationship_triple = EntityRelationTriple()
     tree_manager = KnowledgeTreeManager()
     chat_history = ChatHistory()
     distilled_tree = KnowledgeGraph.restore(f"{plan_directory()}/{args.task}")
@@ -126,6 +131,8 @@ if __name__ == '__main__':
 
         if tone_input in valid_tones:
             tone = tone_input
+            if tone == '':
+                tone = '无建议'
         else:
             print("无效的选项，请重新输入。")
 
@@ -141,7 +148,8 @@ if __name__ == '__main__':
         distilled_tree=distilled_tree,
         chat_history=chat_history,
         model=args.model,
-        entity_types=["ANIMAL", "SUBSTANCE", "DATE", "EVENT", "TRAITS", "ACTION", "OTHER"]
+        entity_types=["ANIMAL", "SUBSTANCE", "DATE", "EVENT", "TRAITS", "ACTION", "OTHER"],
+        entity_relationship_triple=entity_relationship_triple
     )
     generate_agent = GenerationAgent(
         name=args.task+"-generate-agent",
@@ -180,7 +188,7 @@ if __name__ == '__main__':
         question = generate_agent.generate_question()
 
         chat_history.append(role="萃取专家", content=question)
-        show_response(res=question, title=f'萃取专家 / {args.model} / Roleplay')
+        show_response(res=question, title=f'  萃取专家', title_align="right")
         if args.tts:
             tts(question, output="question.mp3", play=True)
         if args.auto:
@@ -188,8 +196,12 @@ if __name__ == '__main__':
             show_response(user_input, title="auto-reply")
         else:
             try:
+                session = PromptSession(
+                    HTML(f'<ansicyan><b> {args.interviewee}  >> </b></ansicyan>'),
+                    history=FileHistory('history.txt')
+                )
                 while True:
-                    user_input = input(args.interviewee + ": ")
+                    user_input = session.prompt()
                     if user_input == "/dump":
                         chat_history_chopped_last = ChatHistory()
                         chat_history_chopped_last.chat_history = chat_history.chat_history[:-1]
@@ -209,6 +221,13 @@ if __name__ == '__main__':
                                    language="yaml",
                                    title="DistilledTree"
                                    )
+                    elif user_input == "/graph":
+                        mermaid_code = generate_mermaid(entity_relationship_triple.get_entities(),
+                                        entity_relationship_triple.get_relationships()
+                                        )
+                        create_mermaid_png_and_display(mermaid_code=mermaid_code,
+                                                       relationships=entity_relationship_triple.get_relationships()
+                                                       )
                     elif user_input == "/generation-prompt":
                         show_response(generate_agent.get_prompt(), title="Generation / Prompt")
                     elif user_input == "/distill-prompt":
@@ -225,7 +244,7 @@ if __name__ == '__main__':
                     elif user_input == '/clipboard':
                         user_input = pyperclip.paste()
 
-                    elif user_input[0] == "/":
+                    elif user_input[:1] == "/":
                         print("Unknown Command")
                         continue
                     elif user_input:
@@ -235,10 +254,11 @@ if __name__ == '__main__':
                 # Save history to the history file
                 # save_history(history_file)
 
-
         chat_history.append(role=args.interviewee, content=user_input)
-        mermaid_code = entity_extraction_agent.extract_triplet(turn=progress.get_round())
-        create_mermaid_png_and_display(mermaid_code=mermaid_code)
+        mermaid_code, relation = entity_extraction_agent.extract_triplet(turn=progress.get_round())
+        create_mermaid_png_and_display(mermaid_code=mermaid_code,
+                                       relationships=relation
+                                       )
 
         distill_agent.update_tree(turn=progress.get_round())
         tree_manager.push_back(distilled_tree)

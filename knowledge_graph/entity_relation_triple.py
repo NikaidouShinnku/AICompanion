@@ -5,12 +5,24 @@ class EntityRelationTriple:
     def __init__(self):
         self.entities: List[Dict[str, str]] = []
         self.relationships: List[Dict[str, str]] = []
+        self.current_entity_id = 1
+        self.current_relationship_id = 1
 
     def get_entities(self) -> List[Dict[str, str]]:
         return self.entities
 
     def get_relationships(self) -> List[Dict[str, str]]:
         return self.relationships
+
+    def generate_entity_id(self) -> int:
+        entity_id = self.current_entity_id
+        self.current_entity_id += 1
+        return entity_id
+
+    def generate_relationship_id(self) -> int:
+        relationship_id = self.current_relationship_id
+        self.current_relationship_id += 1
+        return relationship_id
 
     def merge_entities_and_relationships(
             self,
@@ -24,6 +36,7 @@ class EntityRelationTriple:
         # 处理传入的实体列表
         for entity in other_entities:
             if entity['name'] not in existing_entity_names:
+                entity['id'] = str(self.generate_entity_id())  # 添加ID
                 self.entities.append(entity)
                 existing_entity_names.add(entity['name'])
 
@@ -33,7 +46,9 @@ class EntityRelationTriple:
             if key in existing_relationships:
                 existing_relationship = existing_relationships[key]
                 if existing_relationship['description'] != relationship['description']:
-                    existing_relationship['description'] += f", {relationship['description']}"
+                    existing_relationship['description'] += f"| {relationship['description']}"
             else:
+                relationship['id'] = str(self.generate_relationship_id())  # 添加ID
                 self.relationships.append(relationship)
                 existing_relationships[key] = relationship
+

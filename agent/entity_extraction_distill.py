@@ -7,22 +7,28 @@ from common.show_utils import show_response
 from chat_history import ChatHistory
 from dataset import dataset_directory
 from interviewee import interviewee_directory
-from knowledge_graph.entity_relation_triple import EntityRelationTriple
 from llms import chat
 from prompts import read_prompt
 from knowledge_graph.model import KnowledgeGraph
 from icecream import ic
-from knowledge_graph import entity_relation_triple
 
 
 class EntityExtractionAgent:
-    def __init__(self, name: str, distilled_tree: KnowledgeGraph, chat_history: ChatHistory, model: str, entity_types: List):
+    def __init__(
+            self,
+            name: str,
+            distilled_tree: KnowledgeGraph,
+            chat_history: ChatHistory,
+            model: str,
+            entity_types: List, 
+            entity_relationship_triple
+    ):
         self.chat_history = chat_history
         self.name = name
         self.distilled_tree = distilled_tree
         self.model = model
         self.entity_types = entity_types
-        self.entity_relation_triple = EntityRelationTriple()
+        self.entity_relation_triple = entity_relationship_triple
 
         self.final_prompt_template = read_prompt("entity_extraction_distill")
 
@@ -40,8 +46,10 @@ class EntityExtractionAgent:
             tuple_delimiter='<|>',
             completion_delimiter='<|COMPLETE|>',
             entity_types=self.entity_types,
-            input_text=current_response
-
+            domain=self.distilled_tree.domain,
+            input_text=current_response,
+            history_entities=self.entity_relation_triple.get_relationships(),
+            history_relationships=self.entity_relation_triple.get_entities()
         )
 
     def write_mermaid_to_file(self, mermaid_code: str, file_path):
@@ -72,10 +80,6 @@ class EntityExtractionAgent:
 
         entity, relation = parse_entity_relation(res)
         self.entity_relation_triple.merge_entities_and_relationships(entity, relation)
-        mermaid_code = generate_mermaid(self.entity_relation_triple.get_entities(),
-                                        self.entity_relation_triple.get_relationships()
-                                        )
+        mermaid_code = generate_mermaid(entity, relation)
 
-        self.write_mermaid_to_file(mermaid_code=mermaid_code, file_path="entity_extraction/mermaid-test")
-
-        return mermaid_code
+        return mermaid_code, relation

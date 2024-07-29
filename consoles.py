@@ -239,7 +239,8 @@ def print_markdown(
     style: str = "bold white",
     console: Console = None,
     title: str = None,
-    bgcolor: str = "black"
+    bgcolor: str = "black",
+    title_align: str = "center"
 
 ):
     if console is None:
@@ -261,9 +262,10 @@ def print_markdown(
 
     panel = Panel(
         markdown,
+        title_align=title_align,
         title=styled_title,
         box=ROUNDED,
-        padding=(2, 2),
+        padding=(1, 1),
         style=style,
         width=120,
         border_style="dark_cyan",

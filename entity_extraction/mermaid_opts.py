@@ -2,6 +2,7 @@ import base64
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -9,6 +10,7 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 from icecream import ic
+from common.show_utils import show_response
 
 
 #
@@ -101,6 +103,22 @@ def mermaid_code_of(entities, relationships):
 
     return code
 
+from PIL import Image
+
+def get_image_size(image_path):
+    with Image.open(image_path) as img:
+        width, height = img.size
+    return width, height
+
+from screeninfo import get_monitors
+
+def get_screen_resolution():
+    monitors = get_monitors()
+    for monitor in monitors:
+        print(f"Monitor: {monitor.name}, Width: {monitor.width}, Height: {monitor.height}")
+
+    return monitors[0].width, monitors[0].height
+
 def display_image_in_terminal(path):
     """
     Displays an image centered in the terminal with optional resizing.
@@ -111,17 +129,54 @@ def display_image_in_terminal(path):
     Returns:
         None
     """
-    print("TRYING TO DISPLAY")
+    print("\n" * 10)
+    img_x, img_y = get_image_size(path)
+    term_col, term_row = shutil.get_terminal_size()
+    scr_x, scr_y = get_screen_resolution()
+
+    pixels_per_col = scr_x / term_col
+    pixels_per_row = scr_y / term_row
+
+    ic(img_x, img_y, term_col, term_row, pixels_per_col, pixels_per_row)
+
+    x = int((scr_x - img_x) / 2 / pixels_per_col)
+    y = int(scr_y / pixels_per_row)
+
+    ic(x,y)
+
+    if x < 0:
+        x = 0
+    if y < 0:
+        y = 0
+
     subprocess.run(
         [
             "wezterm",
             "imgcat",
-            path
+            path,
+            # "--resize",
+            # "1000x800",
+            "--position",
+            f'{x},{y}'
         ]
     )
     print()  # Add a newline after the image
 
-def create_mermaid_png_and_display(mermaid_code, display_in_term=True):
+
+def display_relationship_descriptions(relationships):
+    if not relationships:
+        return
+
+    note = "\n".join([
+        f'{relationship["id"]}. {relationship["description"]}'
+        for relationship in relationships
+    ])
+
+    show_response(note, title="关系备注", title_align="center")
+
+
+
+def create_mermaid_png_and_display(mermaid_code, relationships, display_in_term=True):
     # Create a temporary file for the Mermaid code
     with tempfile.NamedTemporaryFile(mode="w", suffix=".mmd", delete=False) as mmd_file:
         mmd_file_path = mmd_file.name
@@ -134,6 +189,7 @@ def create_mermaid_png_and_display(mermaid_code, display_in_term=True):
     command = [
         r"C:\Users\25899\Downloads\node-v20.15.1-win-x64\mmdc.cmd",
         "-i", mmd_file_path,
+        "-t", "dark",
         "--width", "1200",
         "--height", "2000",
         "-b", "transparent",
@@ -142,11 +198,13 @@ def create_mermaid_png_and_display(mermaid_code, display_in_term=True):
 
     try:
         if display_in_term:
+            print(mermaid_code)
             result = subprocess.run(command, check=True, capture_output=True)
 
         # Display the PNG in iTerm2
         if os.path.exists(png_file_path):
             display_image_in_terminal(png_file_path)
+            display_relationship_descriptions(relationships)
         else:
             raise FileNotFoundError(f"File {png_file_path} does not exist")
 
@@ -163,3 +221,4 @@ def create_mermaid_png_and_display(mermaid_code, display_in_term=True):
                 os.unlink(png_file_path)
             except OSError as e:
                 print(f"Error deleting file {png_file_path}: {e}")
+
