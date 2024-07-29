@@ -13,19 +13,17 @@ from agent.entity_extraction_distill import EntityExtractionAgent
 from knowledge_graph.entity_relation_triple import EntityRelationTriple
 from asr import record_and_asr
 from chat_history import ChatHistory
-from common.multiline_input_util import multi_input
-from common.show_utils import show_response
+from common.show_utils import show_response, to_progress_bar
 from knowledge_graph.model import KnowledgeGraph
 from knowledge_graph.model_manager import KnowledgeTreeManager
 import argparse
-from consoles import print_markdown, print_code
-from llms import chat
+from consoles import print_code
 from plan import plan_directory
 from agent.distill import DistillAgent
 from agent.generation import GenerationAgent
-from progress import Progress
+from progress.progress import Progress
+from prompts import read_prompt
 from tts import tts
-from snapshot import snapshot_directory
 # import readline
 from common.convert import json_str_to_yaml_str
 from entity_extraction.mermaid_opts import create_mermaid_png_and_display
@@ -184,6 +182,7 @@ if __name__ == '__main__':
 
     begin = time.time()
 
+    turn = 0
     while True:
         question = generate_agent.generate_question()
 
@@ -193,7 +192,8 @@ if __name__ == '__main__':
             tts(question, output="question.mp3", play=True)
         if args.auto:
             user_input = simulate_agent.simulate_response()
-            show_response(user_input, title="auto-reply")
+            show_response(user_input, title="auto-reply  ", title_align='left')
+            turn += 1
         else:
             try:
                 session = PromptSession(
@@ -239,6 +239,30 @@ if __name__ == '__main__':
                         tree_manager.push_back(distilled_tree.clone())
                     elif user_input == "/undo":
                         tree_manager.pop()
+                    elif user_input == "/progress":
+                        progress_template = read_prompt("show_progress")
+                        p = progress.get_progress()
+
+                        objective_progress = to_progress_bar(
+                            n_done=p["objectives_completed_count"],
+                            n_total=p["objectives_total"]
+                        )
+                        time_elapsed = p["time_total"]-p["time_remaining"]
+                        time_progress = to_progress_bar(
+                            n_done=time_elapsed,
+                            n_total=p["time_total"]
+                        )
+                        progress_stats = progress_template.format(
+                            time_progress=time_progress,
+                            time_elapsed=time_elapsed,
+                            time_total=p["time_total"],
+                            obj_progress=objective_progress,
+                            obj_completed=p["objectives_completed_count"],
+                            obj_total=p["objectives_total"],
+                            rounds_completed=p["round_total"],
+                            rounds_remaining=p["rounds_remaining"] if p["rounds_remaining"] != 'Unknown' else ''
+                        )
+                        show_response(progress_stats, title="访谈进度概览", width=80)
                     elif user_input == '/asr':
                         user_input = record_and_asr()
                     elif user_input == '/clipboard':
@@ -270,5 +294,12 @@ if __name__ == '__main__':
         if time.time() - begin > distilled_tree.estimated_minute * 60:
             show_response(generate_agent.end_chat(), title="萃取专家")
             break
+
+        if turn % 2 == 0:
+            verified = input("continue?(Y/N)")
+            if verified in ('Y', ''):
+                continue
+            else:
+                args.auto = False
 
 

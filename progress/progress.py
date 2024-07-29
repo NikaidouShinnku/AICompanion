@@ -23,11 +23,13 @@ class Progress:
         self.objectives_completed = objectives_completed
 
     def get_progress(self):
+        assert self.objectives_count > 0
         stats = {
             "round_total": self.rounds,
             "objectives_total": self.objectives_count,
+            "objectives_completed_count": self.objectives_completed,
             "objectives_completed": f'{(self.objectives_completed/self.objectives_count) * 100}%',
-            "time_total": int(self.time_total / 60),
+            "time_total": int(self.time_total / 60) or 1,
             "time_remaining": int(self.get_time_remaining() / 60)
         }
         if self.rounds == 0:

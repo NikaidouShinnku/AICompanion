@@ -47,6 +47,7 @@ class EntityRelationTriple:
                 existing_relationship = existing_relationships[key]
                 if existing_relationship['description'] != relationship['description']:
                     existing_relationship['description'] += f"| {relationship['description']}"
+                relationship['id'] = str(existing_relationship['id'])
             else:
                 relationship['id'] = str(self.generate_relationship_id())  # 添加ID
                 self.relationships.append(relationship)

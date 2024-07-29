@@ -240,8 +240,8 @@ def print_markdown(
     console: Console = None,
     title: str = None,
     bgcolor: str = "black",
-    title_align: str = "center"
-
+    title_align: str = "center",
+    width: int = 120,
 ):
     if console is None:
         console = Console()
@@ -267,13 +267,12 @@ def print_markdown(
         box=ROUNDED,
         padding=(1, 1),
         style=style,
-        width=120,
+        width=width,
         border_style="dark_cyan",
     )
     panel.style = Style(color="white", bgcolor=bgcolor)
 
     console.print(place_to_center(panel, total_width=console.size.width))
-
 
 def print_pair(*, src: str, dst: str, src_title: str, dst_title: str) -> None:
     """
