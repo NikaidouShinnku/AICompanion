@@ -1,6 +1,6 @@
 [
   {
-    "description": "An example of progress too slow",
+    "description": "An example of progress too slow, but not change objective",
     "knowledge_graph": {
       "id": "ed6d91a5-5a60-40c2-90e7-252e7b6a8d9f",
       "domain": "Machine Learning",
@@ -21,7 +21,7 @@
             }
           ],
           "目标进度": 0.15,
-          "完成度": "未完成，"
+          "完成度": "未完成，进度未过半"
         },
         {
           "id": "08e8f75a-74b4-4371-91c2-b61efba11a3d",
@@ -37,7 +37,7 @@
             }
           ],
           "目标进度": 0.05,
-          "完成度": "未开始"
+          "完成度": "未完成，进度未过半"
         },
         {
           "id": "4e4b0d6d-1d5b-4094-819b-e3a7e7a7a9e1",
@@ -48,14 +48,83 @@
         }
       ],
       "task_complete": false,
-      "estimated_minute": 60,
+      "estimated_minute": 20,
       "start_date": "2023-07-05",
       "end_date": "2023-07-05"
     },
-    "task_progress": "预设访谈总时间:10分钟 剩余访谈时间:4分钟 总Objective数量:5个 完成Objective数:0个 完成的Objective百分比:0.0% 平均每一轮问答需要的时间:1分钟 预计剩余访谈轮数:3轮 对话轮数:5轮",
-    "current_response": "Supervised Learning is a type of machine learning where the model is trained on labeled data to learn a mapping between input data and output labels. Unlike Unsupervised Learning, where the model has to find patterns on its own. Supervised Learning is useful for tasks such as image classification and speech recognition.",
-    "thought": "The time left isn't enough to complete all the ",
-    "verify": "No",
-    "reply": "Could you provide detailed examples of application scenarios where Supervised Learning is particularly effective, and discuss the advantages and limitations of using Supervised Learning in these contexts?"
+    "task_progress": "预设访谈总时间:20分钟 剩余访谈时间:8分钟 总Objective数量:3个 完成Objective数:0个 完成的Objective百分比:0.0% 平均每一轮问答需要的时间:3分钟 预计剩余访谈轮数:3轮 对话轮数:4轮",
+    "review_history":[
+      {
+        "role": "Asker",
+        "content": "How can one evaluate and select the best model in supervised machine learning to optimize predictive accuracy and generalization capabilities?"
+      }
+    ],
+    "thought": "The time has gone half, and the objective completion is 0%. It is obviously that the time left isn't enough to complete all the objectives. After my evaluation, it seems like all 3 objectives are equally important due to their popularity and role in the field of AI. The question asker should complete the current objective with faster pace.",
+    "verification": "Yes",
+    "reply": "We are running out of time, and our efficiency isn't good enough. Your current objective is considered important. Please harry up and complete that objective."
+  },
+  {
+    "description": "An example of progress too slow, change objective",
+    "knowledge_graph": {
+      "id": "ed6d91a5-5a60-40c2-90e7-252e7b6a8d9f",
+      "domain": "Machine Learning",
+      "name": "ML Fundamentals",
+      "task_description": "Master the basics of Machine Learning",
+      "objectives": [
+        {
+          "id": "2f37d6b4-8c9b-46b5-84c6-4234b2c0d05a",
+          "obj_description": "Understand Supervised Learning",
+          "knowledge": [
+            {
+              "id": "a33b7b6d-10c0-43ad-8fd5-2c7e5ff2d256",
+              "concept": "A type of machine learning with labeled data",
+              "why_important": "Supervised Learning is useful for tasks such as image classification and speech recognition.",
+              "knowledge_description": "Supervised Learning model trains on labeled data to learn a mapping between input data and output labels.",
+              "example": null,
+              "other": null
+            }
+          ],
+          "目标进度": 0.15,
+          "完成度": "未完成，进度未过半"
+        },
+        {
+          "id": "08e8f75a-74b4-4371-91c2-b61efba11a3d",
+          "obj_description": "Learn Unsupervised Learning",
+          "knowledge": [
+            {
+              "id": "52d90a48-bf4f-4c37-b4c8-4c2e9a3f7f8d",
+              "concept": "A type of machine learning that find patterns on its own",
+              "why_important": null,
+              "knowledge_description": "Unsupervised Learning model has to find patterns on its own",
+              "example": null,
+              "other": null
+            }
+          ],
+          "目标进度": 0.05,
+          "完成度": "未完成，进度未过半"
+        },
+        {
+          "id": "4e4b0d6d-1d5b-4094-819b-e3a7e7a7a9e1",
+          "obj_description": "Understand definition of AI, how does neuro-network work",
+          "knowledge": [],
+          "目标进度": 0,
+          "完成度": "未开始"
+        }
+      ],
+      "task_complete": false,
+      "estimated_minute": 20,
+      "start_date": "2023-07-05",
+      "end_date": "2023-07-05"
+    },
+    "task_progress": "预设访谈总时间:20分钟 剩余访谈时间:8分钟 总Objective数量:3个 完成Objective数:0个 完成的Objective百分比:0.0% 平均每一轮问答需要的时间:3分钟 预计剩余访谈轮数:3轮 对话轮数:4轮",
+    "review_history":[
+      {
+        "role": "Asker",
+        "content": "How can one evaluate and select the best model in supervised machine learning to optimize predictive accuracy and generalization capabilities?"
+      }
+    ],
+    "thought": "The time has gone half, and the objective completion is 0%. It is obviously that the time left isn't enough to complete all the objectives. After my evaluation, it seems like the objective 'Understand definition of AI, how does neuro-network work' is the most important; it is the corner stone to master the basics of AI. The question asker should switch to and complete that objective.",
+    "verification": "No",
+    "reply": "We are running out of time, and our efficiency isn't good enough. Your current objective is not the most urgent one. Please switch to the objective 'Understand definition of AI, how does neuro-network work' and quickly complete it."
   }
 ]

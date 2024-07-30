@@ -1,0 +1,21 @@
+### Example{num}
+### 是关于{description}的
+### 当前的知识树
+{distilled_tree}
+
+### 和提问者的历史对话和建议
+{review_history}
+
+[OUTPUT]:
+<thought>
+{reasons}
+</thought>
+<verify>
+{verification}
+</verify>
+<reply>
+{reply}
+</reply>
+
+
+

@@ -7,6 +7,7 @@ from prompt_toolkit import PromptSession, HTML
 from prompt_toolkit.history import FileHistory
 
 from agent.critique import CritiqueAgent
+from agent.generation_review import ReviewGenerationAgent
 from agent.simulation import SimulationAgent
 from agent.summary import SummaryAgent
 from agent.entity_extraction_distill import EntityExtractionAgent
@@ -118,6 +119,7 @@ if __name__ == '__main__':
     entity_relationship_triple = EntityRelationTriple()
     tree_manager = KnowledgeTreeManager()
     chat_history = ChatHistory()
+    review_history = ChatHistory()
     distilled_tree = KnowledgeGraph.restore(f"{plan_directory()}/{args.task}")
     progress = Progress(total_minutes=distilled_tree.estimated_minute, objectives_count=len(distilled_tree.objectives))
 
@@ -157,7 +159,7 @@ if __name__ == '__main__':
         model=args.model,
         progress=progress,
         tone=tone,
-        prompt="roleplay_generate"
+        review_history=review_history
     )
     simulate_agent = SimulationAgent(
         name=args.task+"-simulate-agent",
@@ -179,13 +181,29 @@ if __name__ == '__main__':
         chat_history=chat_history,
         model=args.model
     )
+    review_generation_agent = ReviewGenerationAgent(
+        name=args.task+"-review-generate-agent",
+        distilled_tree=distilled_tree,
+        model=args.model,
+        progress=progress,
+        review_history=review_history
+    )
     # other agents
 
     begin = time.time()
 
     turn = 0
     while True:
-        question = generate_agent.generate_question()
+
+        for i in range(5):
+            question = generate_agent.generate_question()
+            review_history.append(role="Asker", content=question)
+            verification, answer = review_generation_agent.generate_review()
+            review_history.append(role="Reviewer", content="问题是否通过审核：" + answer)
+            review_history.append(role="Reviewer", content=answer)
+            print(review_history.get_message())
+            if verification == "Yes":
+                break
 
         chat_history.append(role="萃取专家", content=question)
         show_response(res=question, title=f'  萃取专家', title_align="right")

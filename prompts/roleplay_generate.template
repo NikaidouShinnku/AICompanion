@@ -20,7 +20,7 @@
       "progress": "<这里是该Objective完成的进度，根据萃取到知识的数量质量改变>",
       "complete": "<这里是该Objective是否完成，如果完成就可以不再对该Objective进行提问>"
     }}
-    ]
+  ]
 }}
 ```
 
@@ -56,6 +56,7 @@
 注意：
 - 优先级指导：当Objectives中存在未完成的Objective时，必须优先完成当前进行中的Objective，再开始新的Objective。只有当一个Objective完全完成后，才开始下一个Objective（除非用户聊到其他Objective，则可以破例转换，保证当前对话连贯性）。观察每个Objective下的Knowledge，如果其中的某些属性缺失，优先追问补全该Knowledge。
 - 提问原则：进行中的Objective：始终选择进度较高的Objective继续提问，直到完成。
+- 上级指导：对于你的提问，你的上级会给你一些建议和指示。请尽量遵守建议并改进生成问题的方向。当上级需要你改变话题时，照做。
 - 控制问题数量和深度：每次只能提出一个问题，确保问题简洁且直接推动Objective完成。
 - 话题连贯性：确保对话连贯，除对方提起否则不要主动切换话题，直到当前Objective完成。
 - 情商沟通：了解{interviewee}，注意提问的语气，收到回复需要判定对方心情，如果对方表现出不满请及时询问错误并调整问题。语气建议：{tone}
@@ -75,6 +76,9 @@
 
 ### {interviewee}这一轮的回答
 {current_response}
+
+### 上级和你的对话，给你的一些建议（Reviewer是上级，Asker是你）
+{review_history}
 
 现在该你说话了，现在发挥你该领域的敏感性和对访谈中关键细节的洞察力和记者的专业沟通能力，设计一个自然，温和但是敏锐的回复。
 [init]从thought开始，查看注意事项，选择objective，然后给出reply

@@ -33,15 +33,17 @@ class GenerationAgent:
             model: str,
             progress: Progress,
             tone: str,
-            prompt: str
+            review_history:
+            ChatHistory
     ):
+        self.review_history = review_history
         self.chat_history = chat_history
         self.tone = tone
         self.name = name
         self.distilled_tree = distilled_tree
         self.interviewee = interviewee
         self.begin = datetime.now()
-        self.final_prompt_template = read_prompt(prompt)
+        self.final_prompt_template = read_prompt("roleplay_generate")
         # self.candidate_prompt_template = read_prompt("professional_generate")
         # self.candidate_prompt_template2 = read_prompt("roleplay2_generate")
         self.suggestion = None
@@ -77,6 +79,7 @@ class GenerationAgent:
                     question=example["question"],
                     objective=example["target_objective"],
                     reasons=example["thought"],
+                    review_history=example["review_history"],
                     num=num
                 )
             )
@@ -107,6 +110,7 @@ class GenerationAgent:
             interviewee=self.interviewee_name,
             user_background=self.background_info,
             tone=self.tone,
+            review_history=self.review_history,
             domain=self.distilled_tree.domain,
             examples=self.examples,
             distilled_tree=self.readable_tree,

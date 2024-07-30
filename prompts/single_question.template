@@ -6,6 +6,9 @@
 ### 和访谈对象的历史对话
 {chat_history}
 
+### 和上级的历史对话和建议
+{review_history}
+
 ### 访谈对象这一轮的回答
 {current_response}
 
@@ -15,7 +18,7 @@
 </thought>
 <objective>
 {objective}
-<objective>
+</objective>
 <reply>
 {question}
 </reply>

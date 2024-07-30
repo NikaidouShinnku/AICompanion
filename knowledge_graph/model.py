@@ -101,27 +101,27 @@ class KnowledgeGraph(BaseModel):
 
         return self.json(exclude_none=True)
 
-    @contextlib.contextmanager
-    def with_xml_context(self, tag: str, context:list):
-        context.append(f"<{tag}")
-        yield
-        context.append(f"</{tag}>")
-    def to_xml(self):
-        """
-        Get the JSON representation of the knowledge tree.
-        Returns:
-            str: JSON string representing the knowledge tree.
-        """
-        formats = []
-        with self.with_xml_context(tag="knowledge_graph", context=formats):
-            with self.with_xml_context(tag="id", context=formats):
-                pass
-
-        formats.append("<knowledge_graph id=1234>")
-
-        formats.append("</knowledge_graph>")
-
-        return self.json(exclude_none=True)
+    # @contextlib.contextmanager
+    # def with_xml_context(self, tag: str, context:list):
+    #     context.append(f"<{tag}")
+    #     yield
+    #     context.append(f"</{tag}>")
+    # def to_xml(self):
+    #     """
+    #     Get the JSON representation of the knowledge tree.
+    #     Returns:
+    #         str: JSON string representing the knowledge tree.
+    #     """
+    #     formats = []
+    #     with self.with_xml_context(tag="knowledge_graph", context=formats):
+    #         with self.with_xml_context(tag="id", context=formats):
+    #             pass
+    #
+    #     formats.append("<knowledge_graph id=1234>")
+    #
+    #     formats.append("</knowledge_graph>")
+    #
+    #     return self.json(exclude_none=True)
 
     def format_to_tree(self):
         """
