@@ -156,7 +156,8 @@ if __name__ == '__main__':
         interviewee=args.interviewee,
         model=args.model,
         progress=progress,
-        tone=tone
+        tone=tone,
+        prompt="roleplay_generate"
     )
     simulate_agent = SimulationAgent(
         name=args.task+"-simulate-agent",
@@ -295,7 +296,7 @@ if __name__ == '__main__':
             show_response(generate_agent.end_chat(), title="萃取专家")
             break
 
-        if turn % 2 == 0:
+        if turn % 5 == 0:
             verified = input("continue?(Y/N)")
             if verified in ('Y', ''):
                 continue

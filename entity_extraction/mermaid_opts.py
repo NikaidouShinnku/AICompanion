@@ -129,7 +129,6 @@ def display_image_in_terminal(path):
     Returns:
         None
     """
-    print("\n" * 10)
     img_x, img_y = get_image_size(path)
     term_col, term_row = shutil.get_terminal_size()
     scr_x, scr_y = get_screen_resolution()
@@ -137,12 +136,14 @@ def display_image_in_terminal(path):
     pixels_per_col = scr_x / term_col
     pixels_per_row = scr_y / term_row
 
-    ic(img_x, img_y, term_col, term_row, pixels_per_col, pixels_per_row)
+    print("\n" * int(img_y / pixels_per_row))
+
+    # ic(img_x, img_y, term_col, term_row, pixels_per_col, pixels_per_row)
 
     x = int((scr_x - img_x) / 2 / pixels_per_col)
     y = int(scr_y / pixels_per_row)
 
-    ic(x,y)
+    # ic(x,y)
 
     if x < 0:
         x = 0
@@ -198,7 +199,6 @@ def create_mermaid_png_and_display(mermaid_code, relationships, display_in_term=
 
     try:
         if display_in_term:
-            print(mermaid_code)
             result = subprocess.run(command, check=True, capture_output=True)
 
         # Display the PNG in iTerm2

@@ -32,7 +32,8 @@ class GenerationAgent:
             interviewee: str,
             model: str,
             progress: Progress,
-            tone: str
+            tone: str,
+            prompt: str
     ):
         self.chat_history = chat_history
         self.tone = tone
@@ -40,7 +41,7 @@ class GenerationAgent:
         self.distilled_tree = distilled_tree
         self.interviewee = interviewee
         self.begin = datetime.now()
-        self.final_prompt_template = read_prompt("roleplay_generate")
+        self.final_prompt_template = read_prompt(prompt)
         # self.candidate_prompt_template = read_prompt("professional_generate")
         # self.candidate_prompt_template2 = read_prompt("roleplay2_generate")
         self.suggestion = None
