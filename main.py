@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import shutil
 import time
 
 import pyperclip
@@ -102,12 +103,50 @@ def load_restore_data(file: str):
         tone = data["tone"]
     return distilled_tree, chat_history, task, interviewee, model, tone
 
+def show_progress():
+    progress_template = read_prompt("show_progress")
+    p = progress.get_progress()
+
+    objective_progress = to_progress_bar(
+        n_done=p["objectives_completed_count"],
+        n_total=p["objectives_total"]
+    )
+    time_elapsed = p["time_total"] - p["time_remaining"]
+    time_progress = to_progress_bar(
+        n_done=time_elapsed,
+        n_total=p["time_total"]
+    )
+    progress_stats = progress_template.format(
+        time_progress=time_progress,
+        time_elapsed=time_elapsed,
+        time_total=p["time_total"],
+        obj_progress=objective_progress,
+        obj_completed=p["objectives_completed_count"],
+        obj_total=p["objectives_total"],
+        rounds_completed=p["round_total"],
+        rounds_remaining=p["rounds_remaining"] if p["rounds_remaining"] != 'Unknown' else ''
+    )
+    show_response(progress_stats, title="访谈进度概览", width=80)
+
+def show_tree():
+    print_code(json_str_to_yaml_str(tree_manager.get_current_tree().format_to_tree()),
+               language="yaml",
+               title="DistilledTree"
+               )
+
+def show_graph():
+    mermaid_code = generate_mermaid(entity_relationship_triple.get_entities(),
+                                    entity_relationship_triple.get_relationships()
+                                    )
+    create_mermaid_png_and_display(mermaid_code=mermaid_code,
+                                   relationships=entity_relationship_triple.get_relationships()
+                                   )
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default="llama3-70b-8192", type=str, help='Model name')
     parser.add_argument('--stream', action='store_true', help='Run in stream mode')
-    parser.add_argument('--task',  type=str, help='Choose the task', default="organism-classification-distill-plan")
+    parser.add_argument('--task',  type=str, help='Choose the task', default="wow-distill-plan")
     parser.add_argument('--interviewee', type=str, help='Name of the interviewee', default="maria")
     parser.add_argument('--auto', action='store_true', help='Do a simulation')
     parser.add_argument('--tts', action='store_true', help='Enable tts')
@@ -191,18 +230,22 @@ if __name__ == '__main__':
     # other agents
 
     begin = time.time()
-
     turn = 0
+    term_col, _ = shutil.get_terminal_size()
     while True:
 
         for i in range(5):
             question = generate_agent.generate_question()
             review_history.append(role="Asker", content=question)
+            show_response(question, title="待审核问题（小组讨论）", offset=term_col//2,width=60, title_align="right", border_color="cyan")
             verification, answer = review_generation_agent.generate_review()
-            review_history.append(role="Reviewer", content="问题是否通过审核：" + answer)
-            review_history.append(role="Reviewer", content=answer)
-            print(review_history.get_message())
+            if verification == "No":
+                review_history.append(role="Reviewer", content=answer)
+                show_response(" ", title="问题审核员（小组讨论）", offset=term_col // 2, width=60, title_align="left", border_color="cyan")
+                show_response(answer, title="问题审核员（小组讨论）", offset=term_col//2, width=60, title_align="left", border_color="cyan")
             if verification == "Yes":
+                review_history.append(role="Reviewer", content="该问题被审核通过")
+                show_response(" ", title="问题审核员（小组讨论）", offset=term_col // 2, width=60, title_align="left", border_color="cyan")
                 break
 
         chat_history.append(role="萃取专家", content=question)
@@ -234,23 +277,21 @@ if __name__ == '__main__':
                             tone=tone
                         )
                     elif user_input == "/auto":
-                        args.auto = not args.auto
+                        args.auto = True
+                        user_input = simulate_agent.simulate_response()
+                        show_response(user_input, title="auto-reply  ", title_align='left')
+                        turn += 1
+                        break
                     elif user_input == "/tree":
-                        print_code(json_str_to_yaml_str(tree_manager.get_current_tree().format_to_tree()),
-                                   language="yaml",
-                                   title="DistilledTree"
-                                   )
+                        show_tree()
                     elif user_input == "/graph":
-                        mermaid_code = generate_mermaid(entity_relationship_triple.get_entities(),
-                                        entity_relationship_triple.get_relationships()
-                                        )
-                        create_mermaid_png_and_display(mermaid_code=mermaid_code,
-                                                       relationships=entity_relationship_triple.get_relationships()
-                                                       )
+                        show_graph()
                     elif user_input == "/generation-prompt":
                         show_response(generate_agent.get_prompt(), title="Generation / Prompt")
                     elif user_input == "/distill-prompt":
                         show_response(distill_agent.get_prompt(), title="Distill / Prompt")
+                    elif user_input == "/review-generation-prompt":
+                        show_response(review_generation_agent.get_prompt(), title="Generation-Review / Prompt")
                     elif user_input == "/summary-prompt":
                         show_response(summary_agent.get_prompt(), title="Summary / Prompt")
                     elif user_input == "/refine":
@@ -259,29 +300,7 @@ if __name__ == '__main__':
                     elif user_input == "/undo":
                         tree_manager.pop()
                     elif user_input == "/progress":
-                        progress_template = read_prompt("show_progress")
-                        p = progress.get_progress()
-
-                        objective_progress = to_progress_bar(
-                            n_done=p["objectives_completed_count"],
-                            n_total=p["objectives_total"]
-                        )
-                        time_elapsed = p["time_total"]-p["time_remaining"]
-                        time_progress = to_progress_bar(
-                            n_done=time_elapsed,
-                            n_total=p["time_total"]
-                        )
-                        progress_stats = progress_template.format(
-                            time_progress=time_progress,
-                            time_elapsed=time_elapsed,
-                            time_total=p["time_total"],
-                            obj_progress=objective_progress,
-                            obj_completed=p["objectives_completed_count"],
-                            obj_total=p["objectives_total"],
-                            rounds_completed=p["round_total"],
-                            rounds_remaining=p["rounds_remaining"] if p["rounds_remaining"] != 'Unknown' else ''
-                        )
-                        show_response(progress_stats, title="访谈进度概览", width=80)
+                        show_progress()
                     elif user_input == '/asr':
                         user_input = record_and_asr()
                     elif user_input == '/clipboard':
@@ -307,18 +326,22 @@ if __name__ == '__main__':
         tree_manager.push_back(distilled_tree)
         # critique_agent.rate_response()
         progress.on_interviewee_replied(
-            objectives_completed=distilled_tree.get_completed_objective_num()
+            objectives_completed=distilled_tree.get_completed_objective_num(),
+            total_objective_progress=distilled_tree.get_total_objective_progress()
         )
 
         if time.time() - begin > distilled_tree.estimated_minute * 60:
+            show_tree()
+            show_graph()
+            show_progress()
             show_response(generate_agent.end_chat(), title="萃取专家")
             break
-
-        if turn % 5 == 0:
-            verified = input("continue?(Y/N)")
-            if verified in ('Y', ''):
-                continue
-            else:
-                args.auto = False
+        if args.auto:
+            if turn % 5 == 0:
+                verified = input("continue?(Y/N)")
+                if verified in ('Y', ''):
+                    continue
+                else:
+                    args.auto = False
 
 

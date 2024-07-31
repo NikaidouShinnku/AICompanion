@@ -233,6 +233,12 @@ def place_to_center(layout, *, total_width):
     # Apply padding to center the panel
     return Padding(layout, (0, 0, 0, left_padding))
 
+def offset_panel(layout, *, total_width, offset):
+    if layout.width > total_width:
+        return layout
+
+    return Padding(layout, (0, 0, 0, offset))
+
 def print_markdown(
     markdown_text: str,
     *,
@@ -242,6 +248,8 @@ def print_markdown(
     bgcolor: str = "black",
     title_align: str = "center",
     width: int = 120,
+    offset: int = None,
+    border_color: str = "dark_cyan"
 ):
     if console is None:
         console = Console()
@@ -268,11 +276,14 @@ def print_markdown(
         padding=(1, 1),
         style=style,
         width=width,
-        border_style="dark_cyan",
+        border_style=border_color,
     )
     panel.style = Style(color="white", bgcolor=bgcolor)
 
-    console.print(place_to_center(panel, total_width=console.size.width))
+    if offset is None:
+        console.print(place_to_center(panel, total_width=console.size.width))
+    else:
+        console.print(offset_panel(panel, total_width=console.size.width, offset=offset))
 
 def print_pair(*, src: str, dst: str, src_title: str, dst_title: str) -> None:
     """

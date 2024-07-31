@@ -114,8 +114,8 @@ from screeninfo import get_monitors
 
 def get_screen_resolution():
     monitors = get_monitors()
-    for monitor in monitors:
-        print(f"Monitor: {monitor.name}, Width: {monitor.width}, Height: {monitor.height}")
+    # for monitor in monitors:
+        # print(f"Monitor: {monitor.name}, Width: {monitor.width}, Height: {monitor.height}")
 
     return monitors[0].width, monitors[0].height
 
@@ -191,15 +191,15 @@ def create_mermaid_png_and_display(mermaid_code, relationships, display_in_term=
         r"C:\Users\25899\Downloads\node-v20.15.1-win-x64\mmdc.cmd",
         "-i", mmd_file_path,
         "-t", "dark",
-        "--width", "1200",
-        "--height", "2000",
+        "--width", "600",
+        "--height", "1000",
         "-b", "transparent",
         "-o", png_file_path,
     ]
 
     try:
         if display_in_term:
-            result = subprocess.run(command, check=True, capture_output=True)
+            subprocess.run(command, check=True, capture_output=True)
 
         # Display the PNG in iTerm2
         if os.path.exists(png_file_path):

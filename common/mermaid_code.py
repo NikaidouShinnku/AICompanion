@@ -38,9 +38,13 @@ def generate_mermaid(entities, relationships):
     mermaid_code = "graph TD\n"
 
     for entity in entities:
+        entity["name"] = entity["name"].replace(" ", "_")
+        entity["type"] = entity["type"].replace(" ", "_")
         mermaid_code += f'{entity["name"]}["{entity["type"]}:{entity["name"]}"]\n'
 
     for index, relationship in enumerate(relationships):
+        relationship["source"] = relationship["source"].replace(" ", "_")
+        relationship["target"] = relationship["target"].replace(" ", "_")
         # rid = relationship["id"]
         # if int(rid) == 1:
         #     rid = ' 󰬺 󰎤 󰲠 󰼏 󰎦 '

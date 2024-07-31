@@ -6,6 +6,9 @@
 ### 和提问者的历史对话和建议
 {review_history}
 
+### 提问者最新的问题
+{newest_question}
+
 [OUTPUT]:
 <thought>
 {reasons}

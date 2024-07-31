@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 
 from chat_history import ChatHistory
+from common.show_utils import show_response
 from dataset import dataset_directory
 from interviewee import interviewee_directory
 from llms import chat
@@ -62,6 +63,7 @@ class ReviewGenerationAgent:
                     distilled_tree=example["knowledge_graph"],
                     review_history=example["review_history"],
                     reply=example["reply"],
+                    newest_question=example["newest_question"],
                     verification=example["verification"],
                     reasons=example["thought"],
                     task_progress=example["task_progress"],
@@ -87,13 +89,17 @@ class ReviewGenerationAgent:
             domain=self.distilled_tree.domain,
             examples=self.examples,
             distilled_tree=self.readable_tree,
-            review_history=self.review_history,
+            review_history=self.format_chat_history(self.review_history.get_message()),
+            newest_question=self.review_history.get_message()[-1]['content'],
             task_progress=self.task_progress,
             date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         )
 
     def generate_review(self):
         prompt = self.get_prompt()
+
+        # show_response(res=prompt, title="REVIEW PROMPT")
+
         res = chat(prompt=prompt, model=self.model, temperature=0.7)
 
         return extract_verification(res=res), extract_reply(res=res)

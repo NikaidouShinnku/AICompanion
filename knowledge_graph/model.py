@@ -45,6 +45,9 @@ class KnowledgeGraph(BaseModel):
     def get_completed_objective_num(self):
         return sum(obj.obj_complete for obj in self.objectives)
 
+    def get_total_objective_progress(self):
+        return sum(obj.progress for obj in self.objectives)
+
     def clone(self):
         return copy.deepcopy(self)
 

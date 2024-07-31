@@ -9,12 +9,14 @@ def show_response(
         title:str,
         title_align: str = "center",
         width: int = 120,
+        offset:int = None,
+        border_color: str = "dark_cyan"
 ):
     if isinstance(res, str):
         if no_pretty:
             print(res)
         else:
-            print_markdown(res, title=title, title_align=title_align, width=width)
+            print_markdown(res, title=title, title_align=title_align, width=width, offset=offset, border_color=border_color)
         return res
 
 

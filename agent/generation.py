@@ -110,7 +110,7 @@ class GenerationAgent:
             interviewee=self.interviewee_name,
             user_background=self.background_info,
             tone=self.tone,
-            review_history=self.review_history,
+            review_history=self.format_chat_history(self.review_history.get_message()),
             domain=self.distilled_tree.domain,
             examples=self.examples,
             distilled_tree=self.readable_tree,

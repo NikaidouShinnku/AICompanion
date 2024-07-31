@@ -38,6 +38,13 @@
             "knowledge": [],
             "progress": 0,
             "obj_complete": false
+        },
+        {
+            "id": "8e4a9c8e-9f0a-1b2c-3d4e-5f6u8h8i9j0k",
+            "obj_description": "Learn the fundamental control, how to play this game?",
+            "knowledge": [],
+            "progress": 0,
+            "obj_complete": false
         }
     ],
     "task_complete": false,
