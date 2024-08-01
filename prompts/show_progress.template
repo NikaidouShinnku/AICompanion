@@ -4,4 +4,7 @@
 | 目标完成进度       | {obj_progress} | {obj_completed}个 | {obj_total}个 |
 | 已进行对话轮数     | -        | {rounds_completed}轮 | - |
 | 预计剩余对话轮数    | -      | {rounds_remaining}轮 | - |
+| 输入token用量    | -      | {prompt_tokens} | - |
+| 输出token用量    | -      | {completion_tokens} | - |
+| 费用    | -      | ¥{price:0.3f}  | - |
 

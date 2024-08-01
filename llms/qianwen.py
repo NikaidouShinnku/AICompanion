@@ -1,6 +1,9 @@
 from openai import OpenAI
 from typing import List, Dict
 
+from llms.statistics import update_usage
+
+
 def chat(
         prompt:str = None,
         messages: List[Dict] = None,
@@ -24,6 +27,9 @@ def chat(
         **kwargs
     )
     if not stream:
+        if res.usage:
+            price = res.usage.prompt_tokens / 25000 + res.usage.completion_tokens / 8333
+            update_usage(res.usage, price=price)
         return res.choices[0].message.content
 
     return wrap_iter(res)

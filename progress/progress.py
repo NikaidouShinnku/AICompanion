@@ -10,6 +10,26 @@ class Progress:
         self.total_objective_progress = 0.0
         self.rounds = 0
 
+    def load_from_dict(self, data):
+        elapsed_time = 0
+        for key, value in data.items():
+            if key == 'elapsed_time':
+                elapsed_time = value
+                continue
+            if hasattr(self, key):
+                setattr(self, key, value)
+
+        self.time_start = int(time.time()) - elapsed_time
+
+    def mapping(self):
+        elapsed_time = time.time() - self.time_start
+        return {"time_total": self.time_total,
+                "elapsed_time": elapsed_time,
+                "objectives_count": self.objectives_count,
+                "objectives_completed": self.objectives_completed,
+                "total_objective_progress": self.total_objective_progress,
+                "rounds": self.rounds}
+
     def get_round(self):
         return self.rounds
 
@@ -30,7 +50,8 @@ class Progress:
             "round_total": self.rounds,
             "objectives_total": self.objectives_count,
             "objectives_completed_count": self.objectives_completed,
-            "objectives_completed": f'{(self.total_objective_progress/self.objectives_count * 100) * 100}%',
+            "objectives_completed": f'{(self.objectives_completed/self.objectives_count * 100) * 100}%',
+            "progress_completed":  self.total_objective_progress,
             "time_total": int(self.time_total / 60) or 1,
             "time_remaining": int(self.get_time_remaining() / 60)
         }

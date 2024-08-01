@@ -53,7 +53,7 @@ def record_with_silence_detection(
         text = Text(bar, style="green")
         panel = Panel(
             text,
-            title=" ...             [yellow]recording[/yellow]            ... ",
+            title="               [yellow]录音中[/yellow]               ",
             expand=False,
             width=60,
         )

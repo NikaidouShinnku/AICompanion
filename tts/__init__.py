@@ -1,6 +1,8 @@
 import os.path
 import subprocess
 
+from common.io import suppress_output
+
 
 def edge_tts(
     text,
@@ -16,7 +18,7 @@ def edge_tts(
         "C:\\Users\\25899\\AppData\\Local\\Programs\\Python\\Python312\\Scripts\\edge-tts.exe",
         "--voice",
         voice,
-        f"--rate={rate}",
+        #f"--rate={rate}",
         "--text",
         text,
         "--write-media",
@@ -24,10 +26,11 @@ def edge_tts(
         "--write-subtitles",
         output.replace(".mp3", ".vtt"),
     ]
-    print(' '.join(command), end='')
+    # print(' '.join(command), end='')
 
     try:
-        subprocess.run(command, check=True)
+        with suppress_output():
+            subprocess.run(command, check=True,capture_output=True)
     except subprocess.CalledProcessError as e:
         print(f"Error generating audio: {e}")
         raise
@@ -48,7 +51,8 @@ def play_sound(file: str):
         command = ['C:\\Users\\25899\\scoop\\shims\\ffplay.exe', '-vn', '-nodisp', '-autoexit', file]
 
         # Call the command using subprocess
-        subprocess.run(command)
+        with suppress_output():
+            subprocess.run(command,capture_output=True)
     except Exception as e:
         print(f"An error occurred: {e}")
 

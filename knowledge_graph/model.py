@@ -20,6 +20,8 @@ class Knowledge(BaseModel):
     raw_user_response: Dict[int, str] = None
     is_generalized_node: bool = False
 
+    def n_nodes(self) -> int:
+        return sum(child.n_nodes() for child in self.sub_knowledge) + len(self.sub_knowledge)
 
 class Objective(BaseModel):
     id: str = str(uuid.uuid4())
@@ -27,12 +29,11 @@ class Objective(BaseModel):
     knowledge: List[Knowledge] = []
     progress: float = 0
     obj_complete: bool = False
-    # def to_xml(self):
-    #     ...
 
+    def n_nodes(self) -> int:
+        return sum(child.n_nodes() for child in self.knowledge) + len(self.knowledge)
 
 class KnowledgeGraph(BaseModel):
-    id: str = str(uuid.uuid4())
     domain: Union[str, None] = None
     name: Union[str, None] = None
     task_description: Union[str, None] = None
@@ -41,6 +42,9 @@ class KnowledgeGraph(BaseModel):
     start_date: str = datetime.now().strftime("%Y-%m-%d")
     end_date: str = datetime.now().strftime("%Y-%m-%d")
     estimated_minute: Union[int, None] = None
+
+    def n_nodes(self) -> int:
+        return sum(child.n_nodes() for child in self.objectives) + len(self.objectives)
 
     def get_completed_objective_num(self):
         return sum(obj.obj_complete for obj in self.objectives)
@@ -471,3 +475,4 @@ class KnowledgeGraph(BaseModel):
         objective.obj_complete = objective.progress >= 0.95
 
         self.task_complete = all(obj.obj_complete for obj in self.objectives)
+
