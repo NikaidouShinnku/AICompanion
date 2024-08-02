@@ -74,7 +74,7 @@ class EntityExtractionAgent:
         # import pyperclip
         # pyperclip.copy(prompt)
         res = chat(prompt=prompt, model=self.model)
-        show_response(res, title="Distill_Result")
+        # show_response(res, title="Distill_Result")
 
         from common.mermaid_code import parse_entity_relation, generate_mermaid
 

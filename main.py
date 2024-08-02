@@ -219,7 +219,7 @@ if __name__ == '__main__':
         distilled_tree=distilled_tree,
         chat_history=chat_history,
         model=args.model,
-        entity_types=["ANIMAL", "SUBSTANCE", "DATE", "EVENT", "TRAITS", "ACTION", "OTHER"],
+        entity_types=["ANIMAL", "SUBSTANCE", "DATE", "EVENT", "TRAITS", "ACTION", "HABITS", "OTHER"],
         entity_relationship_triple=entity_relationship_triple
     )
     generate_agent = GenerationAgent(
@@ -271,14 +271,14 @@ if __name__ == '__main__':
             for i in range(5):
                 question = generate_agent.generate_question()
                 review_history.append(role="Asker", content=question)
-                show_response(question, title="问题发起者（小组讨论）", offset=term_col//2,width=60, title_align="right", border_color="cyan")
+                show_response(question, title="问题发起者（小组讨论）", offset=term_col//2,width=60, title_align="right", border_color="blue")
                 verification, answer = review_generation_agent.generate_review()
                 if verification == "No":
                     review_history.append(role="Reviewer", content=answer)
-                    show_response("🙅 \n"+answer, title="问题审核员（小组讨论）", offset=term_col//2, width=60, title_align="left", border_color="cyan")
+                    show_response("🙅 \n"+answer, title="问题审核员（小组讨论）", offset=term_col//2, width=60, title_align="left", border_color="blue")
                 if verification == "Yes":
                     review_history.append(role="Reviewer", content="该问题被审核通过")
-                    show_response(" ", title="问题审核员（小组讨论）", offset=term_col // 2, width=60, title_align="left", border_color="cyan")
+                    show_response(" ", title="问题审核员（小组讨论）", offset=term_col // 2, width=60, title_align="left", border_color="blue")
                     break
         else:
             question = generate_agent.generate_question()
