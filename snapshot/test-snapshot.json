@@ -1,0 +1,120 @@
+{
+    "knowledge_graph": {
+        "id": "a1b2c3d4-e5f6-7a8b-9c0d-e1f2g3h4i5j6",
+        "domain": "Animal Classification",
+        "name": "Fundamentals of Animal Classification",
+        "task_description": "Master the basics of animal classification and understand the hierarchical structure from Phylum to Species",
+        "objectives": [
+            {
+                "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3g4h5i6j",
+                "obj_description": "Understand the Characteristics of Mammalia (Mammals)",
+                "knowledge": [
+                    {
+                        "id": "4d3855b5-6a6a-4560-8944-3070cdcef8e8",
+                        "concept": "Primates (灵长目)",
+                        "why_important": "这些特征如立体视觉、色彩敏感度以及使用工具的能力，有助于它们在自然界中更有效地寻找食物、进行社交互动以及展现出高度智能和适应性。",
+                        "knowledge_description": "灵长目动物以其高度发达的大脑和手部灵活性而著称。",
+                        "example": "黑猩猩使用工具寻找昆虫，体现了它们的问题解决能力和适应环境的策略。",
+                        "sub_knowledge": [
+                            {
+                                "id": "02c2a87a-ea92-49f4-b97c-f9dee2e1fd55",
+                                "concept": "猴科",
+                                "why_important": null,
+                                "knowledge_description": "猴科动物以社会性群体生活和复杂的社会结构著称，包括猕猴、狒狒等。它们适应力强，能在多种环境中生存，如森林、草原和山地，手部灵活，善于使用工具，表现出高度的智能。",
+                                "example": "猕猴和狒狒展示了猴科动物复杂的社会互动和环境适应能力。",
+                                "sub_knowledge": [
+                                    {
+                                        "id": "a4331c26-e755-49e6-8737-7500dd17865b",
+                                        "concept": "猕猴属",
+                                        "why_important": null,
+                                        "knowledge_description": "猕猴属是猴科的子分支，其成员如猕猴具有粗壮的躯体和等长的四肢，手足均具5个指、趾及扁平指甲，拇指能与其他四指相对，显示了其独特的身体构造。",
+                                        "example": "猕猴的特色身体结构使它们能够在不同的自然环境中有效行动和觅食。",
+                                        "sub_knowledge": [],
+                                        "other": [],
+                                        "raw_user_response": {
+                                            "2": "先让我完整介绍这一个例子！我们接下来讨论猕猴属的猕猴，猕猴属是猴科的子分支。猕猴躯体粗壮，在同属中体型偏小；手足均有5个指、趾，具扁平的指甲；四肢基本等长，拇指能与其他四指相对，长得非常有特色。"
+                                        }
+                                    }
+                                ],
+                                "other": null,
+                                "raw_user_response": {
+                                    "1": "我稍等回答你的问题，我们继续深入。灵长目下面有猴科。包括猕猴、狒狒等。它们以社会性群体生活和复杂的社会结构著称。猴科动物适应力强，能在多种环境中生存，如森林、草原和山地。它们的手部灵活，善于使用工具，表现出高度的智能。"
+                                }
+                            }
+                        ],
+                        "other": null,
+                        "raw_user_response": {
+                            "0": "我们要有逻辑，分类讨论。先来讨论哺乳动物下的灵长目吧，从概念开始。灵长目动物以其高度发达的大脑和手部灵活性而著称。它们通常具有立体视觉和对色彩的敏感度，这有助于寻找食物和社交互动。例如，黑猩猩使用工具寻找昆虫，展示了灵长目动物的智能和适应性。"
+                        }
+                    }
+                ],
+                "progress": 0.35000000000000003,
+                "obj_complete": false
+            },
+            {
+                "id": "2b3c4d5e-6f7a-8b9c-0d1e-2f3g4h5i6j7k",
+                "obj_description": "Understand the Characteristics of Aves (Birds)",
+                "knowledge": [],
+                "progress": 0.0,
+                "obj_complete": false
+            },
+            {
+                "id": "3b4c5d6e-7f8a-9b0c-1d2e-3f4g5h6i7j8k",
+                "obj_description": "Understand the Characteristics of Reptilia (Reptiles)",
+                "knowledge": [],
+                "progress": 0.0,
+                "obj_complete": false
+            },
+            {
+                "id": "4b5c6d7e-8f9a-0b1c-2d3e-4f5g6h7i8j9k",
+                "obj_description": "Understand the Characteristics of Amphibia (Amphibians)",
+                "knowledge": [],
+                "progress": 0.0,
+                "obj_complete": false
+            },
+            {
+                "id": "5b6c7d8e-9f0a-1b2c-3d4e-5f6g7h8i9j0k",
+                "obj_description": "Understand the Characteristics of Pisces (Fish)",
+                "knowledge": [],
+                "progress": 0.0,
+                "obj_complete": false
+            }
+        ],
+        "task_complete": false,
+        "start_date": "2023-02-20",
+        "end_date": "2024-07-22",
+        "estimated_minute": 10
+    },
+    "chat_history": {
+        "chat_history": [
+            {
+                "role": "萃取专家",
+                "content": "Maria, 非常感谢你今天能参与我们的访谈。作为一位经验丰富的猎人，你对动物的了解一定非常深入。首先，我们想了解一下哺乳动物的基本特征。你能告诉我们哺乳动物有哪些显著的特征吗？这些特征如何帮助它们在自然界中生存和繁衍？"
+            },
+            {
+                "role": "maria",
+                "content": "我们要有逻辑，分类讨论。先来讨论哺乳动物下的灵长目吧，从概念开始。灵长目动物以其高度发达的大脑和手部灵活性而著称。它们通常具有立体视觉和对色彩的敏感度，这有助于寻找食物和社交互动。例如，黑猩猩使用工具寻找昆虫，展示了灵长目动物的智能和适应性。"
+            },
+            {
+                "role": "萃取专家",
+                "content": "Maria, 你刚才提到的灵长目动物的特征非常有趣，特别是它们使用工具的能力。除了灵长目，哺乳动物中还有许多其他类别，比如食肉目、有蹄类等。你能分享一下这些类别中的一些代表性动物及其独特的生存策略吗？这将帮助我们更全面地理解哺乳动物的多样性和适应性。"
+            },
+            {
+                "role": "maria",
+                "content": "我稍等回答你的问题，我们继续深入。灵长目下面有猴科。包括猕猴、狒狒等。它们以社会性群体生活和复杂的社会结构著称。猴科动物适应力强，能在多种环境中生存，如森林、草原和山地。它们的手部灵活，善于使用工具，表现出高度的智能。"
+            },
+            {
+                "role": "萃取专家",
+                "content": "Maria, 你提到的猴科动物的适应性和智能确实令人印象深刻。除了灵长目，哺乳动物中还有食肉目和有蹄类等其他重要类别。你能分享一些这些类别中的代表性动物，以及它们是如何适应环境和利用其独特特征生存的吗？这将帮助我们更全面地理解哺乳动物的多样性和适应性。"
+            },
+            {
+                "role": "maria",
+                "content": "先让我完整介绍这一个例子！我们接下来讨论猕猴属的猕猴，猕猴属是猴科的子分支。猕猴躯体粗壮，在同属中体型偏小；手足均有5个指、趾，具扁平的指甲；四肢基本等长，拇指能与其他四指相对，长得非常有特色。"
+            }
+        ]
+    },
+    "interviewee": "maria",
+    "model": "deepseek-chat",
+    "task": "organism-classification-distill-plan",
+    "tone": "无建议"
+}

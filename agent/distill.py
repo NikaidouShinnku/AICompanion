@@ -91,7 +91,7 @@ class DistillAgent:
         if end_pos != -1:
             res = res[:end_pos + 1]
 
-        # show_response(res, title="Distill")
+        show_response(res, title="Distill")
         try:
             res = json.loads(res)
         except:

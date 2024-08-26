@@ -1,27 +1,22 @@
 ### Example{num}
 ### 是关于{description}的
-### 当前的知识树
-{distilled_tree}
 
-### 和访谈对象的历史对话
+### 和用户的历史对话
 {chat_history}
 
-### 和上级的历史对话和建议
-{review_history}
-
-### 访谈对象这一轮的回答
-{current_response}
+### 用户提供的网址/文章内容
+{context}
 
 [OUTPUT]:
 <thought>
-{reasons}
+{thought}
 </thought>
-<objective>
-{objective}
-</objective>
 <reply>
-{question}
+{reply}
 </reply>
+<quote>
+{quote}
+</quote>
 
 
 
