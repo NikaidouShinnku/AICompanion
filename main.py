@@ -1,81 +1,18 @@
 # -*- coding: utf-8 -*-
-import json
-import shutil
-import time
-import re
+import argparse
 
-import pyperclip
-from prompt_toolkit import PromptSession, HTML,prompt
+from prompt_toolkit import PromptSession, HTML, prompt
 from prompt_toolkit.history import FileHistory
 
-from agent.critique import CritiqueAgent
-from agent.generation_review import ReviewGenerationAgent
-from agent.simulation import SimulationAgent
-from agent.entity_extraction_distill import EntityExtractionAgent
-from knowledge_graph.entity_relation_triple import EntityRelationTriple
+from agent.article_summarize import ArticleSummarize
 from asr import record_and_asr
 from chat_history import ChatHistory
-from common.show_utils import show_response, to_progress_bar
-from knowledge_graph.model import KnowledgeGraph
-from knowledge_graph.model_manager import KnowledgeTreeManager
-import argparse
-from consoles import print_code
-from llms.statistics import get_usage
-from plan import plan_directory
-from agent.distill import DistillAgent
-from agent.article_summarize import ArticleSummarize
-from progress.progress import Progress
-from prompts import read_prompt
-from tts import tts
-from common.convert import json_str_to_yaml_str
-from entity_extraction.mermaid_opts import create_mermaid_png_and_display
-from common.mermaid_code import generate_mermaid
+from common.show_utils import show_response
 from welcome import hello
-from llms import chat
+from tts import tts
+from common.tool_utils import check_file_exists, check_url_valid, read_file_content, fetch_url_content
 
 history_file = 'history.txt'
-
-def extract_reply(res: str, token: str) -> str:
-    pattern = fr"<{token}>(.*?)</{token}>"
-    match = re.search(pattern, res, re.DOTALL)
-    if match:
-        return match.group(1).strip()
-    return res
-
-def fetch_url_content(url):
-    import requests
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            return response.text
-        else:
-            print(f"Failed to fetch URL: {url}. Status code: {response.status_code}")
-            return None
-    except requests.exceptions.RequestException as e:
-        print(f"An error occurred: {e}")
-        return None
-
-def read_file_content(file_path):
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            return f.read()
-    except FileNotFoundError:
-        print(f"File not found: {file_path}")
-        return None
-    except IOError as e:
-        print(f"Error reading file {file_path}: {e}")
-        return None
-
-def check_file_exists(file_path):
-    return os.path.exists(file_path)
-
-def check_url_valid(url):
-    import requests
-    try:
-        response = requests.head(url)
-        return response.status_code == 200
-    except requests.exceptions.RequestException:
-        return False
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

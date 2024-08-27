@@ -10,7 +10,7 @@ from progress.progress import Progress
 from prompts import read_prompt
 from knowledge_graph.model import KnowledgeGraph
 
-class ArticleSummarize:
+class Researcher:
 
     def __init__(
             self,
@@ -20,11 +20,11 @@ class ArticleSummarize:
     ):
         self.chat_history = chat_history
         self.begin = datetime.now()
-        self.final_prompt_template = read_prompt("summary_prompt")
+        self.final_prompt_template = read_prompt("research_prompt")
         self.model = model
 
-        example_prompt_template = read_prompt("single_question")
-        with open(f"{dataset_directory()}/summary_examples.json", "r", encoding="utf-8") as f:
+        example_prompt_template = read_prompt("single_research")
+        with open(f"{dataset_directory()}/research_examples.json", "r", encoding="utf-8") as f:
             example_dataset = json.loads(f.read())
 
         examples = []
