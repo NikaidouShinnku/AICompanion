@@ -2,6 +2,7 @@
 import json
 import shutil
 import time
+import re
 
 import pyperclip
 from prompt_toolkit import PromptSession, HTML,prompt
@@ -10,7 +11,6 @@ from prompt_toolkit.history import FileHistory
 from agent.critique import CritiqueAgent
 from agent.generation_review import ReviewGenerationAgent
 from agent.simulation import SimulationAgent
-from agent.summary import SummaryAgent
 from agent.entity_extraction_distill import EntityExtractionAgent
 from knowledge_graph.entity_relation_triple import EntityRelationTriple
 from asr import record_and_asr
@@ -35,6 +35,12 @@ from llms import chat
 
 history_file = 'history.txt'
 
+def extract_reply(res: str, token: str) -> str:
+    pattern = fr"<{token}>(.*?)</{token}>"
+    match = re.search(pattern, res, re.DOTALL)
+    if match:
+        return match.group(1).strip()
+    return res
 
 def fetch_url_content(url):
     import requests
@@ -74,6 +80,7 @@ def check_url_valid(url):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default="llama3-70b-8192", type=str, help='Model name')
+    parser.add_argument('--tts', action='store_true', help='Enable tts')
     args = parser.parse_args()
 
     hello()
@@ -145,7 +152,12 @@ if __name__ == '__main__':
                     context += "web-info: " + url_content + "\n"
 
         res = summary_agent.generate_response(current_user_input=user_input, context=context)
-        show_response(res, title="AI助手")
+
+        show_response(extract_reply(res=res, token="reply"), title="AI助手回复")
+        show_response(extract_reply(res=res, token="quote"), title="引用")
+
+        if args.tts:
+            tts(extract_reply(res=res, token="reply"), output="tts_result.mp3", play=True)
 
     elif mode == '学习新概念':
         pass

@@ -13,15 +13,6 @@ from knowledge_graph.model import KnowledgeGraph
 
 import re
 
-
-def extract_reply(res: str) -> str:
-    pattern = r"<reply>(.*?)</reply>"
-    match = re.search(pattern, res, re.DOTALL)
-    if match:
-        return match.group(1).strip()
-    return res
-
-
 class ArticleSummarize:
 
     def __init__(
@@ -74,10 +65,10 @@ class ArticleSummarize:
 
     def generate_response(self, current_user_input:str, context):
         prompt = self.get_prompt(current_user_input, context)
-        show_response(prompt, title="prompt")
+        # show_response(prompt, title="prompt")
         res = chat(prompt=prompt, model=self.model, temperature=0.7)
 
-        return extract_reply(res=res)
+        return res
 
     def format_chat_history(self, messages):
         formatted = ""
