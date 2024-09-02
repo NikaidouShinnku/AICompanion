@@ -8,7 +8,7 @@ from interviewee import interviewee_directory
 from llms import chat
 from prompts import read_prompt
 
-class ArticleSummarize:
+class KnowledgeTest:
 
     def __init__(
             self,
@@ -18,11 +18,11 @@ class ArticleSummarize:
     ):
         self.chat_history = chat_history
         self.begin = datetime.now()
-        self.final_prompt_template = read_prompt("summary_prompt")
+        self.final_prompt_template = read_prompt("knowledgetest_prompt")
         self.model = model
 
-        example_prompt_template = read_prompt("single_summary")
-        with open(f"{dataset_directory()}/summary_examples.json", "r", encoding="utf-8") as f:
+        example_prompt_template = read_prompt("single_test")
+        with open(f"{dataset_directory()}/knowledgetest_examples.json", "r", encoding="utf-8") as f:
             example_dataset = json.loads(f.read())
 
         examples = []
@@ -34,15 +34,14 @@ class ArticleSummarize:
                     chat_history=self.format_chat_history(example['chat_history']),
                     thought=example["thought"],
                     reply=example["reply"],
-                    context=example["context"],
-                    quote=example["quote"],
+                    case=example["case"],
                     num=num
                 )
             )
             num += 1
         self.examples = "\n\n".join(examples)
 
-    def get_prompt(self, current_user_input:str, context):
+    def get_prompt(self, current_user_input:str):
         messages = self.chat_history.get_message()
         if len(messages) > 0:
             chat_history = messages
@@ -54,14 +53,12 @@ class ArticleSummarize:
             examples=self.examples,
             chat_history=self.format_chat_history(chat_history),
             current_user_input=current_user_input,
-            context=context,
             date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         )
 
-    def generate_response(self, current_user_input:str, context):
-        prompt = self.get_prompt(current_user_input, context)
+    def generate_response(self, current_user_input:str):
+        prompt = self.get_prompt(current_user_input)
         show_response(prompt, title="Prompt")
-        # show_response(prompt, title="prompt")
         res = chat(prompt=prompt, model=self.model, temperature=0.7)
 
         return res

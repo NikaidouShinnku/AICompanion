@@ -21,8 +21,12 @@ def chat(model:str, **kwargs):
             elif model in ("moonshot-v1-128k", "moonshot-v1-32k"):
                 from llms.moonshot import chat as moonshot_chat
                 return moonshot_chat(model=model, **kwargs)
+            elif model in ("gemini-1.5-flash", "gemini-1.5-pro"):
+                from llms.gemini import chat as gemini_chat
+                return gemini_chat(model=model, **kwargs)
             else:
                 raise ValueError(f"Unknown model: {model}")
+
         except ValueError as ve:
                 print(f"Error: {ve}")
                 break

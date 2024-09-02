@@ -1152,3 +1152,165 @@ ok
 
 # 2024-08-27 09:46:27.924280
 +bro
+
+# 2024-08-27 16:41:37.665924
++url:https://courses.grainger.illinois.edu/cs173/fa2024/ALL-lectures/Lectures/logic1.html
+
+# 2024-08-27 16:41:50.092854
++summarize it
+
+# 2024-08-27 16:46:08.285456
++url:https://courses.grainger.illinois.edu/cs173/fa2024/ALL-lectures/Lectures/logic1.html
+
+# 2024-08-27 16:46:10.910720
++summarize
+
+# 2024-08-27 16:47:07.868100
++帮我详细解释一下下面这段的逻辑：为什么会得出这样的结果。The counter-intuitive part of the basic connectives is the truth table for implies (if/then).
+
+# 2024-08-27 16:54:01.172035
++url:https://courses.grainger.illinois.edu/cs173/fa2024/ALL-lectures/Lectures/logic1.html
+
+# 2024-08-27 16:54:03.035948
++summarize
+
+# 2024-08-27 16:54:52.706867
++Okay, then what is neg
+
+# 2024-08-27 16:56:05.781941
++那么给我详细讲讲p和q，p->q之间的关系。清晰明了，把所有可能的属性列举出来
+
+# 2024-08-27 16:59:30.554411
++Why is that? Why the hypothesis is false makes the implication true? That's not understandable. Explain please
+
+# 2024-08-27 17:03:08.958191
++So if I'm a god (which is false), then the world is flat(which is false). This implication is true? Wait, what is implication? 
+
+# 2024-08-28 17:42:11.012610
++url:https://zh.wikipedia.org/wiki/%E4%B8%89%E5%9B%BD%E6%BC%94%E4%B9%89
+
+# 2024-08-28 17:42:20.189600
++我想知道这本书的作者是？
+
+# 2024-08-28 17:42:51.692292
++url:https://zh.wikipedia.org/wiki/%E4%B8%89%E5%9B%BD%E6%BC%94%E4%B9%89
+
+# 2024-08-28 17:42:53.590009
++我想知道这本书的作者是？
+
+# 2024-08-31 16:30:28.788833
++/asr
+
+# 2024-08-31 22:29:56.196091
++url:https://en.wikipedia.org/wiki/Three_Kingdoms
+
+# 2024-08-31 22:29:57.867841
++Yo
+
+# 2024-08-31 22:30:32.648201
++这个网页上面是啥内容
+
+# 2024-08-31 22:31:46.199954
++根据网页信息，东汉的人口数量是多少
+
+# 2024-08-31 22:32:37.875591
++东汉时期有多少人口
+
+# 2024-08-31 22:34:14.301400
++url:https://en.wikipedia.org/wiki/Three_Kingdoms#Impact
+
+# 2024-08-31 22:34:19.739405
++url:https://en.wikipedia.org/wiki/China
+
+# 2024-08-31 22:34:22.758375
++Hey
+
+# 2024-08-31 22:35:09.853852
++url:https://en.wikipedia.org/wiki/India
+
+# 2024-08-31 22:35:17.157943
++url:https://en.wikipedia.org/wiki/Three_Kingdoms#Impact
+
+# 2024-08-31 22:35:23.134099
++Are they related?
+
+# 2024-08-31 22:37:11.351586
++url:https://en.wikipedia.org/wiki/India
+
+# 2024-08-31 22:37:12.889631
++Sup
+
+# 2024-09-01 00:11:52.998485
++Hey dude
+
+# 2024-09-01 00:12:08.205572
++Well. Who are you
+
+# 2024-09-01 00:12:14.230593
++What's your name
+
+# 2024-09-01 00:12:22.981491
++Cool. WHat's your model name
+
+# 2024-09-01 00:12:35.571488
++Are you gemini
+
+# 2024-09-01 00:14:44.825302
++Then who is gemini1.5flash
+
+# 2024-09-01 12:15:17.195553
++Hey
+
+# 2024-09-01 12:16:14.485042
++Sup
+
+# 2024-09-01 12:16:33.103397
++w
+
+# 2024-09-01 12:16:58.166473
++url:https://en.wikipedia.org/wiki/India
+
+# 2024-09-01 12:17:02.658243
++WHat is this about
+
+# 2024-09-01 14:25:52.900095
++sup
+
+# 2024-09-01 14:25:58.301361
++IDK
+
+# 2024-09-01 14:26:04.301954
++I do not
+
+# 2024-09-01 14:26:09.016742
++Sure
+
+# 2024-09-01 14:26:12.549415
++Nice
+
+# 2024-09-01 14:26:15.830139
++I wanna fuck ya
+
+# 2024-09-01 14:58:09.109446
++I want some tests on the logical expressions
+
+# 2024-09-01 14:58:33.195616
++I guess De morgen laws. Some basics
+
+# 2024-09-01 15:00:09.510600
++1.De Morgan's Laws are the sets of rules that can make 'and' 'or' and 'not' change to one another. 2.An example would be 'not'( a 'and' b) is equivalent to 'not'a 'or' 'not'b
+
+# 2024-09-01 15:00:58.688421
++Can you help me reinforce the first question again. Like can you tell me what De morgan's Laws is in your word
+
+# 2024-09-01 15:01:35.877187
++Then how about 2nd question. How would you answer them
+
+# 2024-09-01 15:02:09.174751
++Cool. Lets think about the thrid question. What is it again
+
+# 2024-09-01 15:03:03.158349
++Can you tell me what is the principles of negation and so on
+
+# 2024-09-01 15:03:30.703338
++/end

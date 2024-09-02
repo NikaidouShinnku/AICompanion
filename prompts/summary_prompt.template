@@ -35,7 +35,7 @@
 ### 用户这一轮的回复
 {current_user_input}
 
-现在该你说话了，通过提供的文章/网址内容，敏锐且自然的回复用户
-[init]从thought开始，查看注意事项，选择objective，然后给出reply
+现在该你回复了，通过提供的文章/网址内容，敏锐且自然的回复用户
+[init]从thought开始，查看注意事项，仔细思考用户提出的问题，在文章中找到对应quote，然后给出reply
 [OUTPUT]:
 

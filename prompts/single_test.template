@@ -1,0 +1,19 @@
+### Example{num}
+### 是关于{description}的
+
+### 和用户的历史对话
+{chat_history}
+
+[OUTPUT]:
+<thought>
+{thought}
+</thought>
+<case>
+{case}
+</case>
+<reply>
+{reply}
+</reply>
+
+
+
