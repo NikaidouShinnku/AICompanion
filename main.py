@@ -12,6 +12,7 @@ from chat_history import ChatHistory
 from common.show_utils import show_response
 from welcome import hello
 from tts.ai_tts import tts_with_ai_segmented as tts
+from tts.ai_tts import stop_audio_playback
 from common.tool_utils import check_file_exists, check_url_valid, read_file_content, fetch_url_content, extract_reply, read_pdf_content
 
 history_file = 'history.txt'
@@ -81,6 +82,8 @@ if __name__ == '__main__':
                     elif user_input == '/end':
                         end_chat = True
                         break
+                    elif user_input == '/stop-audio':
+                        stop_audio_playback()
                     elif user_input:
                         chat_history.append(role="user", content=user_input)
                         break
