@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import argparse
 
+import shlex
 from prompt_toolkit import PromptSession, HTML, prompt
 from prompt_toolkit.history import FileHistory
 
@@ -10,14 +11,14 @@ from asr import record_and_asr
 from chat_history import ChatHistory
 from common.show_utils import show_response
 from welcome import hello
-from tts import tts
+from tts.ai_tts import tts_with_ai_segmented as tts
 from common.tool_utils import check_file_exists, check_url_valid, read_file_content, fetch_url_content, extract_reply, read_pdf_content
 
 history_file = 'history.txt'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', default="llama3-70b-8192", type=str, help='Model name')
+    parser.add_argument('--model', default="gemini-1.5-flash", type=str, help='Model name')
     parser.add_argument('--tts', action='store_true', help='Enable tts')
     args = parser.parse_args()
 
@@ -66,7 +67,7 @@ if __name__ == '__main__':
                         show_response(res=user_input, title="ASR Result", title_align="left", width=40)
                         break
                     elif user_input.startswith('file:'):
-                        file_path = user_input[5:].strip()
+                        file_path = shlex.split(user_input[5:].strip())[0]  # 解析带空格的路径
                         if check_file_exists(file_path):
                             inputs.append(('file', file_path))
                         else:
@@ -111,7 +112,7 @@ if __name__ == '__main__':
             show_response(quote, title="引用")
 
             if args.tts:
-                tts(reply, output="tts_result.mp3", play=True)
+                tts(reply)
 
     elif mode == '学习新概念':
         pass
@@ -150,4 +151,4 @@ if __name__ == '__main__':
             show_response(reply, title="AI助手回复")
 
             if args.tts:
-                tts(reply, output="tts_result.mp3", play=True)
+                tts(reply)
