@@ -4,13 +4,16 @@
 ### 和用户的历史对话
 {chat_history}
 
-### 用户提供的网址/文章内容
-{context}
+### 在网络上搜索到的信息
+{search_result}
 
-[OUTPUT]:
+# [OUTPUT]:
 <thought>
 {thought}
 </thought>
+<case>
+{case}
+</case>
 <reply>
 {reply}
 </reply>

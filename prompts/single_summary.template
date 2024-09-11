@@ -7,7 +7,7 @@
 ### 用户提供的网址/文章内容
 {context}
 
-[OUTPUT]:
+# [OUTPUT]:
 <thought>
 {thought}
 </thought>

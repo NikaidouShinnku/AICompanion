@@ -4,7 +4,7 @@
 ### 和用户的历史对话
 {chat_history}
 
-[OUTPUT]:
+# [OUTPUT]:
 <thought>
 {thought}
 </thought>

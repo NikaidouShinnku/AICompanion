@@ -1401,3 +1401,102 @@ ok
 
 # 2024-09-03 00:11:57.528432
 +用日语打出很多个a（就是读a的那个片假名）
+
+# 2024-09-03 21:41:47.523162
++我现在在学习如何Prove/Disprove，从简单到难
+
+# 2024-09-03 21:43:55.679405
++1
+
+# 2024-09-03 21:45:01.815910
++我现在在学习如何Prove/Disprove，从简单到难
+
+# 2024-09-03 21:47:50.890574
++比如这个是我的作业：for any integers a,b,c,d,k with k > 0, if a ≅ b (mod k) and c ≅ d (mod k) then (a + c) ≅ (b + d) (mod k).可以搞一些类似的
+
+# 2024-09-03 21:49:00.377286
++/stop-audio
+
+# 2024-09-03 21:51:44.217306
++什么是prove/disprove
+
+# 2024-09-03 21:53:36.127425
++e
+
+# 2024-09-03 21:53:53.093800
++什么是prove/disprove
+
+# 2024-09-03 21:55:59.533240
++说一些比较妖娆的话
+
+# 2024-09-03 21:57:19.034204
++Honey, you are you
+
+# 2024-09-03 22:03:56.784241
++什么是prove/disprove
+
+# 2024-09-03 22:06:07.774421
++what is prove/disprove
+
+# 2024-09-03 22:08:02.381496
++Nice. More
+
+# 2024-09-04 22:47:21.526007
++说我爱你
+
+# 2024-09-04 22:48:20.032762
++I'm learning prove. Give me a quiz on that
+
+# 2024-09-04 22:49:44.155358
++A direct proof would be a general proof that can apply to a universal claim. Whereas an indirect proof is like giving out an counter example to a universal claim.
+
+# 2024-09-04 22:52:45.330536
++Okay. So a claim would be people needs to breathe to survive. I will prove this by saying that suppose people don't needs to breathe, and it turns out that they will die. So the original statement has to be true
+
+# 2024-09-09 00:04:27.907418
++我想知道什么是微积分
+
+# 2024-09-09 03:41:06.365564
++1
+
+# 2024-09-09 03:45:20.345062
++我想知道什么是微积分
+
+# 2024-09-09 03:50:02.446391
++/end
+
+# 2024-09-09 03:50:52.683663
++我想知道什么是微积分
+
+# 2024-09-09 03:55:32.535262
++那我想学习微积分应该从何开始？
+
+# 2024-09-09 16:55:47.102363
++现在我想知道微积分和机器学习有关系么
+
+# 2024-09-09 17:00:59.341785
++我想知道什么是微积分
+
+# 2024-09-09 17:06:12.420453
++Explain techniques used in logical proofs
+
+# 2024-09-09 17:49:16.718327
++2
+
+# 2024-09-11 00:50:58.792673
++url:https://www.ecologyandsociety.org/vol26/iss3/art7/
+
+# 2024-09-11 00:51:13.180917
++Summarize Each Paragraph, Be precise
+
+# 2024-09-11 00:55:29.574319
++Now, what will be the key takeaway of this paper, what is its thesis
+
+# 2024-09-11 01:12:42.815815
++url:https://www.ecologyandsociety.org/vol26/iss3/art7/
+
+# 2024-09-11 01:12:52.689191
++Think yourself as a reader, Which figure did you find most helpful for understanding the paper? Why?
+
+# 2024-09-11 01:16:23.577567
++Do you think this paper has any implications for wildlife management? If so, what do you think they are? (25 words)

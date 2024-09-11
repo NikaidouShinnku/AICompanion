@@ -4,9 +4,11 @@ import argparse
 import shlex
 from prompt_toolkit import PromptSession, HTML, prompt
 from prompt_toolkit.history import FileHistory
+import subprocess
 
 from agent.knowledge_test import KnowledgeTest
 from agent.article_summarize import ArticleSummarize
+from agent.research import Researcher
 from asr import record_and_asr
 from chat_history import ChatHistory
 from common.show_utils import show_response
@@ -24,19 +26,15 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     hello()
+    if args.tts:
+        process = subprocess.Popen(['cmd.exe', '/c', 'api.bat'], cwd=r'C:\Users\25899\Desktop\GPT-SoVITS-beta0706',
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL)
+
 
     valid_mode = ['文章总结讨论', '学习新概念', '管理作业/日程', '知识小测验', '通用']
     mode = None
     chat_history = ChatHistory()
-
-    summary_agent = ArticleSummarize(
-        chat_history=chat_history,
-        model=args.model
-    )
-    test_agent = KnowledgeTest(
-        chat_history=chat_history,
-        model=args.model
-    )
 
     inputs = []
 
@@ -53,7 +51,14 @@ if __name__ == '__main__':
 
     # 2. 与不同Agent进行互动
     end_chat = False
+
+# ==============================================================================#
+
     if mode == '文章总结讨论':
+        summary_agent = ArticleSummarize(
+            chat_history=chat_history,
+            model=args.model
+        )
         while True:
             try:
                 session = PromptSession(
@@ -117,10 +122,58 @@ if __name__ == '__main__':
             if args.tts:
                 tts(reply)
 
+#==============================================================================#
+
     elif mode == '学习新概念':
-        pass
+        research_agent = Researcher(
+            chat_history=chat_history,
+            model=args.model
+        )
+        while True:
+            try:
+                session = PromptSession(
+                    HTML(f'<ansicyan><b> 用户  >> </b></ansicyan>'),
+                    history=FileHistory('history.txt')
+                )
+                while True:
+                    user_input = session.prompt()
+
+                    if user_input == '/asr':
+                        user_input = record_and_asr()
+                        show_response(res=user_input, title="ASR Result", title_align="left", width=40)
+                        break
+                    elif user_input == '/end':
+                        end_chat = True
+                        break
+                    elif user_input:
+                        chat_history.append(role="user", content=user_input)
+                        break
+            finally:
+                pass
+
+            if end_chat:
+                break
+
+            res = research_agent.generate_response(current_user_input=user_input)
+            reply = extract_reply(res=res, token="reply")
+            quote = extract_reply(res=res, token="quote")
+
+            chat_history.append(role="assistant", content=f"{reply}, quote:{quote}".strip())
+
+            show_response(reply, title="AI助手回复")
+            show_response(quote, title="引用")
+
+            if args.tts:
+                tts(reply)
+
+
+# ==============================================================================#
 
     elif mode == '知识小测验':
+        test_agent = KnowledgeTest(
+            chat_history=chat_history,
+            model=args.model
+        )
         while True:
             try:
                 session = PromptSession(
@@ -155,3 +208,6 @@ if __name__ == '__main__':
 
             if args.tts:
                 tts(reply)
+
+#==============================================================================#
+
