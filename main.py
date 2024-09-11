@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import argparse
 
+import os
 import shlex
 from prompt_toolkit import PromptSession, HTML, prompt
 from prompt_toolkit.history import FileHistory
 import subprocess
+import time
 
 from agent.knowledge_test import KnowledgeTest
 from agent.article_summarize import ArticleSummarize
@@ -26,6 +28,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     hello()
+
+    process = None
     if args.tts:
         process = subprocess.Popen(['cmd.exe', '/c', 'api.bat'], cwd=r'C:\Users\25899\Desktop\GPT-SoVITS-beta0706',
         stdout=subprocess.DEVNULL,
@@ -166,6 +170,10 @@ if __name__ == '__main__':
             if args.tts:
                 tts(reply)
 
+# ==============================================================================#
+
+    elif mode == '管理作业/日程':
+        pass
 
 # ==============================================================================#
 
@@ -211,3 +219,25 @@ if __name__ == '__main__':
 
 #==============================================================================#
 
+
+
+#==============================================================================#
+
+    # Terminate the tts system
+    if process:
+        process.terminate()
+        process.wait()
+
+    folder_path = 'temp_tts_output'
+    if os.path.exists(folder_path):
+        for filename in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print(f'删除 {file_path} 失败。原因: {e}')
+    else:
+        print(f'文件夹 {folder_path} 不存在')
