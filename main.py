@@ -1,25 +1,67 @@
 # -*- coding: utf-8 -*-
+import asyncio
+import threading
 import argparse
-
 import os
 import shlex
-from prompt_toolkit import PromptSession, HTML, prompt
-from prompt_toolkit.history import FileHistory
 import subprocess
 import time
-
+import atexit
+from prompt_toolkit import PromptSession, HTML, prompt
+from prompt_toolkit.history import FileHistory
 from agent.knowledge_test import KnowledgeTest
 from agent.article_summarize import ArticleSummarize
 from agent.research import Researcher
 from asr import record_and_asr
 from chat_history import ChatHistory
 from common.show_utils import show_response
+from consoles import print_code
 from welcome import hello
 from tts.ai_tts import tts_with_ai_segmented as tts
 from tts.ai_tts import stop_audio_playback
 from common.tool_utils import check_file_exists, check_url_valid, read_file_content, fetch_url_content, extract_reply, read_pdf_content
 
 history_file = 'history.txt'
+process = None
+# 启动 TTS 子进程
+def start_tts_process():
+    show_response(res="正在启动TTS系统，请稍等...", title=None)
+    process = subprocess.Popen(
+        ['cmd.exe', '/c', 'api.bat'],
+        cwd=r'C:\Users\25899\Desktop\GPT-SoVITS-beta0706',
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+    time.sleep(5)
+    # show_response(res="TTS系统启动完毕", title=None)
+    return process
+
+def kill_process(process):
+    subprocess.call(
+        ['taskkill', '/F', '/T', '/PID', str(process.pid)],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+
+def play_tts_in_thread(reply):
+    tts_thread = threading.Thread(target=tts, args=(reply,))
+    tts_thread.start()
+
+def clean_file(path: str):
+    folder_path = path
+    if os.path.exists(folder_path):
+        for filename in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+
+def cleanup():
+    global process
+    if process:
+        kill_process(process)
+    clean_file('temp_tts_output')
+# Clean Up Whenever the Main Process Exits
+atexit.register(cleanup)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -31,12 +73,10 @@ if __name__ == '__main__':
 
     process = None
     if args.tts:
-        process = subprocess.Popen(['cmd.exe', '/c', 'api.bat'], cwd=r'C:\Users\25899\Desktop\GPT-SoVITS-beta0706',
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL)
+        process = start_tts_process()
+        time.sleep(2)
 
-
-    valid_mode = ['文章总结讨论', '学习新概念', '管理作业/日程', '知识小测验', '通用']
+    valid_mode = ['文章总结讨论', '学习新概念', '日程安排', '知识小测验', '通用']
     mode = None
     chat_history = ChatHistory()
 
@@ -44,7 +84,7 @@ if __name__ == '__main__':
 
     # 1. 选择要使用的Agent（不同学习模式）
     while not mode:
-        mode_input_index = prompt(HTML("选择AI助手模式:\n<ansired>1.文章总结讨论</ansired>\n<ansiyellow>2.学习新概念</ansiyellow>\n<ansiblue>3.管理作业/日程</ansiblue>\n<ansigreen>4.知识小测验</ansigreen>\n<ansicyan>5.通用</ansicyan>\n>> "))
+        mode_input_index = prompt(HTML("选择AI助手模式:\n<ansired>1.文章总结讨论</ansired>\n<ansiyellow>2.学习新概念</ansiyellow>\n<ansiblue>3.日程安排</ansiblue>\n<ansigreen>4.知识小测验</ansigreen>\n<ansicyan>5.通用</ansicyan>\n>> "))
 
         try:
             index = int(mode_input_index or len(valid_mode))
@@ -77,7 +117,7 @@ if __name__ == '__main__':
                         show_response(res=user_input, title="ASR Result", title_align="left", width=40)
                         break
                     elif user_input.startswith('file:'):
-                        file_path = shlex.split(user_input[5:].strip())[0]  # 解析带空格的路径
+                        file_path = user_input[5:].strip()
                         if check_file_exists(file_path):
                             inputs.append(('file', file_path))
                         else:
@@ -91,8 +131,6 @@ if __name__ == '__main__':
                     elif user_input == '/end':
                         end_chat = True
                         break
-                    elif user_input == '/stop-audio':
-                        stop_audio_playback()
                     elif user_input:
                         chat_history.append(role="user", content=user_input)
                         break
@@ -124,7 +162,7 @@ if __name__ == '__main__':
             show_response(quote, title="引用")
 
             if args.tts:
-                tts(reply)
+                play_tts_in_thread(reply)
 
 #==============================================================================#
 
@@ -168,11 +206,11 @@ if __name__ == '__main__':
             show_response(quote, title="引用")
 
             if args.tts:
-                tts(reply)
+                play_tts_in_thread(reply)
 
 # ==============================================================================#
 
-    elif mode == '管理作业/日程':
+    elif mode == '日程安排':
         pass
 
 # ==============================================================================#
@@ -215,7 +253,7 @@ if __name__ == '__main__':
             show_response(reply, title="AI助手回复")
 
             if args.tts:
-                tts(reply)
+                play_tts_in_thread(reply)
 
 #==============================================================================#
 
@@ -223,21 +261,8 @@ if __name__ == '__main__':
 
 #==============================================================================#
 
-    # Terminate the tts system
+    # 程序结束时终止子程序并清理临时文件夹
     if process:
-        process.terminate()
-        process.wait()
+        kill_process(process)
 
-    folder_path = 'temp_tts_output'
-    if os.path.exists(folder_path):
-        for filename in os.listdir(folder_path):
-            file_path = os.path.join(folder_path, filename)
-            try:
-                if os.path.isfile(file_path) or os.path.islink(file_path):
-                    os.unlink(file_path)
-                elif os.path.isdir(file_path):
-                    shutil.rmtree(file_path)
-            except Exception as e:
-                print(f'删除 {file_path} 失败。原因: {e}')
-    else:
-        print(f'文件夹 {folder_path} 不存在')
+    clean_file('temp_tts_output')

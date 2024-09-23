@@ -42,27 +42,7 @@ class AudioPlayerTool:
 
 def split_text_by_custom_rules(text, max_length=20):
     sentences = re.split(r'(?<=[。！？\n])', text)
-    segments = []
-    current_segment = ""
-
-    for sentence in sentences:
-        if len(current_segment) + len(sentence) <= max_length:
-            current_segment += sentence
-        else:
-            sub_sentences = re.split(r'(?<=[，,；;])', sentence)
-            for sub_sentence in sub_sentences:
-                if len(current_segment) + len(sub_sentence) <= max_length:
-                    current_segment += sub_sentence
-                else:
-                    segments.append(current_segment.strip())
-                    current_segment = sub_sentence
-            if current_segment:
-                segments.append(current_segment.strip())
-                current_segment = ""
-
-    if current_segment:
-        segments.append(current_segment.strip())
-
+    segments = [sentence.strip() for sentence in sentences if sentence.strip()]
     return segments
 
 
@@ -75,7 +55,7 @@ def tts_with_ai_segmented(text: str, language: str = "ja"):
     audio_tools = [None] * len(segments)  # 预先分配一个列表来存放生成的音频工具
 
     def generate_and_store_audio(segment, index):
-        output_file = f"temp_tts_output\output_{index + 1}.wav"
+        output_file = rf"temp_tts_output\output_{index + 1}.wav"
         url = (rf"http://localhost:9880/?refer_wav_path=C:\Users\25899\Desktop\GPT-SoVITS-beta0706\DATA\真红wav\00000110.wav&prompt_text=だから、そんな顔しないでほしいんだ。悲しい夢に負けないでほしい。&prompt_language=ja&text={segment}&text_language={language}")
         audio_tool = AudioPlayerTool(url, output_file)
         audio_tool.fetch_audio()
@@ -106,7 +86,6 @@ def tts_with_ai_segmented(text: str, language: str = "ja"):
         threading.Thread(target=play_audio_in_order, daemon=True).start()
 
         futures = [executor_generate.submit(generate_and_store_audio, segments[i], i) for i in range(len(segments))]
-
         for future in as_completed(futures):
             future.result()
 

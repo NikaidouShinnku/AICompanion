@@ -1,0 +1,35 @@
+
+C:\Users\25899\Desktop\GPT-SoVITS-beta0706>runtime\python.exe api.py 
+DEBUG:torchaudio._extension:Failed to initialize ffmpeg bindings
+Traceback (most recent call last):
+  File "C:\Users\25899\Desktop\GPT-SoVITS-beta0706\runtime\lib\site-packages\torchaudio\_extension\utils.py", line 85, in _init_ffmpeg
+    _load_lib("libtorchaudio_ffmpeg")
+  File "C:\Users\25899\Desktop\GPT-SoVITS-beta0706\runtime\lib\site-packages\torchaudio\_extension\utils.py", line 61, in _load_lib
+    torch.ops.load_library(path)
+  File "C:\Users\25899\Desktop\GPT-SoVITS-beta0706\runtime\lib\site-packages\torch\_ops.py", line 643, in load_library
+    ctypes.CDLL(path)
+  File "ctypes\__init__.py", line 374, in __init__
+FileNotFoundError: Could not find module 'C:\Users\25899\Desktop\GPT-SoVITS-beta0706\runtime\Lib\site-packages\torchaudio\lib\libtorchaudio_ffmpeg.pyd' (or one of its dependencies). Try using the full path with constructor syntax.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\25899\Desktop\GPT-SoVITS-beta0706\runtime\lib\site-packages\torchaudio\_extension\__init__.py", line 67, in <module>
+    _init_ffmpeg()
+  File "C:\Users\25899\Desktop\GPT-SoVITS-beta0706\runtime\lib\site-packages\torchaudio\_extension\utils.py", line 87, in _init_ffmpeg
+    raise ImportError("FFmpeg libraries are not found. Please install FFmpeg.") from err
+ImportError: FFmpeg libraries are not found. Please install FFmpeg.
+INFO:     未指定默认参考音频
+INFO:     半精: True
+INFO:     编码格式: wav
+INFO:     Number of parameter: 77.49M
+DEBUG:root:Using proactor: IocpProactor
+INFO:     Started server process [47540]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 9880): 通常每个套接字地址(协议/网络地址/端口)只允许使用一次。
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+
+C:\Users\25899\Desktop\GPT-SoVITS-beta0706>pause
+请按任意键继续. . . 
