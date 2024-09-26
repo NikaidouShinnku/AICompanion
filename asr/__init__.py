@@ -34,7 +34,7 @@ def record_and_asr(
     duration: int = None,
 ):
     with tempfile.TemporaryDirectory() as tmpdir:
-        output_file = os.path.join(tmpdir, "output.wav")
+        output_file = os.path.join(tmpdir, "asr_output.wav")
         record_with_silence_detection(output_file=output_file, duration=duration or 30)
         if not os.path.exists(output_file):
             return

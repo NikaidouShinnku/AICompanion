@@ -18,7 +18,7 @@ from common.show_utils import show_response
 from consoles import print_code
 from welcome import hello
 from tts.ai_tts import tts_with_ai_segmented as tts
-from tts.ai_tts import stop_audio_playback
+from tts.ai_tts import stop_audio_playback, is_audio_playing
 from common.tool_utils import check_file_exists, check_url_valid, read_file_content, fetch_url_content, extract_reply, read_pdf_content
 
 history_file = 'history.txt'
@@ -67,6 +67,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default="gemini-1.5-flash", type=str, help='Model name')
     parser.add_argument('--tts', action='store_true', help='Enable tts')
+    parser.add_argument('--asr', action='store_true', help='Enable asr')
     args = parser.parse_args()
 
     hello()
@@ -110,8 +111,12 @@ if __name__ == '__main__':
                     history=FileHistory('history.txt')
                 )
                 while True:
-                    user_input = session.prompt()
-
+                    if args.asr:
+                        user_input = record_and_asr()
+                        show_response(res=user_input, title="ASR Result", title_align="left", width=40)
+                        break
+                    else:
+                        user_input = session.prompt()
                     if user_input == '/asr':
                         user_input = record_and_asr()
                         show_response(res=user_input, title="ASR Result", title_align="left", width=40)
@@ -163,6 +168,8 @@ if __name__ == '__main__':
 
             if args.tts:
                 play_tts_in_thread(reply)
+                while is_audio_playing():
+                    time.sleep(0.1)
 
 #==============================================================================#
 

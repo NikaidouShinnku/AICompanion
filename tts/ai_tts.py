@@ -25,8 +25,8 @@ class AudioPlayerTool:
 
     def play_audio(self):
         try:
-            song = AudioSegment.from_wav(self.audio_file)
-            play(song)
+            audio = AudioSegment.from_wav(self.audio_file)
+            play(audio)
         except Exception as e:
             print(f"An error occurred while playing the audio: {e}")
         finally:
@@ -45,11 +45,12 @@ def split_text_by_custom_rules(text, max_length=20):
     segments = [sentence.strip() for sentence in sentences if sentence.strip()]
     return segments
 
-
+playback_finished = threading.Event()
 stop_flag = threading.Event()
 
 def tts_with_ai_segmented(text: str, language: str = "ja"):
     stop_flag.clear()
+    playback_finished.clear()
 
     segments = split_text_by_custom_rules(text)
     audio_tools = [None] * len(segments)  # 预先分配一个列表来存放生成的音频工具
@@ -77,6 +78,8 @@ def tts_with_ai_segmented(text: str, language: str = "ja"):
             else:
                 threading.Event().wait(0.1)
 
+        playback_finished.set()
+
         for audio_tool in audio_tools:
             if audio_tool is not None:
                 audio_tool.clean_up()
@@ -92,6 +95,16 @@ def tts_with_ai_segmented(text: str, language: str = "ja"):
 def stop_audio_playback():
     """终止播放并删除音频文件。"""
     stop_flag.set()  # 设置终止标志，播放线程将会终止
+    playback_finished.set()
+
+def is_audio_playing():
+    """
+    Checks if the audio is still playing.
+    Returns True if audio is playing, False if finished.
+    """
+    # Check if the playback finished event is set
+    return not playback_finished.is_set()
+
 
 # def tts_with_ai(text:str, language:str = "ja"):
 #
