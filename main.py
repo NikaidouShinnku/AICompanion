@@ -30,7 +30,9 @@ def start_tts_process():
         ['cmd.exe', '/c', 'api.bat'],
         cwd=r'C:\Users\25899\Desktop\GPT-SoVITS-beta0706',
         stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
+        #stdout=None,
+        stderr=subprocess.DEVNULL,
+        #stderr=None
     )
     time.sleep(5)
     # show_response(res="TTS系统启动完毕", title=None)
@@ -112,8 +114,10 @@ if __name__ == '__main__':
                 )
                 while True:
                     if args.asr:
+                        time.sleep(3)
                         user_input = record_and_asr()
                         show_response(res=user_input, title="ASR Result", title_align="left", width=40)
+                        chat_history.append(role="user", content=user_input)
                         break
                     else:
                         user_input = session.prompt()

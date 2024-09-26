@@ -1,7 +1,8 @@
 import signal
 import subprocess
 import wave
-
+import threading  # Added for Enter key thread
+import msvcrt  # Added for capturing Enter key (Windows-specific)
 import numpy as np
 import pyaudio
 from rich.console import Console
@@ -9,18 +10,17 @@ from rich.live import Live
 from rich.panel import Panel
 from rich.text import Text
 
-# 音频设置
-CHUNK = 1024  # 每个块的样本数量
-FORMAT = pyaudio.paInt16  # 16-bit音频
-CHANNELS = 1  # 单声道
-RATE = 44100  # 采样率
-OUTPUT_WAVE_FILE = "output.wav"  # 输出文件名
+# Audio settings
+CHUNK = 1024
+FORMAT = pyaudio.paInt16
+CHANNELS = 1
+RATE = 44100
+OUTPUT_WAVE_FILE = "output.wav"
 
-
+# Signal handler for Ctrl+C (KeyboardInterrupt)
 def signal_handler(sig, frame):
-    print("Ctrl-C 被按下，停止录制并继续处理...")
+    print("Ctrl-C 被按下，停止录制并退出程序...")
     raise KeyboardInterrupt
-
 
 def record_with_silence_detection(
     output_file: str = "output.wav",
@@ -28,14 +28,16 @@ def record_with_silence_detection(
     duration: int = 60,
     max_silence_seconds: int = 5,
 ):
+    # Register signal handler for Ctrl+C
     signal.signal(signal.SIGINT, signal_handler)
-    # 初始化pyaudio
+
+    # Initialize PyAudio
     audio = pyaudio.PyAudio()
 
-    # 存储录制的音频数据
+    # Store recorded audio data
     frames = []
 
-    # 打开文件以写入音频数据
+    # Open file for writing audio data
     if output_file:
         wf = wave.open(output_file, "wb")
         wf.setnchannels(CHANNELS)
@@ -44,11 +46,11 @@ def record_with_silence_detection(
     else:
         wf = None
 
-    # 实时更新函数
+    # Real-time update function (unchanged)
     def _update_plot(data):
         data_np = np.frombuffer(data, dtype=np.int16)
         max_amplitude = np.max(np.abs(data_np))
-        bar_length = int(max_amplitude / (2**15) * 50)  # 调整条形图长度
+        bar_length = int(max_amplitude / (2**15) * 50)
         bar = "█" * bar_length
         text = Text(bar, style="green")
         panel = Panel(
@@ -60,54 +62,45 @@ def record_with_silence_detection(
 
         from rich.align import Align
         from rich.padding import Padding
-        # from rich.layout import Layout
 
-        # layout = Layout()
-        # layout.split_column(
-        #     Layout(visible=True, size=10), Layout(name="center")
-        # )
-        # layout["center"].update(Align.center(panel))
-
-        # return layout, bar
-
-        # padding = Padding(panel, pad=(20, 1), expand=False)
-
-        # 计算动态padding值
         console_height = console.size.height
         console_width = console.size.width
-        vertical_padding = max(1, (console_height - 5) // 2)  # 5是面板的估计高度
-        horizontal_padding = max(1, (console_width - 100) // 2)  # 60是面板的估计宽度
+        vertical_padding = max(1, (console_height - 5) // 2)
+        horizontal_padding = max(1, (console_width - 100) // 2)
 
-        # 使用计算得出的padding值
-        padding = Padding(
-            panel, pad=(vertical_padding, horizontal_padding), expand=False
-        )
-        # # 计算动态padding值
-        # console_height = console.size.height
-        # vertical_padding = max(1, (console_height - 5) // 2)  # 5是面板的估计高度
-
-        # # 使用计算得出的padding值
-        # padding = Padding(panel, pad=(vertical_padding, 1), expand=False)
+        padding = Padding(panel, pad=(vertical_padding, horizontal_padding), expand=False)
         return Align.center(padding, vertical="middle"), bar
 
+    # Function to stop recording (unchanged)
     def _stop():
-        # 关闭流
         stream.stop_stream()
         stream.close()
         audio.terminate()
 
-    bars = []
-
-    # 打开麦克风流
+    # Open microphone stream
     stream = audio.open(
         format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK
     )
 
-    # 初始化 rich 控制台
     console = Console()
 
+    # New section: Thread to monitor Enter key press
+    # ----------------------- START OF CHANGE -----------------------
+    def check_for_enter_key():
+        while True:
+            if msvcrt.kbhit() and msvcrt.getch() == b'\r':  # Enter key
+                print("Enter key pressed, stopping recording...")
+                break
+
+    # Start thread to check for Enter key press
+    key_listener = threading.Thread(target=check_for_enter_key)
+    key_listener.start()
+    # ------------------------ END OF CHANGE ------------------------
+
+    bars = []
+
     try:
-        # 使用 rich 的 Live 对象进行实时更新
+        # Using rich's Live object for real-time update
         with Live(console=console, screen=True, refresh_per_second=20) as live:
             while len(frames) < RATE / CHUNK * duration:
                 data = stream.read(CHUNK, exception_on_overflow=False)
@@ -117,18 +110,27 @@ def record_with_silence_detection(
                 bars.append(bar)
                 if max_silence_seconds:
                     max_silence_len = int(RATE / CHUNK * max_silence_seconds)
-                    if len(bars) > max_silence_len and set(bars[-max_silence_len:]) == {
-                        ""
-                    }:
+                    if len(bars) > max_silence_len and set(bars[-max_silence_len:]) == {""}:
                         break
                 live.update(panel)
-    except KeyboardInterrupt:
-        pass
 
-    _stop()
-    # 写入音频数据到文件
-    wf.writeframes(b"".join(frames))
-    wf.close()
+                # Check if the Enter key thread has finished, then break
+                # ----------------------- START OF CHANGE -----------------------
+                if not key_listener.is_alive():
+                    break
+                # ------------------------ END OF CHANGE ------------------------
+
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt: 录音中止")
+    except Exception as e:
+        print(f"Error during recording: {e}")
+    finally:
+        _stop()
+
+    # Write recorded frames to the file
+    if wf:
+        wf.writeframes(b"".join(frames))
+        wf.close()
 
     return frames
 

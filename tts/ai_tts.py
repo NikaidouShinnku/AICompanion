@@ -58,9 +58,12 @@ def tts_with_ai_segmented(text: str, language: str = "ja"):
     def generate_and_store_audio(segment, index):
         output_file = rf"temp_tts_output\output_{index + 1}.wav"
         url = (rf"http://localhost:9880/?refer_wav_path=C:\Users\25899\Desktop\GPT-SoVITS-beta0706\DATA\真红wav\00000110.wav&prompt_text=だから、そんな顔しないでほしいんだ。悲しい夢に負けないでほしい。&prompt_language=ja&text={segment}&text_language={language}")
-        audio_tool = AudioPlayerTool(url, output_file)
-        audio_tool.fetch_audio()
-        audio_tools[index] = audio_tool
+        try:
+            audio_tool = AudioPlayerTool(url, output_file)
+            audio_tool.fetch_audio()
+            audio_tools[index] = audio_tool
+        except Exception as e:
+            print(f"Error during audio generation for segment {index}: {e}")
         return index
 
     def play_audio_in_order():
