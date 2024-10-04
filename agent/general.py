@@ -9,7 +9,7 @@ from llms import chat
 from prompts import read_prompt
 from common.tool_utils import extract_reply
 
-class QuizHelper:
+class GeneralAI:
 
     def __init__(
             self,
@@ -19,11 +19,11 @@ class QuizHelper:
     ):
         self.chat_history = chat_history
         self.begin = datetime.now()
-        self.final_prompt_template = read_prompt("quizhelp_prompt")
+        self.final_prompt_template = read_prompt("research_prompt")
         self.model = model
 
-        example_prompt_template = read_prompt("single_quizhelp")
-        with open(f"{dataset_directory()}/quizhelp_examples.json", "r", encoding="utf-8") as f:
+        example_prompt_template = read_prompt("single_research")
+        with open(f"{dataset_directory()}/research_examples.json", "r", encoding="utf-8") as f:
             example_dataset = json.loads(f.read())
 
         examples = []

@@ -189,7 +189,14 @@ if __name__ == '__main__':
                     history=FileHistory('history.txt')
                 )
                 while True:
-                    user_input = session.prompt()
+                    if args.asr:
+                        time.sleep(3)
+                        user_input = record_and_asr()
+                        show_response(res=user_input, title="ASR Result", title_align="left", width=40)
+                        chat_history.append(role="user", content=user_input)
+                        break
+                    else:
+                        user_input = session.prompt()
 
                     if user_input == '/asr':
                         user_input = record_and_asr()
@@ -218,6 +225,8 @@ if __name__ == '__main__':
 
             if args.tts:
                 play_tts_in_thread(reply)
+                while is_audio_playing():
+                    time.sleep(0.1)
 
 # ==============================================================================#
 
@@ -238,7 +247,14 @@ if __name__ == '__main__':
                     history=FileHistory('history.txt')
                 )
                 while True:
-                    user_input = session.prompt()
+                    if args.asr:
+                        time.sleep(3)
+                        user_input = record_and_asr()
+                        show_response(res=user_input, title="ASR Result", title_align="left", width=40)
+                        chat_history.append(role="user", content=user_input)
+                        break
+                    else:
+                        user_input = session.prompt()
 
                     if user_input == '/asr':
                         user_input = record_and_asr()
@@ -265,6 +281,8 @@ if __name__ == '__main__':
 
             if args.tts:
                 play_tts_in_thread(reply)
+                while is_audio_playing():
+                    time.sleep(0.1)
 
 #==============================================================================#
 
