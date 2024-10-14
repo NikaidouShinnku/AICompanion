@@ -11,6 +11,7 @@ from prompt_toolkit import PromptSession, HTML, prompt
 from prompt_toolkit.history import FileHistory
 from agent.knowledge_test import KnowledgeTest
 from agent.article_summarize import ArticleSummarize
+from agent.general import GeneralAI
 from agent.research import Researcher
 from asr import record_and_asr
 from chat_history import ChatHistory
@@ -286,6 +287,54 @@ if __name__ == '__main__':
 
 #==============================================================================#
 
+    elif mode == '通用':
+        general_agent = GeneralAI(
+            chat_history=chat_history,
+            model=args.model
+        )
+        while True:
+            try:
+                session = PromptSession(
+                    HTML(f'<ansicyan><b> 用户  >> </b></ansicyan>'),
+                    history=FileHistory('history.txt')
+                )
+                while True:
+                    if args.asr:
+                        time.sleep(3)
+                        user_input = record_and_asr()
+                        show_response(res=user_input, title="ASR Result", title_align="left", width=40)
+                        chat_history.append(role="user", content=user_input)
+                        break
+                    else:
+                        user_input = session.prompt()
+
+                    if user_input == '/asr':
+                        user_input = record_and_asr()
+                        show_response(res=user_input, title="ASR Result", title_align="left", width=40)
+                        break
+                    elif user_input == '/end':
+                        end_chat = True
+                        break
+                    elif user_input:
+                        chat_history.append(role="user", content=user_input)
+                        break
+            finally:
+                pass
+
+            if end_chat:
+                break
+
+            res = general_agent.generate_response(current_user_input=user_input)
+            reply = extract_reply(res=res, token="reply")
+
+            chat_history.append(role="assistant", content=reply.strip())
+
+            show_response(reply, title="AI助手回复")
+
+            if args.tts:
+                play_tts_in_thread(reply)
+                while is_audio_playing():
+                    time.sleep(0.1)
 
 
 #==============================================================================#

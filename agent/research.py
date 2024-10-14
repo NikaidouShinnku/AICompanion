@@ -61,23 +61,26 @@ class Researcher:
             date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         )
 
-
-    def generate_response(self, current_user_input:str):
-
+    def generate_response(self, current_user_input: str):
         search_result = "No Search Result Yet"
+        search_fail_count = 0  # Initialize the search failure counter
 
         while True:
             prompt = self.get_prompt(current_user_input, search_result)
-
-            # show_response(prompt, title="Prompt")
             res = chat(prompt=prompt, model=self.model, temperature=0.7)
-
-            # show_response("<"+res+">", title="SEARCH QUERY")
 
             if extract_reply(res=res, token="reply").startswith("[SEARCH]"):
                 search_query = extract_reply(res=res, token="reply").replace("[search]", "").strip()
                 search_result = search_keywords_and_return_results(search_query)
-                # show_response(search_query, title="Search Result")
+
+                # Check if the search result is still unavailable
+                if search_result == "No search results returned.":
+                    search_fail_count += 1
+                    if search_fail_count >= 3:  # After 3 failed attempts, stop searching
+                        search_result = "The search is not available, stop searching and give a reply"
+                        continue
+                else:
+                    search_fail_count = 0  # Reset counter if search succeeds
                 continue
             else:
                 break
@@ -160,4 +163,5 @@ def search_keywords_and_return_results(user_input):
         return results_str.strip()  # 返回结果字符串，去掉最后的多余空行
     else:
         return "No search results returned."
+
 
