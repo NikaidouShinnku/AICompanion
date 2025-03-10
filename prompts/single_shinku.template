@@ -1,0 +1,15 @@
+### Example{num}
+
+### 和用户的历史对话
+{chat_history}
+
+# [OUTPUT]:
+<thought>
+{thought}
+</thought>
+<reply>
+{reply}
+</reply>
+
+
+

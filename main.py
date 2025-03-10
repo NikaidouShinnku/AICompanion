@@ -3,6 +3,7 @@ import asyncio
 import threading
 import argparse
 import os
+import re
 import shlex
 import subprocess
 import time
@@ -12,6 +13,7 @@ from prompt_toolkit.history import FileHistory
 from agent.knowledge_test import KnowledgeTest
 from agent.article_summarize import ArticleSummarize
 from agent.general import GeneralAI
+from agent.shinku_roleplay import ShinkuAI
 from agent.research import Researcher
 from asr import record_and_asr
 from chat_history import ChatHistory
@@ -80,7 +82,7 @@ if __name__ == '__main__':
         process = start_tts_process()
         time.sleep(2)
 
-    valid_mode = ['文章总结讨论', '学习新概念', '日程安排', '知识小测验', '通用']
+    valid_mode = ['文章总结讨论', '学习新概念', '日程安排', '知识小测验', '通用', '角色扮演：二阶堂真红']
     mode = None
     chat_history = ChatHistory()
 
@@ -88,7 +90,14 @@ if __name__ == '__main__':
 
     # 1. 选择要使用的Agent（不同学习模式）
     while not mode:
-        mode_input_index = prompt(HTML("选择AI助手模式:\n<ansired>1.文章总结讨论</ansired>\n<ansiyellow>2.学习新概念</ansiyellow>\n<ansiblue>3.日程安排</ansiblue>\n<ansigreen>4.知识小测验</ansigreen>\n<ansicyan>5.通用</ansicyan>\n>> "))
+        mode_input_index = prompt(HTML("选择AI助手模式:"
+                                       "\n<ansired>1.文章总结讨论</ansired>"
+                                       "\n<ansiyellow>2.学习新概念</ansiyellow>"
+                                       "\n<ansiblue>3.日程安排</ansiblue>"
+                                       "\n<ansigreen>4.知识小测验</ansigreen>"
+                                       "\n<ansicyan>5.通用</ansicyan>"
+                                       "\n<ansiyellow>6.角色扮演：二阶堂真红</ansiyellow>"
+                                       "\n>"))
 
         try:
             index = int(mode_input_index or len(valid_mode))
@@ -336,6 +345,56 @@ if __name__ == '__main__':
                 while is_audio_playing():
                     time.sleep(0.1)
 
+        # ==============================================================================#
+
+    elif mode == '角色扮演：二阶堂真红':
+        shinku_agent = ShinkuAI(
+            chat_history=chat_history,
+            model=args.model
+        )
+        while True:
+            try:
+                session = PromptSession(
+                    HTML(f'<ansicyan><b> 用户  >> </b></ansicyan>'),
+                    history=FileHistory('history.txt')
+                )
+                while True:
+                    if args.asr:
+                        time.sleep(3)
+                        user_input = record_and_asr()
+                        show_response(res=user_input, title="ASR Result", title_align="left", width=40)
+                        chat_history.append(role="user", content=user_input)
+                        break
+                    else:
+                        user_input = session.prompt()
+
+                    if user_input == '/asr':
+                        user_input = record_and_asr()
+                        show_response(res=user_input, title="ASR Result", title_align="left", width=40)
+                        break
+                    elif user_input == '/end':
+                        end_chat = True
+                        break
+                    elif user_input:
+                        chat_history.append(role="user", content=user_input)
+                        break
+            finally:
+                pass
+
+            if end_chat:
+                break
+
+            res = shinku_agent.generate_response(current_user_input=user_input)
+            reply = extract_reply(res=res, token="reply")
+
+            chat_history.append(role="assistant", content=reply.strip())
+
+            show_response(reply, title="AI助手回复")
+
+            if args.tts:
+                play_tts_in_thread(reply)
+                while is_audio_playing():
+                    time.sleep(0.1)
 
 #==============================================================================#
 
