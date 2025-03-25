@@ -8,6 +8,7 @@ from interviewee import interviewee_directory
 from llms import chat
 from prompts import read_prompt
 from common.tool_utils import extract_reply
+from llms.api_key_config import BING_SEARCH_API_KEY
 
 class Researcher:
 
@@ -106,7 +107,7 @@ def extract_keywords(user_input):
 
 # 使用Bing Search API进行搜索
 def search_web(query):
-    api_key = "399edd5fde974e3dbb1072ad0a1f10e8"
+    api_key = BING_SEARCH_API_KEY
     search_url = "https://api.bing.microsoft.com/"
 
     headers = {"Ocp-Apim-Subscription-Key": api_key}
