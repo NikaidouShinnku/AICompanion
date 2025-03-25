@@ -5,8 +5,9 @@ from llms.statistics import update_usage
 
 import google.generativeai as genai
 import os
+from llms.api_key_config import GEMINI_API_KEY
 
-os.environ['API_KEY'] = 'AIzaSyA6UrR76tnvDv9L0BDnk33WfrguBpcv-IM'
+os.environ['API_KEY'] = GEMINI_API_KEY
 
 def chat(
         prompt:str = None,

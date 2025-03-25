@@ -1,5 +1,6 @@
 import openai
 from typing import List, Dict
+from llms.api_key_config import GROQ_API_KEY
 
 def chat(
         prompt:str = None,
@@ -9,7 +10,7 @@ def chat(
 ):
 
     client = openai.OpenAI(
-        api_key="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",
+        api_key=GROQ_API_KEY,
         base_url="https://api.groq.com/openai/v1"
 
     )

@@ -144,16 +144,13 @@ def format_search_results(search_results, num_results=3):
 def search_keywords_and_return_results(user_input):
     # Step 1: 提取关键词
     keywords = extract_keywords(user_input)
-    query = " ".join(keywords)  # 将关键词合并为查询字符串
+    query = " ".join(keywords)
 
-    # Step 2: 使用Bing API进行搜索
     search_results = search_web(query)
 
     if search_results:
-        # Step 3: 格式化并返回前3个结果
         formatted_results = format_search_results(search_results, num_results=3)
 
-        # 将搜索结果格式化为一个字符串
         results_str = ""
         for result in formatted_results:
             results_str += f"Title: {result['title']}\n"

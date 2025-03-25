@@ -1,6 +1,8 @@
 from openai import OpenAI
 from typing import List, Dict
 
+from llms.api_key_config import DEEPSEEK_API_KEY
+
 from llms.statistics import update_usage
 
 
@@ -12,7 +14,7 @@ def chat(
 ):
 
     client = OpenAI(
-        api_key="sk-03868f6df4404fa2a57c3c092bba976a",
+        api_key=DEEPSEEK_API_KEY,
         base_url="https://api.deepseek.com"
 
     )

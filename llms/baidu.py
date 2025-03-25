@@ -5,6 +5,7 @@ from typing import Dict, List
 import httpx
 import requests
 from cachetools import TTLCache, cached
+from llms.api_key_config import BAIDU_API_KEY, BAIDU_SECRETE_API_KEY
 
 
 _BASE_AUTH_URL = "https://aip.baidubce.com/oauth/2.0/token"
@@ -51,8 +52,8 @@ models_setting = {
     },
 }
 
-client_id = os.getenv("BAIDU_API_KEY")
-client_secret = os.getenv("BAIDU_API_SECRET")
+client_id = BAIDU_API_KEY
+client_secret = BAIDU_SECRETE_API_KEY
 
 def chat(
     *,

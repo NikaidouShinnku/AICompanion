@@ -1,5 +1,6 @@
 from openai import OpenAI
 from typing import List, Dict
+from llms.api_key_config import MOONSHOT_API_KEY
 
 def chat(
         prompt:str = None,
@@ -9,7 +10,7 @@ def chat(
 ):
 
     client = OpenAI(
-        api_key="sk-bnh8Ogoj2KdQSq9i8bnkcNmUZK5KaHs8rMr4lAdSVjfSJm07",
+        api_key=MOONSHOT_API_KEY,
         base_url="https://api.moonshot.cn/v1"
 
     )

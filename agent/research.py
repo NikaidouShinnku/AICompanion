@@ -107,7 +107,7 @@ def extract_keywords(user_input):
 # 使用Bing Search API进行搜索
 def search_web(query):
     api_key = "399edd5fde974e3dbb1072ad0a1f10e8"
-    search_url = "https://api.bing.microsoft.com/v7.0/search"
+    search_url = "https://api.bing.microsoft.com/"
 
     headers = {"Ocp-Apim-Subscription-Key": api_key}
     params = {"q": query, "textDecorations": True, "textFormat": "HTML"}

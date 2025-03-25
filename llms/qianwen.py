@@ -1,5 +1,6 @@
 from openai import OpenAI
 from typing import List, Dict
+from llms.api_key_config import QIANWEN_API_KEY
 
 from llms.statistics import update_usage
 
@@ -11,7 +12,7 @@ def chat(
         **kwargs
 ):
     client = OpenAI(
-        api_key="Bearer sk-ff0571b1b8054f26a1758a641b5921b9",
+        api_key=QIANWEN_API_KEY,
         base_url="https://dashscope.aliyuncs.com/compatible-mode/v1"
     )
 
